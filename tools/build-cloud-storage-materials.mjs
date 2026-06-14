@@ -1964,8 +1964,8 @@ function writeInteractive() {
     )
     .replace(/<h1>클라우드 스토리지(?: 심화)?<\/h1>/, "<h1>클라우드 스토리지</h1>")
     .replace(
-      /<p>(?:2시간 입문 강연용 HTML 자료\.|AWS S3, Azure Blob Storage, Google Cloud Storage를 나눠 보는 컴퓨터공학 전공자용 심화 강연 자료입니다\.|처음 듣는 사람도 이해하는[\s\S]*?강연 자료입니다\.)<\/p>/,
-      "<p>처음 듣는 사람도 이해하는 쉬운 설명에서 시작해 컴공 전공자가 알아야 할 객체 스토리지 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 운영 심화까지 이어지는 강연 자료입니다.</p>"
+      /<p>(?:2시간 입문 강연용 HTML 자료\.|AWS S3, Azure Blob Storage, Google Cloud Storage를 나눠 보는 컴퓨터공학 전공자용 심화 강연 자료입니다\.|처음 듣는 사람도 이해하는[\s\S]*?(?:강연|학습) 자료입니다\.)<\/p>/,
+      "<p>처음 듣는 사람도 이해하는 쉬운 설명에서 시작해 컴공 전공자가 알아야 할 객체 스토리지 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 운영 심화까지 이어지는 학습 자료입니다.</p>"
     )
     .replace(
       /slide\.no === 1 \|\| slide\.no === 30/g,
@@ -2137,7 +2137,7 @@ function updateIndexes() {
     [/Lecture · (?:2 hours|deep dive|basics to deep dive)/, "Study · basics to deep dive"],
     [
       /(?:객체 스토리지, lifecycle, 보안, CDN, 비용, 백업과 복제까지 이어지는 컴퓨터공학 전공자 대상 강연 자료입니다\.|객체 스토리지 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 보안, 비용, DR까지 이어지는 컴퓨터공학 전공자 대상 심화 강연 자료입니다\.)/,
-      "클라우드 스토리지의 쉬운 개념 설명에서 시작해 객체 스토리지 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 보안, 비용, DR까지 이어지는 강연 자료입니다."
+      "클라우드 스토리지의 쉬운 개념 설명에서 시작해 객체 스토리지 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 보안, 비용, DR까지 이어지는 학습 자료입니다."
     ]
   ]);
 

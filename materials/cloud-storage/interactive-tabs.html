@@ -6,21 +6,33 @@
     <title>클라우드 스토리지 입문부터 심화까지</title>
     <style>
       :root {
-        --bg: #f4f6f8;
-        --ink: #16202c;
-        --muted: #657281;
-        --line: #d9e0e7;
-        --panel: #ffffff;
-        --panel-2: #e9eef3;
+        --bg: #fff8ea;
+        --ink: #211a14;
+        --muted: #665e52;
+        --line: #2b2116;
+        --line-soft: #d6cdbc;
+        --panel: #fffef8;
+        --panel-2: #fff7dc;
+        --surface-soft: #fffaf0;
+        --time: #f3ead8;
+        --notes-bg: #dff5ed;
+        --notes-label: #275f54;
+        --notes-dot: #78d6bd;
+        --deep-bg: #fef1c7;
+        --deep-label: #6b5217;
+        --deep-dot: #efcf73;
+        --build-bg: #e7eafe;
         --blue: #2f6df6;
         --green: #22a77a;
         --red: #e65f4d;
         --amber: #d39125;
         --purple: #7458f4;
-        --dark: #111b26;
-        --shadow: 0 18px 45px rgba(20, 31, 46, 0.08);
+        --dark: #2b2116;
+        --shadow: 8px 8px 0 rgb(43 33 22 / 10%);
+        --shadow-strong: 10px 10px 0 rgb(43 33 22 / 14%);
         --radius: 8px;
         --side: 360px;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       * {
@@ -31,12 +43,24 @@
       body {
         margin: 0;
         min-height: 100%;
-        background: var(--bg);
+        background:
+          linear-gradient(90deg, rgb(49 38 25 / 7%) 1px, transparent 1px),
+          linear-gradient(180deg, rgb(49 38 25 / 7%) 1px, transparent 1px), var(--bg);
+        background-size: 88px 88px;
         color: var(--ink);
         font-family:
-          -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI",
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Apple SD Gothic Neo",
+          "Noto Sans KR",
+          "Segoe UI",
           sans-serif;
+        line-height: 1.6;
         letter-spacing: 0;
+        word-break: keep-all;
+        overflow-wrap: break-word;
         overflow-x: hidden;
       }
 
@@ -50,13 +74,24 @@
         font: inherit;
       }
 
+      a {
+        color: inherit;
+      }
+
+      button:focus-visible,
+      a:focus-visible {
+        outline: 3px solid var(--notes-dot);
+        outline-offset: 3px;
+      }
+
       .sidebar {
         position: sticky;
         top: 0;
         height: 100vh;
         overflow: auto;
-        border-right: 1px solid var(--line);
-        background: #fbfcfe;
+        border-right: 2px solid rgb(43 33 22 / 18%);
+        background: rgb(255 248 234 / 94%);
+        backdrop-filter: blur(10px);
         padding: 26px 22px 32px;
       }
 
@@ -64,14 +99,14 @@
         display: grid;
         gap: 10px;
         padding-bottom: 20px;
-        border-bottom: 1px solid var(--line);
+        border-bottom: 2px solid rgb(43 33 22 / 14%);
       }
 
       .brand h1 {
         margin: 0;
         font-size: 28px;
         line-height: 1.1;
-        letter-spacing: -0.01em;
+        letter-spacing: 0;
       }
 
       .brand p {
@@ -92,23 +127,32 @@
         justify-content: space-between;
         color: var(--muted);
         font-size: 12px;
-        font-weight: 700;
+        font-weight: 950;
       }
 
       .progress {
-        height: 8px;
-        border: 1px solid var(--line);
-        background: #e7edf3;
+        display: block;
+        width: 100%;
+        height: 11px;
+        border: 2px solid var(--line);
+        background: var(--surface-soft);
         overflow: hidden;
         border-radius: 999px;
+        appearance: none;
       }
 
-      .progress > span {
-        display: block;
+      .progress::-webkit-progress-bar {
+        background: var(--surface-soft);
+      }
+
+      .progress::-webkit-progress-value {
         height: 100%;
-        width: 0;
-        background: linear-gradient(90deg, var(--blue), var(--green));
+        background: linear-gradient(90deg, var(--notes-dot), var(--deep-dot));
         transition: width 0.22s ease;
+      }
+
+      .progress::-moz-progress-bar {
+        background: linear-gradient(90deg, var(--notes-dot), var(--deep-dot));
       }
 
       .toolbar {
@@ -119,23 +163,29 @@
       }
 
       .tool-btn {
-        border: 1px solid var(--line);
+        border: 2px solid var(--line);
         background: var(--panel);
         color: var(--ink);
-        height: 38px;
+        min-height: 40px;
         border-radius: 6px;
         font-size: 13px;
-        font-weight: 800;
+        font-weight: 950;
         cursor: pointer;
         min-width: 0;
         text-decoration: none;
         display: grid;
         place-items: center;
+        box-shadow: 4px 4px 0 rgb(43 33 22 / 10%);
+        transition:
+          transform 180ms var(--ease-out),
+          box-shadow 180ms ease,
+          background 180ms ease;
       }
 
       .tool-btn:hover {
-        border-color: #b8ad9b;
-        background: white;
+        background: var(--surface-soft);
+        box-shadow: 6px 6px 0 rgb(43 33 22 / 12%);
+        transform: translate(-1px, -1px);
       }
 
       .category-filter {
@@ -146,13 +196,13 @@
       }
 
       .chip {
-        border: 1px solid var(--line);
-        background: transparent;
+        border: 1px solid #c9c1b2;
+        background: var(--panel);
         color: var(--muted);
         border-radius: 999px;
         padding: 7px 10px;
         font-size: 12px;
-        font-weight: 800;
+        font-weight: 950;
         cursor: pointer;
       }
 
@@ -184,7 +234,7 @@
 
       .tab {
         width: 100%;
-        border: 1px solid transparent;
+        border: 2px solid transparent;
         background: transparent;
         text-align: left;
         padding: 11px 12px;
@@ -199,25 +249,25 @@
       }
 
       .tab:hover {
-        background: #edf3f8;
-        border-color: #d8e2ec;
+        background: var(--surface-soft);
+        border-color: rgb(43 33 22 / 16%);
       }
 
       .tab.active {
         background: var(--dark);
         color: white;
         border-color: var(--dark);
-        box-shadow: 0 12px 26px rgba(17, 27, 38, 0.18);
+        box-shadow: 5px 5px 0 rgb(43 33 22 / 16%);
       }
 
       .tab-no {
-        color: var(--blue);
+        color: var(--notes-label);
         font-size: 13px;
         font-weight: 900;
       }
 
       .tab.active .tab-no {
-        color: #81b5ff;
+        color: var(--notes-dot);
       }
 
       .tab-title {
@@ -235,7 +285,7 @@
         padding: 34px clamp(28px, 4vw, 58px) 42px;
       }
 
-      .topbar {
+      .viewer-topbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -257,7 +307,7 @@
         width: 9px;
         height: 9px;
         border-radius: 99px;
-        background: var(--accent, var(--blue));
+        background: var(--accent, var(--notes-dot));
         display: inline-block;
       }
 
@@ -267,16 +317,21 @@
       }
 
       .nav-btn {
-        border: 1px solid var(--line);
+        border: 1px solid #c9c1b2;
         background: var(--panel);
         border-radius: 6px;
-        height: 36px;
+        min-height: 40px;
         min-width: 84px;
         padding: 0 12px;
         font-size: 13px;
-        font-weight: 850;
+        font-weight: 950;
         color: var(--ink);
         cursor: pointer;
+      }
+
+      .nav-btn:not(:disabled):hover {
+        border-color: var(--line);
+        background: var(--surface-soft);
       }
 
       .nav-btn:disabled {
@@ -286,7 +341,7 @@
 
       .slide {
         background: var(--panel);
-        border: 1px solid var(--line);
+        border: 2px solid var(--line);
         box-shadow: var(--shadow);
         aspect-ratio: 16 / 9;
         width: min(100%, 1920px, calc((100vh - 118px) * 16 / 9));
@@ -303,11 +358,12 @@
       }
 
       .hero {
-        border-top: 10px solid var(--accent, var(--blue));
+        border-top: 10px solid var(--accent, var(--deep-dot));
+        border-bottom: 2px solid rgb(43 33 22 / 14%);
         padding: clamp(28px, 4vw, 52px) clamp(28px, 4vw, 56px) 22px;
         background:
-          linear-gradient(120deg, rgba(47, 109, 246, 0.08), transparent 45%),
-          linear-gradient(270deg, rgba(34, 167, 122, 0.08), transparent 35%), var(--panel);
+          linear-gradient(120deg, rgb(120 214 189 / 16%), transparent 44%),
+          linear-gradient(270deg, rgb(239 207 115 / 22%), transparent 36%), var(--panel);
       }
 
       .hero-meta {
@@ -325,7 +381,7 @@
         max-width: 1200px;
         font-size: clamp(34px, 4.3vw, 66px);
         line-height: 1.08;
-        letter-spacing: -0.01em;
+        letter-spacing: 0;
         overflow-wrap: anywhere;
         word-break: keep-all;
       }
@@ -376,8 +432,8 @@
       .point-list li {
         position: relative;
         padding: 14px 16px 14px 42px;
-        border: 1px solid var(--line);
-        background: #fbfdff;
+        border: 1px solid var(--line-soft);
+        background: var(--surface-soft);
         border-radius: 7px;
         line-height: 1.55;
         font-size: 17px;
@@ -391,15 +447,16 @@
         width: 9px;
         height: 9px;
         border-radius: 99px;
-        background: var(--accent, var(--blue));
+        background: var(--accent, var(--deep-dot));
       }
 
       .field-note {
-        border-left: 5px solid var(--accent, var(--blue));
-        background: #eef4ff;
+        border: 2px solid var(--line);
+        border-left: 8px solid var(--accent, var(--deep-dot));
+        background: var(--notes-bg);
         padding: 16px 18px;
-        color: #263546;
-        border-radius: 4px;
+        color: var(--ink);
+        border-radius: 7px;
         font-size: 16px;
         line-height: 1.55;
         font-weight: 720;
@@ -408,7 +465,7 @@
       .field-label {
         display: block;
         margin-bottom: 6px;
-        color: var(--accent, var(--blue));
+        color: var(--notes-label);
         font-size: 12px;
         font-weight: 950;
         letter-spacing: 0.04em;
@@ -421,8 +478,8 @@
         align-self: start;
         align-content: start;
         gap: 16px;
-        border: 1px solid var(--line);
-        background: linear-gradient(180deg, #ffffff, #f3f7fb);
+        border: 1px solid var(--line-soft);
+        background: linear-gradient(180deg, var(--panel), var(--surface-soft));
         border-radius: 8px;
         padding: 22px;
         overflow: hidden;
@@ -627,17 +684,17 @@
         height: auto;
         aspect-ratio: 1000 / 520;
         display: block;
-        border: 1px solid #d8e1ea;
+        border: 1px solid var(--line-soft);
         border-radius: 8px;
         background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(236, 243, 249, 0.95)),
-          repeating-linear-gradient(0deg, rgba(47, 109, 246, 0.055) 0 1px, transparent 1px 48px),
-          repeating-linear-gradient(90deg, rgba(47, 109, 246, 0.055) 0 1px, transparent 1px 48px);
+          linear-gradient(180deg, rgb(255 254 248 / 92%), rgb(255 250 240 / 95%)),
+          repeating-linear-gradient(0deg, rgb(49 38 25 / 6%) 0 1px, transparent 1px 48px),
+          repeating-linear-gradient(90deg, rgb(49 38 25 / 6%) 0 1px, transparent 1px 48px);
         overflow: hidden;
       }
 
       .diagram-link {
-        stroke: #91a3b6;
+        stroke: #9b927f;
         stroke-width: 3.2;
         fill: none;
       }
@@ -647,20 +704,20 @@
       }
 
       .diagram-link-label {
-        fill: #667586;
+        fill: var(--muted);
         font-size: 17px;
         font-weight: 850;
         paint-order: stroke;
-        stroke: #f6f9fc;
+        stroke: var(--panel);
         stroke-width: 6px;
         stroke-linejoin: round;
       }
 
       .diagram-node-rect {
-        fill: white;
-        stroke: color-mix(in srgb, var(--node-accent, var(--blue)) 52%, #d9e0e7);
+        fill: var(--panel);
+        stroke: color-mix(in srgb, var(--node-accent, var(--deep-dot)) 52%, var(--line-soft));
         stroke-width: 3;
-        filter: drop-shadow(0 10px 18px rgba(20, 31, 46, 0.12));
+        filter: drop-shadow(5px 5px 0 rgb(43 33 22 / 10%));
       }
 
       .diagram-node-badge {
@@ -669,14 +726,14 @@
       }
 
       .diagram-node-title {
-        fill: #172231;
+        fill: var(--ink);
         font-size: 24px;
         font-weight: 950;
         text-anchor: middle;
       }
 
       .diagram-node-sub {
-        fill: #657281;
+        fill: var(--muted);
         font-size: 18px;
         font-weight: 700;
         text-anchor: middle;
@@ -684,12 +741,12 @@
 
       .diagram-caption {
         margin: 0;
-        color: #4d5c6d;
+        color: var(--muted);
         font-size: 13px;
         line-height: 1.45;
         font-weight: 750;
-        background: rgba(255, 255, 255, 0.72);
-        border: 1px solid var(--line);
+        background: rgb(255 250 240 / 82%);
+        border: 1px solid var(--line-soft);
         border-radius: 7px;
         padding: 10px 12px;
       }
@@ -701,8 +758,8 @@
       }
 
       .v-card {
-        border: 1px solid var(--line);
-        background: white;
+        border: 1px solid var(--line-soft);
+        background: var(--panel);
         border-radius: 7px;
         padding: 15px;
         min-height: 98px;
@@ -734,8 +791,8 @@
       .flow .step {
         min-width: 0;
         min-height: 112px;
-        border: 1px solid var(--line);
-        background: white;
+        border: 1px solid var(--line-soft);
+        background: var(--panel);
         border-radius: 7px;
         padding: 16px 48px 16px 16px;
         position: relative;
@@ -752,8 +809,8 @@
         display: grid;
         place-items: center;
         border-radius: 99px;
-        background: color-mix(in srgb, var(--card-accent, var(--blue)) 16%, white);
-        color: var(--card-accent, var(--blue));
+        background: color-mix(in srgb, var(--card-accent, var(--deep-dot)) 16%, var(--panel));
+        color: var(--card-accent, var(--deep-label));
         font-size: 12px;
         font-weight: 950;
       }
@@ -791,8 +848,8 @@
       }
 
       .table td {
-        background: white;
-        border: 1px solid var(--line);
+        background: var(--panel);
+        border: 1px solid var(--line-soft);
         padding: 12px;
         color: var(--muted);
         line-height: 1.35;
@@ -811,8 +868,8 @@
       }
 
       .matrix .cell {
-        border: 1px solid var(--line);
-        background: white;
+        border: 1px solid var(--line-soft);
+        background: var(--panel);
         min-height: 84px;
         border-radius: 7px;
         padding: 14px;
@@ -844,13 +901,13 @@
       }
 
       .time-item b {
-        color: var(--card-accent, var(--blue));
+        color: var(--card-accent, var(--deep-label));
         font-size: 18px;
       }
 
       .time-item div {
-        border: 1px solid var(--line);
-        background: white;
+        border: 1px solid var(--line-soft);
+        background: var(--panel);
         border-radius: 7px;
         padding: 13px 15px;
         color: var(--muted);
@@ -865,15 +922,15 @@
       .kv {
         display: grid;
         grid-template-columns: 145px 1fr;
-        border: 1px solid var(--line);
-        background: white;
+        border: 1px solid var(--line-soft);
+        background: var(--panel);
         border-radius: 7px;
         overflow: hidden;
       }
 
       .kv b {
         padding: 12px;
-        background: #edf3f8;
+        background: var(--panel-2);
         color: var(--ink);
       }
 
@@ -892,7 +949,7 @@
       }
 
       .source a {
-        color: var(--blue);
+        color: var(--notes-label);
         text-decoration-thickness: 1px;
         text-underline-offset: 3px;
         overflow-wrap: anywhere;
@@ -905,7 +962,7 @@
       }
 
       body.presentation-mode .sidebar,
-      body.presentation-mode .topbar {
+      body.presentation-mode .viewer-topbar {
         display: none;
       }
 
@@ -982,13 +1039,13 @@
       .cover-mode .slide {
         background: var(--dark);
         color: white;
-        border-color: #233344;
+        border-color: var(--dark);
       }
 
       .cover-mode .hero {
         background:
-          radial-gradient(circle at 80% 18%, rgba(127, 179, 255, 0.24), transparent 24%),
-          radial-gradient(circle at 76% 70%, rgba(34, 167, 122, 0.16), transparent 26%), var(--dark);
+          radial-gradient(circle at 80% 18%, rgb(120 214 189 / 24%), transparent 24%),
+          radial-gradient(circle at 76% 70%, rgb(239 207 115 / 16%), transparent 26%), var(--dark);
       }
 
       .cover-mode .claim,
@@ -1000,14 +1057,14 @@
 
       .cover-mode .content,
       .cover-mode .visual {
-        background: #142232;
-        border-color: #2c4053;
+        background: #30261b;
+        border-color: #5a4b38;
       }
 
       .cover-mode .point-list li,
       .cover-mode .v-card {
-        background: #182a3d;
-        border-color: #2c4053;
+        background: #3a2d20;
+        border-color: #5a4b38;
         color: white;
       }
 
@@ -1064,8 +1121,8 @@
           max-width: 100%;
           overflow: auto;
           border-right: 0;
-          border-bottom: 1px solid var(--line);
-          box-shadow: 0 18px 34px rgba(20, 31, 46, 0.08);
+          border-bottom: 2px solid rgb(43 33 22 / 18%);
+          box-shadow: 0 12px 0 rgb(43 33 22 / 8%);
           padding: 20px 22px 18px;
         }
 
@@ -1099,9 +1156,9 @@
           display: block;
           inline-size: 100%;
           white-space: normal !important;
-          word-break: break-all;
+          word-break: keep-all;
           overflow-wrap: anywhere;
-          line-break: anywhere;
+          line-break: loose;
         }
 
         .tab {
@@ -1122,7 +1179,7 @@
           min-width: 0;
           max-width: 100%;
           white-space: normal !important;
-          word-break: break-all;
+          word-break: keep-all;
           overflow-wrap: anywhere;
         }
 
@@ -1134,7 +1191,7 @@
           padding: 14px 14px 30px;
         }
 
-        .topbar {
+        .viewer-topbar {
           align-items: flex-start;
           flex-direction: column;
         }
@@ -1176,7 +1233,7 @@
         }
 
         .sidebar,
-        .topbar {
+        .viewer-topbar {
           display: none;
         }
 
@@ -1205,15 +1262,17 @@
         <h1>클라우드 스토리지</h1>
         <p>
           처음 듣는 사람도 이해하는 쉬운 설명에서 시작해 컴공 전공자가 알아야 할 객체 스토리지 모델,
-          AWS S3, Azure Blob Storage, Google Cloud Storage, 운영 심화까지 이어지는 강연 자료입니다.
+          AWS S3, Azure Blob Storage, Google Cloud Storage, 운영 심화까지 이어지는 학습 자료입니다.
         </p>
       </div>
 
       <div class="progress-wrap">
         <div class="progress-meta">
-          <span id="progressLabel">01 / 48</span><span id="timeLabel">5분</span>
+          <span id="progressLabel">01 / 64</span><span id="timeLabel">5분</span>
         </div>
-        <div class="progress"><span id="progressBar"></span></div>
+        <progress id="progressBar" class="progress" aria-label="학습 진행률" max="64" value="1">
+          1 / 64
+        </progress>
       </div>
 
       <div class="toolbar">
@@ -1238,7 +1297,7 @@
     </aside>
 
     <main class="stage">
-      <div class="topbar">
+      <div class="viewer-topbar">
         <div class="crumb">
           <span class="dot"></span><span id="categoryName"></span><span id="slideCount"></span>
         </div>
@@ -4582,7 +4641,7 @@
         categoryFilter.innerHTML = filters
           .map(
             (cat) =>
-              `<button class="chip ${cat.id === activeFilter ? "active" : ""}" type="button" data-filter="${cat.id}">${escapeHtml(cat.label)}</button>`
+              `<button class="chip ${cat.id === activeFilter ? "active" : ""}" type="button" data-filter="${cat.id}" aria-pressed="${cat.id === activeFilter}">${escapeHtml(cat.label)}</button>`
           )
           .join("");
       }
@@ -4595,11 +4654,11 @@
             return `
           <section class="category" ${hidden ? "hidden" : ""}>
             <div class="category-head"><span>${escapeHtml(cat.label)}</span><span>${escapeHtml(cat.range)}</span></div>
-            <div class="tabs">
+            <div class="tabs" role="list" aria-label="${escapeHtml(cat.label)} 탭 목록">
               ${groupSlides
                 .map(
                   (slide) => `
-                <button class="tab ${slides[activeIndex].no === slide.no ? "active" : ""}" type="button" data-slide="${slide.no}">
+                <button class="tab ${slides[activeIndex].no === slide.no ? "active" : ""}" type="button" data-slide="${slide.no}" aria-current="${slides[activeIndex].no === slide.no ? "step" : "false"}">
                   <span class="tab-no">${String(slide.no).padStart(2, "0")}</span>
                   <span class="tab-title">${escapeHtml(slide.title)}</span>
                 </button>
@@ -4713,7 +4772,7 @@
         <svg class="diagram-svg" viewBox="0 0 1000 520" role="img" aria-label="${escapeHtml(visual.title || "Diagram")}">
           <defs>
             <marker id="diagram-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#91a3b6"></path>
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#9b927f"></path>
             </marker>
           </defs>
           <g opacity=".98">${linkSvg}</g>
@@ -4841,7 +4900,9 @@
         slideCount.textContent = `${String(slide.no).padStart(2, "0")} / ${slides.length}`;
         progressLabel.textContent = `${String(slide.no).padStart(2, "0")} / ${slides.length}`;
         timeLabel.textContent = `${slide.minutes}분`;
-        progressBar.style.width = `${(slide.no / slides.length) * 100}%`;
+        progressBar.value = slide.no;
+        progressBar.max = slides.length;
+        progressBar.textContent = `${slide.no} / ${slides.length}`;
         prevBtn.disabled = navIndex <= 0;
         nextBtn.disabled = navIndex < 0 || navIndex >= visible.length - 1;
 
