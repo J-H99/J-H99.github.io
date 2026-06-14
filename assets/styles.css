@@ -10,6 +10,8 @@
   --accent-dark: #134e4a;
   --blue: #2563eb;
   --shadow: 0 18px 38px rgba(30, 42, 48, 0.08);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
 }
 
 * {
@@ -29,11 +31,18 @@ body {
   letter-spacing: 0;
   word-break: keep-all;
   overflow-wrap: break-word;
+  animation: page-in 460ms var(--ease-out) both;
+  transition: opacity 180ms var(--ease-in), transform 180ms var(--ease-in);
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+html.is-leaving body {
+  opacity: 0;
+  transform: translateY(6px);
 }
 
 .topbar {
@@ -49,11 +58,31 @@ a {
   border-bottom: 1px solid var(--line);
   background: rgba(245, 246, 243, 0.92);
   backdrop-filter: blur(12px);
+  animation: topbar-in 520ms var(--ease-out) both;
+  transition: background 180ms ease, box-shadow 180ms ease;
 }
 
 .brand-link {
+  position: relative;
   font-size: 18px;
   font-weight: 900;
+}
+
+.brand-link::after {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -7px;
+  height: 2px;
+  background: var(--accent);
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 220ms var(--ease-out);
+}
+
+.brand-link:hover::after {
+  transform: scaleX(1);
 }
 
 .nav-links {
@@ -69,11 +98,13 @@ a {
   color: var(--muted);
   font-size: 14px;
   font-weight: 800;
+  transition: background 180ms ease, color 180ms ease, transform 180ms var(--ease-out);
 }
 
 .nav-links a:hover {
   background: var(--surface-soft);
   color: var(--ink);
+  transform: translateY(-1px);
 }
 
 main {
@@ -87,6 +118,14 @@ main {
   gap: 48px;
   align-items: end;
   padding: 76px 0 42px;
+}
+
+.intro > * {
+  animation: rise-in 620ms var(--ease-out) both;
+}
+
+.intro > :nth-child(2) {
+  animation-delay: 90ms;
 }
 
 .intro h1 {
@@ -121,6 +160,11 @@ main {
   gap: 12px;
   padding: 16px;
   border-bottom: 1px solid var(--line);
+  transition: background 180ms ease;
+}
+
+.status-list div:hover {
+  background: #f7faf8;
 }
 
 .status-list div:last-child {
@@ -170,6 +214,7 @@ main {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
+  transition: border-color 180ms ease, box-shadow 220ms var(--ease-out), transform 220ms var(--ease-out), background 180ms ease;
 }
 
 .feature-row {
@@ -179,6 +224,14 @@ main {
   align-items: center;
   padding: 28px;
   box-shadow: var(--shadow);
+}
+
+.feature-row:hover,
+.material-row:hover,
+.resource:hover {
+  border-color: #b8c4be;
+  box-shadow: 0 24px 48px rgba(30, 42, 48, 0.11);
+  transform: translateY(-3px);
 }
 
 .feature-row h3,
@@ -224,17 +277,24 @@ main {
   color: var(--ink);
   font-size: 14px;
   font-weight: 900;
+  transition: border-color 180ms ease, background 180ms ease, color 180ms ease, box-shadow 220ms var(--ease-out), transform 220ms var(--ease-out);
 }
 
 .button:hover {
   border-color: #b8c4be;
   background: #f9fbfa;
+  box-shadow: 0 12px 24px rgba(30, 42, 48, 0.08);
+  transform: translateY(-2px);
 }
 
 .button.primary {
   border-color: var(--accent-dark);
   background: var(--accent-dark);
   color: white;
+}
+
+.button.primary:hover {
+  background: #0f5f59;
 }
 
 .grid {
@@ -246,12 +306,12 @@ main {
 .panel {
   min-height: 190px;
   padding: 22px;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .panel:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
+  border-color: #b8c4be;
+  transform: translateY(-3px);
+  box-shadow: 0 24px 48px rgba(30, 42, 48, 0.1);
 }
 
 .page-title {
@@ -301,6 +361,7 @@ main {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
+  transition: border-color 180ms ease, box-shadow 220ms var(--ease-out), transform 220ms var(--ease-out), background 180ms ease;
 }
 
 .resource strong {
@@ -363,6 +424,84 @@ main {
   color: var(--accent-dark);
   text-decoration: underline;
   text-underline-offset: 0.18em;
+}
+
+.motion-ready .motion-item {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.motion-ready .motion-item.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 520ms var(--ease-out), transform 620ms var(--ease-out);
+  transition-delay: var(--motion-delay, 0ms);
+}
+
+.motion-ready .section-head.motion-item::after,
+.motion-ready .page-title.motion-item::after {
+  display: block;
+  width: 42px;
+  height: 2px;
+  margin-top: 14px;
+  background: var(--accent);
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.motion-ready .section-head.motion-item.is-visible::after,
+.motion-ready .page-title.motion-item.is-visible::after {
+  transform: scaleX(1);
+  transition: transform 560ms var(--ease-out) 120ms;
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes topbar-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+
+  html.is-leaving body,
+  .motion-ready .motion-item {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (max-width: 820px) {
