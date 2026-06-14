@@ -1,7 +1,8 @@
 :root {
   color-scheme: light;
+
   --bg: #f5f6f3;
-  --surface: #ffffff;
+  --surface: #fff;
   --surface-soft: #eef3f1;
   --ink: #1c2428;
   --muted: #637078;
@@ -9,7 +10,7 @@
   --accent: #0f766e;
   --accent-dark: #134e4a;
   --blue: #2563eb;
-  --shadow: 0 18px 38px rgba(30, 42, 48, 0.08);
+  --shadow: 0 18px 38px rgb(30 42 48 / 8%);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
 }
@@ -26,13 +27,23 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Apple SD Gothic Neo",
+    "Noto Sans KR",
+    "Segoe UI",
+    sans-serif;
   line-height: 1.6;
   letter-spacing: 0;
   word-break: keep-all;
   overflow-wrap: break-word;
   animation: page-in 460ms var(--ease-out) both;
-  transition: opacity 180ms var(--ease-in), transform 180ms var(--ease-in);
+  transition:
+    opacity 180ms var(--ease-in),
+    transform 180ms var(--ease-in);
 }
 
 a {
@@ -56,10 +67,12 @@ html.is-leaving body {
   min-height: 72px;
   padding: 0 36px;
   border-bottom: 1px solid var(--line);
-  background: rgba(245, 246, 243, 0.92);
+  background: rgb(245 246 243 / 92%);
   backdrop-filter: blur(12px);
   animation: topbar-in 520ms var(--ease-out) both;
-  transition: background 180ms ease, box-shadow 180ms ease;
+  transition:
+    background 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .brand-link {
@@ -98,7 +111,10 @@ html.is-leaving body {
   color: var(--muted);
   font-size: 14px;
   font-weight: 800;
-  transition: background 180ms ease, color 180ms ease, transform 180ms var(--ease-out);
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    transform 180ms var(--ease-out);
 }
 
 .nav-links a:hover {
@@ -214,7 +230,11 @@ main {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
-  transition: border-color 180ms ease, box-shadow 220ms var(--ease-out), transform 220ms var(--ease-out), background 180ms ease;
+  transition:
+    border-color 180ms ease,
+    box-shadow 220ms var(--ease-out),
+    transform 220ms var(--ease-out),
+    background 180ms ease;
 }
 
 .feature-row {
@@ -234,7 +254,7 @@ main {
 .material-row:hover,
 .resource:hover {
   border-color: #b8c4be;
-  box-shadow: 0 24px 48px rgba(30, 42, 48, 0.11);
+  box-shadow: 0 24px 48px rgb(30 42 48 / 11%);
   transform: translateY(-3px);
 }
 
@@ -281,13 +301,18 @@ main {
   color: var(--ink);
   font-size: 14px;
   font-weight: 900;
-  transition: border-color 180ms ease, background 180ms ease, color 180ms ease, box-shadow 220ms var(--ease-out), transform 220ms var(--ease-out);
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    color 180ms ease,
+    box-shadow 220ms var(--ease-out),
+    transform 220ms var(--ease-out);
 }
 
 .button:hover {
   border-color: #b8c4be;
   background: #f9fbfa;
-  box-shadow: 0 12px 24px rgba(30, 42, 48, 0.08);
+  box-shadow: 0 12px 24px rgb(30 42 48 / 8%);
   transform: translateY(-2px);
 }
 
@@ -315,7 +340,7 @@ main {
 .panel:hover {
   border-color: #b8c4be;
   transform: translateY(-3px);
-  box-shadow: 0 24px 48px rgba(30, 42, 48, 0.1);
+  box-shadow: 0 24px 48px rgb(30 42 48 / 10%);
 }
 
 .page-title {
@@ -365,7 +390,11 @@ main {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
-  transition: border-color 180ms ease, box-shadow 220ms var(--ease-out), transform 220ms var(--ease-out), background 180ms ease;
+  transition:
+    border-color 180ms ease,
+    box-shadow 220ms var(--ease-out),
+    transform 220ms var(--ease-out),
+    background 180ms ease;
 }
 
 .resource strong {
@@ -579,7 +608,9 @@ main {
 .motion-ready .motion-item.is-visible {
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 520ms var(--ease-out), transform 620ms var(--ease-out);
+  transition:
+    opacity 520ms var(--ease-out),
+    transform 620ms var(--ease-out);
   transition-delay: var(--motion-delay, 0ms);
 }
 
@@ -605,6 +636,7 @@ main {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -615,6 +647,7 @@ main {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -626,6 +659,7 @@ main {
     opacity: 0;
     transform: translateY(16px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -649,7 +683,7 @@ main {
   }
 }
 
-@media (max-width: 820px) {
+@media (width <= 820px) {
   .topbar {
     position: static;
     align-items: flex-start;

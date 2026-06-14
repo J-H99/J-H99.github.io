@@ -21,13 +21,13 @@ LLM 코딩 세션은 긴 로그, 검색 결과, 파일 덤프, 실패한 테스�
 
 ## 멀티프로세스나 멀티스레드와의 차이
 
-| 관점 | 멀티프로세스/멀티스레드 | LLM 서브에이전트 |
-| --- | --- | --- |
-| 실행 단위 | OS 프로세스 또는 스레드 | 별도 에이전트 세션 또는 에이전트 루프 |
-| 상태 공유 | 메모리, 파일 디스크립터, IPC 등 | 보통 대화 컨텍스트는 분리되고 결과 요약만 부모에게 반환 |
-| 충돌 지점 | shared memory race, deadlock, resource contention | 같은 파일 수정, 같은 포트/DB/브라우저 사용, 승인 요청, 서로 다른 설계 판단 |
-| 조정 방식 | 락, 세마포어, 큐, 트랜잭션 | 메인 에이전트의 작업 분해, 권한 제한, write scope 분리, worktree/브랜치, 최종 통합 |
-| 결과 합치기 | 코드가 직접 join/reduce 구현 | 부모 에이전트가 서브에이전트 결과를 요약, 비교, 통합 |
+| 관점        | 멀티프로세스/멀티스레드                           | LLM 서브에이전트                                                                   |
+| ----------- | ------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| 실행 단위   | OS 프로세스 또는 스레드                           | 별도 에이전트 세션 또는 에이전트 루프                                              |
+| 상태 공유   | 메모리, 파일 디스크립터, IPC 등                   | 보통 대화 컨텍스트는 분리되고 결과 요약만 부모에게 반환                            |
+| 충돌 지점   | shared memory race, deadlock, resource contention | 같은 파일 수정, 같은 포트/DB/브라우저 사용, 승인 요청, 서로 다른 설계 판단         |
+| 조정 방식   | 락, 세마포어, 큐, 트랜잭션                        | 메인 에이전트의 작업 분해, 권한 제한, write scope 분리, worktree/브랜치, 최종 통합 |
+| 결과 합치기 | 코드가 직접 join/reduce 구현                      | 부모 에이전트가 서브에이전트 결과를 요약, 비교, 통합                               |
 
 따라서 "서브에이전트는 멀티스레드인가?"라는 질문에는 이렇게 답하는 편이 정확하다.
 
@@ -63,11 +63,11 @@ flowchart TD
 
 ## 제품별 관리 방식
 
-| 제품 | 호출 방식 | 정의 방식 | 충돌 관리 키워드 |
-| --- | --- | --- | --- |
-| Codex | 명시 요청 중심 | TOML agent file | sandbox, approval, thread cap |
-| Claude Code | 자동 위임 + 명시 호출 | Markdown + YAML frontmatter | tools, permissionMode, worktree |
-| Gemini CLI | 자동 위임 + `@agent` | Markdown + YAML frontmatter | tool isolation, policy, no nested agents |
+| 제품        | 호출 방식             | 정의 방식                   | 충돌 관리 키워드                         |
+| ----------- | --------------------- | --------------------------- | ---------------------------------------- |
+| Codex       | 명시 요청 중심        | TOML agent file             | sandbox, approval, thread cap            |
+| Claude Code | 자동 위임 + 명시 호출 | Markdown + YAML frontmatter | tools, permissionMode, worktree          |
+| Gemini CLI  | 자동 위임 + `@agent`  | Markdown + YAML frontmatter | tool isolation, policy, no nested agents |
 
 ### Codex
 

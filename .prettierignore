@@ -1,0 +1,14 @@
+node_modules
+package-lock.json
+*.pptx
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.pdf
+*.zip
+*.webm
+desktop-check.*
+mobile-check.*
+dev-check.*

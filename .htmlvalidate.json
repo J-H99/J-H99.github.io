@@ -1,0 +1,13 @@
+{
+  "extends": ["html-validate:recommended"],
+  "rules": {
+    "doctype-style": "off",
+    "void-style": "off",
+    "no-inline-style": "off",
+    "prefer-button": "off",
+    "aria-label-misuse": "off",
+    "unique-landmark": "off",
+    "element-permitted-content": "error",
+    "valid-id": "off"
+  }
+}

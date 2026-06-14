@@ -12,6 +12,23 @@ GitHub Pages로 올릴 개인 공부 아카이브입니다. 사이트 코드는 
 - `materials/`: 강연 자료, 발표 자료, 공개 가능한 참고 자료를 모읍니다.
 - `labs/`: HTML 데모와 작은 인터랙션을 보관합니다.
 
+## Development
+
+코드 품질 도구는 npm scripts로 관리합니다.
+
+```bash
+npm install
+npm run check
+npm run fix
+```
+
+- `npm run format`: Prettier로 HTML, CSS, JS, Markdown 등을 포맷합니다.
+- `npm run format:check`: 포맷 적용 여부를 확인합니다.
+- `npm run lint`: HTML, CSS, JS/MJS를 검사합니다.
+- `npm run lint:fix`: 가능한 CSS/JS lint 문제를 자동 수정합니다.
+- `npm run fix`: 포맷과 가능한 lint 자동 수정을 함께 실행합니다.
+- `npm run check`: 포맷 체크와 전체 lint를 함께 실행합니다.
+
 ## Cloud Storage Lecture
 
 `materials/cloud-storage/`에 다음 자료를 넣었습니다.
