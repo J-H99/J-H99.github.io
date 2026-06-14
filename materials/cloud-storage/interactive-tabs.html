@@ -493,6 +493,10 @@
       padding: 11px;
     }
 
+    .slide.dense .flow .step {
+      padding-right: 40px;
+    }
+
     .slide.dense .v-card strong,
     .slide.dense .flow .step strong,
     .slide.dense .matrix .cell strong {
@@ -634,11 +638,11 @@
 
     .diagram-link-label {
       fill: #667586;
-      font-size: 22px;
+      font-size: 17px;
       font-weight: 850;
       paint-order: stroke;
       stroke: #f6f9fc;
-      stroke-width: 8px;
+      stroke-width: 6px;
       stroke-linejoin: round;
     }
 
@@ -711,7 +715,7 @@
 
     .flow {
       display: grid;
-      grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(124px, 1fr));
       gap: 12px;
       align-items: center;
       counter-reset: flow-step;
@@ -723,7 +727,7 @@
       border: 1px solid var(--line);
       background: white;
       border-radius: 7px;
-      padding: 16px;
+      padding: 16px 48px 16px 16px;
       position: relative;
       counter-increment: flow-step;
     }
@@ -749,7 +753,8 @@
       margin-bottom: 8px;
       font-size: 17px;
       color: var(--card-accent, var(--ink));
-      overflow-wrap: anywhere;
+      overflow-wrap: normal;
+      word-break: keep-all;
     }
 
     .flow .step span {
@@ -5308,6 +5313,19 @@
       </text>`;
     }
 
+    function diagramEdgePoint(from, to, width, height) {
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      if (dx === 0 && dy === 0) return { x: from.x, y: from.y };
+      const scaleX = dx === 0 ? Infinity : (width / 2) / Math.abs(dx);
+      const scaleY = dy === 0 ? Infinity : (height / 2) / Math.abs(dy);
+      const scale = Math.min(scaleX, scaleY);
+      return {
+        x: Math.round(from.x + dx * scale),
+        y: Math.round(from.y + dy * scale)
+      };
+    }
+
     function renderDiagram(visual) {
       const nodes = visual.nodes || [];
       const links = visual.links || [];
@@ -5318,11 +5336,16 @@
         const from = byId[link.from];
         const to = byId[link.to];
         if (!from || !to) return "";
-        const midX = (from.x + to.x) / 2;
-        const midY = (from.y + to.y) / 2;
+        const start = diagramEdgePoint(from, to, nodeWidth, nodeHeight);
+        const end = diagramEdgePoint(to, from, nodeWidth, nodeHeight);
+        const midX = (start.x + end.x) / 2;
+        const midY = (start.y + end.y) / 2;
+        const gap = Math.hypot(end.x - start.x, end.y - start.y);
+        const labelLimit = Math.max(90, String(link.label || "").length * 9 + 34);
+        const showLabel = Boolean(link.showLabel) && gap > labelLimit;
         return `<g>
-          <path class="diagram-link ${link.tone === "dashed" ? "dashed" : ""}" d="M ${from.x} ${from.y} L ${to.x} ${to.y}" marker-end="url(#diagram-arrow)" />
-          ${link.label ? `<text class="diagram-link-label" x="${midX}" y="${midY - 10}" text-anchor="middle">${escapeHtml(link.label)}</text>` : ""}
+          <path class="diagram-link ${link.tone === "dashed" ? "dashed" : ""}" d="M ${start.x} ${start.y} L ${end.x} ${end.y}" marker-end="url(#diagram-arrow)" />
+          ${showLabel ? `<text class="diagram-link-label" x="${midX}" y="${midY - 10}" text-anchor="middle">${escapeHtml(link.label)}</text>` : ""}
         </g>`;
       }).join("");
       const nodeSvg = nodes.map((node) => {
