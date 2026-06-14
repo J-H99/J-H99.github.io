@@ -181,6 +181,45 @@ agent-browser screenshot mobile-check.png --full
 
 After navigation, form submission, modal opening, or dynamic content changes, run a fresh snapshot before interacting again.
 
+## Subagent Workflow
+
+Use subagents for work that benefits from parallel context gathering, independent review, or multiple specialties. Do not use them mechanically for every tiny edit.
+
+Good reasons to use subagents:
+
+- A change touches multiple areas such as content, layout, scripts, and navigation.
+- The task needs research before implementation, such as comparing existing page patterns or checking generated material.
+- Visual changes need independent desktop/mobile review.
+- A large generated page, lecture material, or long note needs consistency checks.
+- You want a second pass for accessibility, links, or code quality before committing.
+
+Scale the number of subagents to the work. A small focused task may need none or one. A broad redesign, content migration, or cross-section update may use several. Do not hard-code a fixed number of subagents.
+
+Prefer splitting subagents by responsibility, not by arbitrary file count:
+
+- Context scout: map relevant files, conventions, and existing patterns.
+- Content reviewer: check Korean wording, headings, dates, links, and index coverage.
+- UI reviewer: inspect layout risks, mobile behavior, visual consistency, and accessibility.
+- Code reviewer: inspect JavaScript, CSS structure, generated files, and tooling impact.
+- Verification runner: run or describe checks such as `npm run check`, link checks, and browser verification.
+
+Give each subagent a narrow prompt with:
+
+- The exact question to answer.
+- The files or directories to inspect.
+- Whether the subagent should only report findings or may suggest patches.
+- The expected output format, such as findings ordered by severity.
+
+The main agent remains responsible for synthesis and final edits:
+
+- Decide which subagent findings are relevant.
+- Avoid applying conflicting suggestions blindly.
+- Keep ownership of final file edits, verification, staging, and commits.
+- Do not let multiple agents rewrite the same files without a clear merge plan.
+- Report any important subagent disagreement or unresolved risk to the user.
+
+For this repository, subagents are especially useful before finishing large changes to `materials/`, generated HTML pages, shared CSS, navigation, or anything that affects mobile layout.
+
 ## Commit Rules
 
 Every commit message must include an emoji.
@@ -243,15 +282,16 @@ Verification:
 For normal site edits:
 
 1. Inspect the relevant files.
-2. Make the smallest clear change.
-3. Update indexes and README if needed.
-4. Run `npm run check`.
-5. Run `npm run fix` when format or lint failures are related to the current task.
-6. Run a local static server.
-7. Verify desktop and mobile with `agent-browser`.
-8. Check console errors.
-9. Review `git diff`.
-10. Commit only when the user asks.
+2. Use subagents when parallel context, independent review, or specialized verification would improve the result.
+3. Make the smallest clear change.
+4. Update indexes and README if needed.
+5. Run `npm run check`.
+6. Run `npm run fix` when format or lint failures are related to the current task.
+7. Run a local static server.
+8. Verify desktop and mobile with `agent-browser`.
+9. Check console errors.
+10. Review `git diff`.
+11. Commit only when the user asks.
 
 ## Notes For Future Agents
 
