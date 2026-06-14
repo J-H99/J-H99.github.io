@@ -245,24 +245,23 @@ main {
 }
 
 .archive-categories span,
-.archive-item span:not(.archive-date) {
+.archive-item span {
   color: #4f493d;
   font-size: 13px;
   font-weight: 950;
 }
 
 .archive-categories a:nth-child(1) span,
-.archive-item[data-archive-category="notes"] span:not(.archive-date) {
+.archive-item[data-archive-category="notes"] span {
   color: var(--cat-notes-label);
 }
 
 .archive-categories a:nth-child(2) span,
-.archive-item[data-archive-category="deep-dives"] span:not(.archive-date) {
+.archive-item[data-archive-category="deep-dives"] span {
   color: var(--cat-deep-label);
 }
 
-.archive-categories a:nth-child(3) span,
-.archive-item[data-archive-category="build-logs"] span:not(.archive-date) {
+.archive-categories a:nth-child(3) span {
   color: var(--cat-build-label);
 }
 
@@ -326,15 +325,15 @@ main {
 }
 
 .archive-timeline {
+  --archive-axis-offset: 34px;
+
   display: grid;
   grid-template-columns: 180px minmax(0, 1fr);
-  gap: 34px;
+  gap: 0;
 }
 
 .archive-year {
   position: relative;
-  min-height: 560px;
-  border-right: 3px solid var(--archive-border);
   font-size: 0;
 }
 
@@ -356,10 +355,23 @@ main {
 }
 
 .archive-items {
+  position: relative;
   display: grid;
   align-content: start;
   align-items: start;
   gap: 15px;
+  padding-left: var(--archive-axis-offset);
+}
+
+.archive-items::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: var(--archive-border);
+  content: "";
+  transform: translateX(-50%);
 }
 
 .archive-month {
@@ -383,7 +395,7 @@ main {
 .archive-month::before,
 .archive-item::before {
   position: absolute;
-  left: -44.5px;
+  left: calc(var(--archive-axis-offset) * -1);
   top: 50%;
   width: 18px;
   height: 18px;
@@ -391,7 +403,7 @@ main {
   border-radius: 50%;
   background: var(--cat-notes-dot);
   content: "";
-  transform: translateY(-50%);
+  transform: translate(-50%, -50%);
 }
 
 .archive-month span {
@@ -402,14 +414,6 @@ main {
 
 .archive-month strong {
   font-size: 13px;
-}
-
-.archive-month-next {
-  background: var(--cat-build-bg);
-}
-
-.archive-month-next::before {
-  background: var(--cat-build-dot);
 }
 
 .archive-month.is-hidden {
@@ -435,16 +439,11 @@ main {
   background: var(--cat-deep-dot);
 }
 
-.archive-item[data-archive-category="build-logs"]::before {
-  background: var(--cat-build-dot);
-}
-
 .archive-item.is-hidden {
   display: none;
 }
 
-.archive-item time,
-.archive-date {
+.archive-item time {
   display: inline-grid;
   min-height: 62px;
   place-items: center;
@@ -482,10 +481,6 @@ main {
 
 .archive-item-soft {
   background: var(--archive-card-soft);
-}
-
-.archive-item-ghost {
-  background: #f3f0ff;
 }
 
 .intro {
@@ -733,6 +728,27 @@ main {
   gap: 28px;
   align-items: center;
   padding: 22px;
+}
+
+.empty-state {
+  display: grid;
+  gap: 8px;
+  max-width: 720px;
+  margin: 24px 0 72px;
+  padding: 24px 0 0;
+  border-top: 2px solid rgb(43 33 22 / 18%);
+}
+
+.empty-state h2 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.22;
+}
+
+.empty-state p {
+  max-width: 560px;
+  margin: 0;
+  color: var(--muted);
 }
 
 .resource-grid {
@@ -1148,6 +1164,14 @@ main {
     position: static;
   }
 
+  .archive-items {
+    padding-left: 0;
+  }
+
+  .archive-items::before {
+    display: none;
+  }
+
   .archive-month::before,
   .archive-item::before {
     display: none;
@@ -1258,8 +1282,7 @@ main {
     grid-template-columns: 1fr;
   }
 
-  .archive-item time,
-  .archive-date {
+  .archive-item time {
     width: 112px;
   }
 

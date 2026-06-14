@@ -5,13 +5,11 @@
   const filterMonths = Array.from(document.querySelectorAll("[data-archive-month-categories]"));
   const categoryRoutes = {
     "archive-notes": "notes",
-    "archive-deep-dives": "deep-dives",
-    "archive-build-logs": "build-logs"
+    "archive-deep-dives": "deep-dives"
   };
   const routeByCategory = {
     notes: "archive-notes",
-    "deep-dives": "archive-deep-dives",
-    "build-logs": "archive-build-logs"
+    "deep-dives": "archive-deep-dives"
   };
 
   function showArchiveCategory(category, updateHash = false) {
@@ -80,8 +78,6 @@
     ".feature-row",
     ".panel",
     ".archive-feed-head",
-    ".archive-month",
-    ".archive-item",
     ".material-row",
     ".resource",
     ".document-kicker"
