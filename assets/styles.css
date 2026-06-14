@@ -365,12 +365,14 @@ main {
 
 .archive-items::before {
   position: absolute;
+  z-index: 2;
   top: 0;
   bottom: 0;
   left: 0;
   width: 3px;
   background: var(--archive-border);
   content: "";
+  pointer-events: none;
   transform: translateX(-50%);
 }
 
@@ -395,6 +397,7 @@ main {
 .archive-month::before,
 .archive-item::before {
   position: absolute;
+  z-index: 1;
   left: calc(var(--archive-axis-offset) * -1);
   top: 50%;
   width: 18px;
