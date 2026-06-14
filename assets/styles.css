@@ -328,6 +328,7 @@ main {
   --archive-axis-offset: 34px;
   --archive-marker-radius: 12px;
   --archive-marker-size: 24px;
+  --archive-marker-parent-border: 2px;
 
   display: grid;
   grid-template-columns: 180px minmax(0, 1fr);
@@ -398,7 +399,10 @@ main {
 .archive-item::before {
   position: absolute;
   box-sizing: border-box;
-  left: calc((var(--archive-axis-offset) * -1) - var(--archive-marker-radius));
+  left: calc(
+    (var(--archive-axis-offset) * -1) - var(--archive-marker-radius) -
+      var(--archive-marker-parent-border)
+  );
   top: 50%;
   width: var(--archive-marker-size);
   height: var(--archive-marker-size);
