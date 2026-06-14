@@ -226,6 +226,10 @@ main {
   box-shadow: var(--shadow);
 }
 
+.feature-row + .feature-row {
+  margin-top: 12px;
+}
+
 .feature-row:hover,
 .material-row:hover,
 .resource:hover {
