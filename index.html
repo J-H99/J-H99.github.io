@@ -12,91 +12,124 @@
       <a class="brand-link" href="./">Study Archive</a>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="notes/">Notes</a>
-        <a href="materials/">Materials</a>
-        <a href="labs/">Labs</a>
+        <a href="materials/">Deep Dives</a>
+        <a href="labs/">Build Logs</a>
       </nav>
     </header>
 
-    <main>
-      <section class="intro">
-        <div>
-          <h1>공부한 것들을 다시 꺼내보기 쉬운 형태로.</h1>
+    <main class="home-page">
+      <section class="archive-hero">
+        <div class="archive-copy">
+          <p class="section-label">Study Archive</p>
+          <h1>공부가 쌓이는 순서대로, 필요한 만큼 깊게.</h1>
           <p>
-            새 노트, 강연 자료, HTML 실험을 한곳에 모으는, 직접 코드를 작성하지 않고 ChatGPT Pro의
-            Codex 세션을 통해 제작한 개인 GitHub Pages 아카이브입니다.
+            짧은 공부 정리, 깊게 파고든 자료, 직접 만든 것의 회고를 시간순으로 모아두는 개인
+            아카이브입니다.
           </p>
         </div>
-        <dl class="status-list" aria-label="Site status">
-          <div>
-            <dt>Notes</dt>
-            <dd>2026부터 새로 정리</dd>
-          </div>
-          <div>
-            <dt>Materials</dt>
-            <dd>강연 자료 열람</dd>
-          </div>
-          <div>
-            <dt>Labs</dt>
-            <dd>HTML 데모 보관</dd>
-          </div>
-        </dl>
+        <aside class="archive-categories" aria-label="Archive categories">
+          <a href="#archive-notes">
+            <span>Notes</span>
+            <strong>짧은 공부 정리</strong>
+          </a>
+          <a href="#archive-deep-dives">
+            <span>Deep Dives</span>
+            <strong>깊게 파고든 주제</strong>
+          </a>
+          <a href="#archive-build-logs">
+            <span>Build Logs</span>
+            <strong>만들며 배운 기록</strong>
+          </a>
+        </aside>
       </section>
 
-      <section class="section">
-        <div class="section-head">
-          <h2>Featured</h2>
-          <a href="notes/">All notes</a>
+      <section class="archive-feed" id="archive-feed" aria-label="Filtered archive timeline">
+        <div class="archive-feed-head">
+          <div>
+            <h2>Archive Timeline</h2>
+            <p>카테고리를 누르면 같은 타임라인 안에서 필요한 기록만 골라볼 수 있습니다.</p>
+          </div>
+          <div class="archive-filters" role="group" aria-label="Filter archive entries">
+            <button class="is-selected" type="button" data-archive-filter="all" aria-pressed="true">
+              All
+            </button>
+            <button type="button" data-archive-filter="notes" aria-pressed="false">Notes</button>
+            <button type="button" data-archive-filter="deep-dives" aria-pressed="false">
+              Deep Dives
+            </button>
+            <button type="button" data-archive-filter="build-logs" aria-pressed="false">
+              Build Logs
+            </button>
+          </div>
         </div>
-        <article class="feature-row">
-          <div>
-            <p class="meta">Note · subagent flow</p>
-            <h3>LLM 서브에이전트는 멀티스레드인가?</h3>
-            <p>
-              Codex, Claude Code, Gemini CLI가 subagent를 어떻게 관리하고 활용하는지, 멀티스레드와의
-              차이와 충돌 처리 흐름까지 정리한 노트입니다.
-            </p>
-          </div>
-          <div class="actions">
-            <a class="button primary" href="notes/2026/llm-subagents-codex-claude-gemini.html"
-              >Open</a
-            >
-            <a class="button" href="notes/2026/">2026 notes</a>
-          </div>
-        </article>
-        <article class="feature-row">
-          <div>
-            <p class="meta">Lecture · basics to deep dive</p>
-            <h3>Cloud Storage Lecture</h3>
-            <p>
-              클라우드 스토리지의 쉬운 개념 설명에서 시작해 객체 스토리지 모델, AWS S3, Azure Blob
-              Storage, Google Cloud Storage, 보안, 비용, DR까지 이어지는 강연 자료입니다.
-            </p>
-          </div>
-          <div class="actions">
-            <a class="button primary" href="materials/cloud-storage/">Open</a>
-            <a class="button" href="materials/cloud-storage/interactive-tabs.html"
-              >Interactive tabs</a
-            >
-          </div>
-        </article>
-      </section>
 
-      <section class="grid section" aria-label="Archive categories">
-        <a class="panel" href="notes/">
-          <span class="meta">Writing</span>
-          <h2>Notes</h2>
-          <p>읽고 이해한 것을 내 언어로 다시 정리합니다.</p>
-        </a>
-        <a class="panel" href="materials/">
-          <span class="meta">References</span>
-          <h2>Materials</h2>
-          <p>강연, 발표, 공개해도 되는 자료를 묶어 보관합니다.</p>
-        </a>
-        <a class="panel" href="labs/">
-          <span class="meta">HTML</span>
-          <h2>Labs</h2>
-          <p>시각화와 작은 인터랙션을 직접 만들어 모읍니다.</p>
-        </a>
+        <div class="archive-timeline">
+          <div class="archive-year" aria-hidden="true">2026</div>
+          <div class="archive-items">
+            <div
+              class="archive-month"
+              data-archive-month-categories="notes deep-dives"
+              aria-label="2026년 6월"
+            >
+              <span>2026.06</span>
+              <strong>Newest first</strong>
+            </div>
+
+            <article class="archive-item" data-archive-category="notes">
+              <time datetime="2026-06-14">Jun 14</time>
+              <div>
+                <span>Notes</span>
+                <h3>LLM 서브에이전트는 멀티스레드인가?</h3>
+                <p>
+                  개념 비교, CLI별 subagent 관리 방식, 충돌 처리 흐름을 짧고 명확하게 정리합니다.
+                </p>
+              </div>
+              <a href="notes/2026/llm-subagents-codex-claude-gemini.html">Open</a>
+            </article>
+
+            <article class="archive-item" data-archive-category="deep-dives">
+              <time datetime="2026-06-14">Jun 14</time>
+              <div>
+                <span>Deep Dives</span>
+                <h3>Cloud Storage Lecture</h3>
+                <p>
+                  객체 스토리지 모델, S3, Azure Blob, GCS, 보안, 비용, DR까지 길게 파고든
+                  자료입니다.
+                </p>
+              </div>
+              <a href="materials/cloud-storage/">Open</a>
+            </article>
+
+            <article class="archive-item archive-item-soft" data-archive-category="deep-dives">
+              <time datetime="2026-06-14">Jun 14</time>
+              <div>
+                <span>Deep Dives</span>
+                <h3>Cloud Storage Interactive Tabs</h3>
+                <p>깊은 공부 자료를 탭 구조로 다시 훑을 수 있게 만든 인터랙티브 뷰어입니다.</p>
+              </div>
+              <a href="materials/cloud-storage/interactive-tabs.html">Open</a>
+            </article>
+
+            <div
+              class="archive-month archive-month-next"
+              data-archive-month-categories="build-logs"
+              aria-label="예정된 기록"
+            >
+              <span>Soon</span>
+              <strong>Build Logs</strong>
+            </div>
+
+            <article class="archive-item archive-item-ghost" data-archive-category="build-logs">
+              <span class="archive-date">Soon</span>
+              <div>
+                <span>Build Logs</span>
+                <h3>사이드 프로젝트 회고가 들어갈 자리</h3>
+                <p>무엇을 만들었고, 어떤 선택을 했고, 막힌 부분에서 무엇을 배웠는지 기록합니다.</p>
+              </div>
+              <a href="labs/">View</a>
+            </article>
+          </div>
+        </div>
       </section>
     </main>
     <script src="assets/motion.js"></script>

@@ -1,5 +1,73 @@
 (() => {
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const filterButtons = Array.from(document.querySelectorAll("[data-archive-filter]"));
+  const filterItems = Array.from(document.querySelectorAll("[data-archive-category]"));
+  const filterMonths = Array.from(document.querySelectorAll("[data-archive-month-categories]"));
+  const categoryRoutes = {
+    "archive-notes": "notes",
+    "archive-deep-dives": "deep-dives",
+    "archive-build-logs": "build-logs"
+  };
+  const routeByCategory = {
+    notes: "archive-notes",
+    "deep-dives": "archive-deep-dives",
+    "build-logs": "archive-build-logs"
+  };
+
+  function showArchiveCategory(category, updateHash = false) {
+    if (!filterButtons.length) return;
+
+    filterButtons.forEach((button) => {
+      const isSelected = button.dataset.archiveFilter === category;
+      button.classList.toggle("is-selected", isSelected);
+      button.setAttribute("aria-pressed", String(isSelected));
+    });
+
+    filterItems.forEach((item) => {
+      const shouldShow = category === "all" || item.dataset.archiveCategory === category;
+      item.classList.toggle("is-hidden", !shouldShow);
+    });
+
+    filterMonths.forEach((month) => {
+      const categories = (month.dataset.archiveMonthCategories || "").split(/\s+/);
+      const shouldShow = category === "all" || categories.includes(category);
+      month.classList.toggle("is-hidden", !shouldShow);
+    });
+
+    if (updateHash) {
+      const route = category === "all" ? "archive" : routeByCategory[category];
+      history.replaceState(null, "", `#${route || "archive"}`);
+    }
+  }
+
+  function applyArchiveHashRoute() {
+    if (!filterButtons.length) return;
+
+    const hash = window.location.hash.slice(1);
+    const routedCategory = categoryRoutes[hash];
+
+    showArchiveCategory(routedCategory || "all", false);
+
+    if (routedCategory) {
+      window.requestAnimationFrame(() => {
+        const feed = document.querySelector("#archive-feed");
+        if (!feed) return;
+
+        const stickyOffset = 92;
+        const top = feed.getBoundingClientRect().top + window.scrollY - stickyOffset;
+        window.scrollTo({ top });
+      });
+    }
+  }
+
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      showArchiveCategory(button.dataset.archiveFilter, true);
+    });
+  });
+
+  window.addEventListener("hashchange", applyArchiveHashRoute);
+  applyArchiveHashRoute();
 
   if (prefersReduced) {
     document.documentElement.classList.add("motion-off");
@@ -11,6 +79,9 @@
     ".page-title",
     ".feature-row",
     ".panel",
+    ".archive-feed-head",
+    ".archive-month",
+    ".archive-item",
     ".material-row",
     ".resource",
     ".document-kicker"
