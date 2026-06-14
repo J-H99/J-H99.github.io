@@ -8,11 +8,13 @@ const notesPath = path.join(materialDir, "speaker-notes.html");
 const markdownPath = path.join(materialDir, "cloud-storage-lecture-speaker-notes.md");
 
 const categories = [
-  { id: "model", label: "모델과 API", range: "01-08", accent: "#2f6df6" },
-  { id: "aws", label: "AWS S3", range: "09-18", accent: "#f59e0b" },
-  { id: "azure", label: "Azure Blob", range: "19-28", accent: "#2563eb" },
-  { id: "gcp", label: "Google Cloud Storage", range: "29-38", accent: "#22a77a" },
-  { id: "architecture", label: "설계와 운영", range: "39-48", accent: "#7458f4" }
+  { id: "intro", label: "처음 이해하기", range: "01-10", accent: "#2f6df6" },
+  { id: "implementation", label: "웹 서비스 구현", range: "11-16", accent: "#0f9f8f" },
+  { id: "cs", label: "컴공 기본 모델", range: "17-24", accent: "#7458f4" },
+  { id: "aws", label: "AWS S3", range: "25-34", accent: "#f59e0b" },
+  { id: "azure", label: "Azure Blob", range: "35-44", accent: "#2563eb" },
+  { id: "gcp", label: "Google Cloud Storage", range: "45-54", accent: "#22a77a" },
+  { id: "ops", label: "운영 심화", range: "55-64", accent: "#dc5f45" }
 ];
 
 const sourceLinks = {
@@ -67,7 +69,201 @@ function slide(no, cat, title, claim, points, field, visual, source, links = [])
   return { no, cat, minutes: 5, title, claim, points, field, visual, source, links };
 }
 
-const slides = [
+const introSlides = [
+  slide(1, "intro", "클라우드 스토리지는 인터넷 너머의 개인 창고처럼 시작한다",
+    "처음에는 '내 컴퓨터 밖에 파일을 안전하게 맡기는 서비스'로 이해하면 됩니다.",
+    [
+      "휴대폰 사진을 Google Drive나 iCloud에 올리면 내 기기가 꺼져도 다른 기기에서 다시 볼 수 있습니다.",
+      "중요한 차이는 파일이 한 서버의 폴더에만 놓이는 것이 아니라, 제공자의 데이터센터 안에서 여러 장치와 정책으로 관리된다는 점입니다.",
+      "사용자는 업로드, 다운로드, 공유, 삭제라는 쉬운 동작으로 보지만 개발자는 인증, 주소, 복제, 비용, 감사 로그까지 함께 설계합니다."
+    ],
+    "입문 설명은 '인터넷 폴더'에서 시작해도 됩니다. 다만 컴공 관점에서는 그 폴더가 실제 폴더가 아니라 API, 권한, 내구성, 과금 모델을 가진 분산 저장 시스템이라는 데서 공부가 시작됩니다.",
+    flow("User view", [["Upload", "내 기기에서 보냄"], ["Store", "클라우드가 보관"], ["Access", "다른 기기와 앱에서 읽음"], ["Delete", "필요 없을 때 정리"]]),
+    "AWS S3 User Guide; Azure Blob Storage introduction; Google Cloud Storage overview",
+    ["aws", "azureIntro", "gcsIntro"]),
+
+  slide(2, "intro", "왜 그냥 서버 하드디스크에 저장하지 않을까",
+    "서비스가 커지면 디스크 하나의 용량, 장애, 백업, 권한 관리가 곧 한계가 됩니다.",
+    [
+      "서버 한 대에 이미지를 저장하면 서버 교체, 디스크 고장, 배포 중 삭제 실수, 트래픽 폭증을 모두 직접 책임져야 합니다.",
+      "클라우드 스토리지는 저장 기능을 애플리케이션 서버 밖으로 빼서 용량 확장과 내구성, 접근 제어를 전용 서비스에 맡깁니다.",
+      "서버는 파일 바이트를 오래 들고 있기보다 파일의 주소와 상태를 DB에 저장하고, 실제 바이트는 객체 스토리지에 둡니다."
+    ],
+    "웹 개발에서 가장 흔한 전환은 'uploads 폴더에 저장'에서 'object storage에 저장하고 DB에는 key를 저장'으로 넘어가는 것입니다. 이 한 걸음이 배포, 스케일아웃, 백업 설계를 바꿉니다.",
+    table("Local disk vs cloud storage", ["구분", "서버 디스크", "클라우드 스토리지"], [["확장", "서버 용량에 묶임", "서비스 단위 확장"], ["장애", "직접 복구", "복제와 내구성 활용"], ["배포", "파일 유실 위험", "앱과 데이터 분리"], ["권한", "앱에서 구현", "정책과 토큰 사용"]]),
+    "Provider object storage overview docs",
+    ["aws", "azureIntro", "gcsIntro"]),
+
+  slide(3, "intro", "업로드는 파일을 보내는 동작이 아니라 신뢰 경계를 넘기는 동작이다",
+    "사용자가 준 파일은 크기, 형식, 악성 여부, 소유자를 확인해야 저장할 수 있습니다.",
+    [
+      "사진 하나를 올려도 파일명, MIME type, 확장자, 크기 제한, 바이러스 검사, 이미지 변환 같은 검증이 따라옵니다.",
+      "클라이언트가 직접 스토리지에 올리게 할 때는 presigned URL이나 SAS처럼 제한된 시간의 권한 위임을 씁니다.",
+      "업로드 성공 이후에도 DB 상태, 썸네일 생성, 공개 가능 여부를 별도 상태로 관리해야 합니다."
+    ],
+    "초보자에게는 '파일을 올린다'지만, 시스템에게는 '신뢰할 수 없는 입력을 받아 저장소와 DB 상태를 일치시키는 트랜잭션 비슷한 흐름'입니다.",
+    flow("Upload path", [["Browser", "file 선택"], ["App API", "권한 확인"], ["Storage", "bytes 저장"], ["Worker", "검사와 변환"], ["DB", "상태 확정"]]),
+    "AWS S3 User Guide; Azure Blob Storage introduction; Google Cloud Storage overview",
+    ["aws", "azureIntro", "gcsIntro"]),
+
+  slide(4, "intro", "다운로드와 공유는 링크 하나처럼 보이지만 권한 계약이다",
+    "누가, 언제까지, 어떤 파일을, 어떤 네트워크 경로로 읽을 수 있는지를 명시해야 합니다.",
+    [
+      "공개 파일은 CDN과 캐시 헤더를 통해 빠르게 전달할 수 있지만, 실수로 민감 데이터가 공개되면 사고가 됩니다.",
+      "비공개 파일은 앱 인증을 거친 뒤 짧은 만료 시간을 가진 signed URL로 내려주는 방식이 흔합니다.",
+      "공유 링크는 편리하지만 만료, 철회, 다운로드 횟수, 감사 로그가 없으면 운영상 위험해집니다."
+    ],
+    "스토리지의 읽기 권한을 영구 public으로 열지 않고, 애플리케이션의 권한 판단 결과를 짧은 URL 권한으로 변환하는 것이 안전한 기본 패턴입니다.",
+    kv("Access questions", [["Who", "사용자, 서비스 계정, 외부 공유자"], ["What", "객체 key와 version"], ["How long", "만료 시간"], ["From where", "CDN, VPC, public internet"], ["Audit", "누가 읽었는가"]]),
+    "Provider security and signed access docs",
+    ["aws", "azureSecurity", "gcsIntro"]),
+
+  slide(5, "intro", "클라우드 스토리지에서 폴더는 대부분 진짜 폴더가 아니다",
+    "객체 스토리지는 경로처럼 보이는 문자열 key를 prefix로 묶어 폴더처럼 보여줍니다.",
+    [
+      "photos/2026/cat.jpg는 디렉터리 트리라기보다 slash가 들어간 하나의 객체 이름입니다.",
+      "폴더 이동이나 이름 변경은 많은 객체 key를 새 이름으로 복사하고 이전 것을 지우는 작업이 될 수 있습니다.",
+      "그래서 대량 rename, list, delete는 파일 시스템보다 비싸고 느릴 수 있으며 별도 배치 작업으로 다뤄야 합니다."
+    ],
+    "이 차이를 알아야 객체 스토리지에 POSIX 파일 시스템의 rename, append, lock 의미를 기대하지 않습니다. 폴더처럼 보이는 UI와 내부 API 모델을 분리해서 이해해야 합니다.",
+    cards("Folder illusion", [["UI", "폴더처럼 표시"], ["API", "bucket + key 문자열"], ["Prefix", "목록 조회 기준"], ["Rename", "복사와 삭제로 구현될 수 있음"]]),
+    "AWS S3 User Guide; Google Cloud Storage overview",
+    ["aws", "gcsIntro"]),
+
+  slide(6, "intro", "클라우드 스토리지의 네 가지 기본 동사는 upload, store, access, delete다",
+    "쉬운 흐름을 먼저 잡으면 뒤의 lifecycle, 권한, 비용 개념이 자연스럽게 붙습니다.",
+    [
+      "upload는 누가 어떤 파일을 올릴 수 있는지와 실패했을 때 어떻게 재시도할지를 다룹니다.",
+      "store는 어디에 어떤 이름으로 얼마나 오래 둘지, 어떤 계층과 복제로 보관할지를 다룹니다.",
+      "access와 delete는 읽기 권한, 공유, 감사, 개인정보 삭제, 보존 의무가 충돌하는 지점입니다."
+    ],
+    "초심자용 네 단어를 버리지 말고 끝까지 가져갑니다. 고급 설계도 결국 upload를 안전하게 받고, store를 싸고 튼튼하게 하고, access를 통제하고, delete를 증명하는 문제입니다.",
+    matrix("Four verbs", [["Upload", "입력 검증과 권한 위임"], ["Store", "key, metadata, class"], ["Access", "인증, CDN, signed URL"], ["Delete", "retention, version, privacy"]]),
+    "Provider object storage overview docs",
+    ["aws", "azureIntro", "gcsIntro"]),
+
+  slide(7, "intro", "컴공 학생이 알아야 할 첫 질문은 '파일이 어디 있나'가 아니다",
+    "더 중요한 질문은 주소, 소유권, 실패, 비용, 삭제 기준입니다.",
+    [
+      "주소는 bucket과 key, URL, CDN path, DB row가 서로 어떻게 대응되는지를 뜻합니다.",
+      "소유권은 사용자 계정, 서비스 계정, 조직 계정, 암호화 키, 감사 로그의 책임 경계를 뜻합니다.",
+      "실패와 비용은 네트워크 중단, 재시도, 중복 저장, 조회 폭증, 인터넷 송신 비용까지 포함합니다."
+    ],
+    "단순한 사진 업로드 과제라도 이 질문을 넣으면 전공 수준의 설계 문제가 됩니다. 스토리지는 자료구조, 운영체제, 네트워크, 보안, 분산 시스템이 만나는 지점입니다.",
+    kv("CS questions", [["Address", "어떤 key와 URL인가"], ["Ownership", "누가 책임지는가"], ["Failure", "무엇이 깨질 수 있는가"], ["Cost", "무엇에 돈이 드는가"], ["Deletion", "정말 지워졌는가"]]),
+    "AWS, Azure, and Google Cloud official storage docs",
+    ["aws", "azureIntro", "gcsIntro"]),
+
+  slide(8, "intro", "세 클라우드의 이름은 달라도 큰 구조는 비슷하다",
+    "AWS S3, Azure Blob Storage, Google Cloud Storage는 모두 객체를 bucket/container에 넣는 모델입니다.",
+    [
+      "AWS는 S3 bucket과 object, IAM과 bucket policy를 중심으로 설명합니다.",
+      "Azure는 storage account 안의 container와 blob, Entra ID/RBAC/SAS를 중심으로 설명합니다.",
+      "Google Cloud는 project 안의 bucket과 object, IAM과 uniform bucket-level access를 중심으로 설명합니다."
+    ],
+    "초반에는 이름 차이에 겁먹지 않아도 됩니다. 모두 '큰 저장 공간, 객체 이름, 바이트, 메타데이터, 권한 정책'을 가진 서비스이고, 뒤로 갈수록 계정 경계와 통합 방식이 달라집니다.",
+    table("Provider vocabulary", ["개념", "AWS", "Azure", "Google"], [["큰 경계", "Account/Bucket", "Storage Account/Container", "Project/Bucket"], ["데이터", "Object", "Blob", "Object"], ["권한", "IAM/Policy", "RBAC/SAS", "IAM/UBLA"], ["이벤트", "SQS/Lambda", "Event Grid", "Pub/Sub"]]),
+    "AWS S3 User Guide; Azure Blob Storage introduction; Google Cloud Storage overview",
+    ["aws", "azureIntro", "gcsIntro"]),
+
+  slide(9, "intro", "저장소를 고를 때는 파일 종류와 읽기 패턴부터 본다",
+    "사진, 동영상, 로그, 백업, 데이터셋은 모두 같은 저장소에 둘 수 있지만 설계 기준은 다릅니다.",
+    [
+      "프로필 이미지는 작고 자주 읽히므로 CDN, cache header, 이미지 리사이징이 중요합니다.",
+      "로그와 분석 데이터는 날짜별 partition, 압축 포맷, catalog, 보관 기간이 중요합니다.",
+      "백업은 자주 읽지 않지만 복구 가능성, 불변성, 별도 계정 보관, 복구 훈련이 중요합니다."
+    ],
+    "클라우드 스토리지는 만능 폴더가 아니라 여러 데이터 제품의 원천 저장소입니다. 같은 bucket 안에서도 object type별로 key, class, lifecycle, 권한을 다르게 가져가야 합니다.",
+    cards("Workloads", [["Images", "CDN + derivatives"], ["Video", "large upload + streaming"], ["Logs", "partition + retention"], ["Backup", "immutability + restore"], ["Dataset", "catalog + query"]]),
+    "Official provider storage class and lifecycle docs",
+    ["awsClasses", "azureTiers", "gcsClasses"]),
+
+  slide(10, "intro", "쉬운 이해에서 어려운 설계로 넘어가는 다리",
+    "클라우드 스토리지는 원격 폴더처럼 쓰기 시작하지만, 실제 운영에서는 분산 시스템으로 다뤄야 합니다.",
+    [
+      "사용자 관점의 질문은 '파일을 올리고 다시 받을 수 있나'입니다.",
+      "개발자 관점의 질문은 '권한, key, DB 상태, 이벤트 처리, 캐시, 비용, 삭제가 일관되나'입니다.",
+      "전공자 관점의 질문은 '일관성, 내구성, 가용성, 장애 격리, 데이터 수명주기를 어떻게 모델링하나'입니다."
+    ],
+    "이후 내용은 쉬운 네 동작을 버리지 않고 깊게 들어갑니다. upload는 대용량 세션과 checksum으로, store는 계층과 복제로, access는 IAM과 CDN으로, delete는 versioning과 retention으로 확장됩니다.",
+    flow("Learning ladder", [["User", "올리고 받는다"], ["Developer", "API와 DB 상태를 맞춘다"], ["CS", "분산 시스템 속성을 본다"], ["Operator", "비용, 보안, 복구를 운영한다"]]),
+    "Provider object storage overview docs",
+    ["aws", "azureIntro", "gcsIntro"]),
+
+  slide(11, "implementation", "웹 서비스에서 파일은 DB row와 객체 key가 함께 움직인다",
+    "객체 스토리지에는 바이트를 두고, 데이터베이스에는 소유자와 상태와 key를 둡니다.",
+    [
+      "DB에는 user_id, object_key, content_type, size, status, checksum, created_at 같은 검색 가능한 정보를 저장합니다.",
+      "스토리지 객체에는 실제 바이트와 Content-Type, Cache-Control, tag, custom metadata를 저장합니다.",
+      "DB commit과 object upload는 완전한 단일 트랜잭션이 아니므로 pending, uploaded, verified, deleted 같은 상태 머신이 필요합니다."
+    ],
+    "입문자가 자주 놓치는 부분은 '파일을 저장했다'와 '서비스가 그 파일을 사용할 수 있다'가 다르다는 점입니다. DB 상태와 객체 존재 여부가 어긋나는 경우를 복구할 수 있어야 합니다.",
+    flow("App storage state", [["DB", "pending row"], ["Storage", "object upload"], ["Worker", "verify/scan"], ["DB", "ready row"], ["Cleanup", "orphan delete"]]),
+    "Provider object storage overview docs",
+    ["aws", "azureIntro", "gcsIntro"]),
+
+  slide(12, "implementation", "직접 업로드는 서버 부하를 줄이지만 권한 설계가 더 중요해진다",
+    "브라우저가 스토리지로 바로 보내면 앱 서버는 바이트 중계 대신 제한된 업로드 권한을 발급합니다.",
+    [
+      "앱 서버는 사용자를 인증하고 업로드 가능한 key, 크기, 만료 시간, content type 조건을 정합니다.",
+      "클라이언트는 받은 presigned URL, SAS, signed policy를 사용해 스토리지에 직접 PUT/POST합니다.",
+      "업로드 완료 후 서버는 callback, polling, event, head object로 실제 객체 존재와 metadata를 검증합니다."
+    ],
+    "직접 업로드는 트래픽 비용과 서버 메모리를 크게 줄이지만, 권한 범위를 잘못 열면 사용자가 임의 key에 파일을 올릴 수 있습니다. 조건이 좁고 만료가 짧아야 합니다.",
+    table("Direct upload", ["단계", "역할", "주의점"], [["Sign", "앱 서버", "key/size/type 제한"], ["Upload", "브라우저", "만료 전 전송"], ["Verify", "서버/worker", "size/checksum 검사"], ["Publish", "앱", "ready 상태 전환"]]),
+    "Provider signed access and object storage docs",
+    ["aws", "azureSecurity", "gcsIntro"]),
+
+  slide(13, "implementation", "업로드 후처리는 이벤트 기반 파이프라인으로 생각한다",
+    "저장된 객체는 썸네일, 변환, 검사, 인덱싱, 알림의 입력이 됩니다.",
+    [
+      "스토리지 이벤트는 새 객체 생성을 Lambda, Functions, Cloud Functions, queue, Pub/Sub 같은 후속 처리로 연결합니다.",
+      "이미지 서비스는 원본 저장 뒤 리사이징, EXIF 제거, 유해 이미지 검사, CDN 경로 생성을 수행할 수 있습니다.",
+      "이벤트는 중복되거나 순서가 바뀔 수 있으므로 idempotency key와 객체 상태 확인이 필요합니다."
+    ],
+    "이벤트를 '정확히 한 번 실행되는 함수 호출'처럼 믿으면 위험합니다. 객체 스토리지 후처리는 적어도 한 번 처리, 중복 처리, 실패 재시도, dead-letter queue를 전제로 설계합니다.",
+    flow("Object pipeline", [["ObjectCreated", "event"], ["Queue", "buffer/retry"], ["Worker", "scan/transform"], ["DB", "status update"], ["CDN", "serve derivative"]]),
+    "AWS S3 Event Notifications; Azure Event Grid; GCS Pub/Sub notifications",
+    ["aws", "azureIntro", "gcsPubSub"]),
+
+  slide(14, "implementation", "정적 파일 배포는 스토리지와 CDN의 역할 분담이다",
+    "스토리지는 원본을 안정적으로 보관하고 CDN은 사용자 가까이에서 빠르게 전달합니다.",
+    [
+      "HTML, CSS, JS, 이미지처럼 공개 가능한 파일은 CDN cache hit ratio가 사용자 경험을 좌우합니다.",
+      "파일 이름에 hash를 넣으면 오래 캐시해도 새 배포가 안전하고, 같은 key 덮어쓰기로 인한 stale cache를 줄일 수 있습니다.",
+      "민감 파일은 CDN에 올리더라도 signed cookie, signed URL, origin access control 같은 보호 경계를 둬야 합니다."
+    ],
+    "GitHub Pages 같은 정적 사이트도 넓게 보면 object storage와 CDN의 조합입니다. 원본 파일, 캐시 정책, invalidation이 배포 품질을 만듭니다.",
+    kv("Static delivery", [["Origin", "객체 스토리지"], ["Edge", "CDN cache"], ["Versioning", "hash filename"], ["Headers", "Cache-Control"], ["Invalidation", "덮어쓰기 처리"]]),
+    "Provider object storage and CDN integration docs",
+    ["aws", "azureIntro", "gcsIntro"]),
+
+  slide(15, "implementation", "삭제는 remove 버튼이 아니라 수명주기 정책이다",
+    "사용자 삭제, 개인정보 삭제, 보존 의무, 백업 복구 가능성이 서로 충돌합니다.",
+    [
+      "버전 관리가 켜져 있으면 현재 객체 삭제가 실제 바이트 삭제가 아니라 delete marker 추가일 수 있습니다.",
+      "법적 보존이나 규정 준수 retention이 있으면 사용자 요청과 별개로 일정 기간 삭제가 제한될 수 있습니다.",
+      "반대로 개인정보는 정해진 기간 뒤 확실히 제거해야 하므로 DB row, object version, derivative, backup 범위를 추적해야 합니다."
+    ],
+    "삭제 설계는 고급 주제가 아니라 초반부터 필요합니다. '언제 지울 것인가'를 모르면 비용은 계속 늘고, '정말 지웠는가'를 모르면 개인정보 리스크가 남습니다.",
+    timeline("Deletion path", [["Request", "사용자 삭제"], ["Soft delete", "복구 가능 기간"], ["Lifecycle", "만료 정책"], ["Audit", "삭제 증적"], ["Backup", "복구 범위 확인"]]),
+    "Provider lifecycle, versioning, and retention docs",
+    ["awsLifecycle", "azureSecurity", "gcsVersioning"]),
+
+  slide(16, "implementation", "이제 객체 스토리지를 분산 시스템으로 읽을 준비가 됐다",
+    "쉬운 동작을 실제 시스템 속성으로 번역하면 뒤의 심화 내용이 연결됩니다.",
+    [
+      "upload는 네트워크 실패와 재시도, multipart, checksum, idempotency 문제로 확장됩니다.",
+      "store는 replication, storage class, lifecycle, metadata, versioning 문제로 확장됩니다.",
+      "access와 delete는 IAM, signed URL, CDN, audit, retention, object lock 문제로 확장됩니다."
+    ],
+    "이 지점부터는 용어가 어려워져도 기준은 같습니다. 사용자의 쉬운 흐름을 깨지 않으면서 분산 저장소의 실패와 비용과 보안 조건을 명시적으로 처리하는 것이 목표입니다.",
+    matrix("Bridge to deep dive", [["Upload", "multipart, checksum"], ["Store", "durability, class"], ["Access", "IAM, CDN, signed URL"], ["Delete", "version, retention"], ["Operate", "metrics, cost, DR"]]),
+    "AWS, Azure, and Google Cloud official storage docs",
+    ["aws", "azureIntro", "gcsIntro"])
+];
+
+const deepSlidesBase = [
   slide(1, "model", "클라우드 스토리지는 파일 저장소가 아니라 분산 객체 시스템이다",
     "대규모 저장, HTTP API, 권한 정책, 수명주기 자동화가 한 서비스 표면에 묶입니다.",
     [
@@ -645,6 +841,20 @@ const slides = [
     ["aws", "azureArchitecture", "gcsIntro"])
 ];
 
+const deepCategoryMap = {
+  model: "cs",
+  architecture: "ops"
+};
+
+const slides = [
+  ...introSlides,
+  ...deepSlidesBase.map((item) => ({
+    ...item,
+    no: item.no + introSlides.length,
+    cat: deepCategoryMap[item.cat] ?? item.cat
+  }))
+];
+
 const totalMinutes = slides.reduce((sum, item) => sum + item.minutes, 0);
 
 function replaceBetween(source, startNeedle, endNeedle, replacement) {
@@ -686,17 +896,18 @@ function writeInteractive() {
   html = replaceBetween(html, "    const categories = [", "    const categoryById", dataBlock);
   html = html
     .replace(/const categoryById\s+const categoryById =/, "const categoryById =")
-    .replace("<title>클라우드 스토리지 2시간 강연</title>", "<title>클라우드 스토리지 심화 강연</title>")
-    .replace("<h1>클라우드 스토리지</h1>", "<h1>클라우드 스토리지 심화</h1>")
+    .replace(/<title>클라우드 스토리지[^<]*<\/title>/, "<title>클라우드 스토리지 입문부터 심화까지</title>")
+    .replace(/<h1>클라우드 스토리지(?: 심화)?<\/h1>/, "<h1>클라우드 스토리지</h1>")
     .replace(
-      /<p>2시간 입문 강연용 HTML 자료\.[\s\S]*?<\/p>/,
-      "<p>AWS S3, Azure Blob Storage, Google Cloud Storage를 나눠 보는 컴퓨터공학 전공자용 심화 강연 자료입니다.</p>"
+      /<p>(?:2시간 입문 강연용 HTML 자료\.|AWS S3, Azure Blob Storage, Google Cloud Storage를 나눠 보는 컴퓨터공학 전공자용 심화 강연 자료입니다\.|처음 듣는 사람도 이해하는[\s\S]*?강연 자료입니다\.)<\/p>/,
+      "<p>처음 듣는 사람도 이해하는 쉬운 설명에서 시작해 컴공 전공자가 알아야 할 객체 스토리지 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 운영 심화까지 이어지는 강연 자료입니다.</p>"
     )
     .replace(/slide\.no === 1 \|\| slide\.no === 30/g, "slide.no === 1 || slide.no === slides.length")
     .replace(/slideCount\.textContent = `\$\{String\(slide\.no\)\.padStart\(2, "0"\)\} \/ 30`;/, 'slideCount.textContent = `${String(slide.no).padStart(2, "0")} / ${slides.length}`;')
     .replace(/progressLabel\.textContent = `\$\{String\(slide\.no\)\.padStart\(2, "0"\)\} \/ 30`;/, 'progressLabel.textContent = `${String(slide.no).padStart(2, "0")} / ${slides.length}`;')
     .replace('<div class="section-title">Lecture points</div>', '<div class="section-title">핵심 내용</div>')
-    .replace('<div class="field-note">${escapeHtml(slide.field)}</div>', '<div class="field-note"><span class="field-label">심화 해설</span>${escapeHtml(slide.field)}</div>');
+    .replace('<div class="field-note">${escapeHtml(slide.field)}</div>', '<div class="field-note"><span class="field-label">상세 해설</span>${escapeHtml(slide.field)}</div>')
+    .replace(/<span class="field-label">심화 해설<\/span>/g, '<span class="field-label">상세 해설</span>');
 
   fs.writeFileSync(interactivePath, html);
 }
@@ -704,9 +915,9 @@ function writeInteractive() {
 function writeNotes() {
   const categoryById = Object.fromEntries(categories.map((cat) => [cat.id, cat]));
   const md = [
-    "# 클라우드 스토리지 심화 강연 노트",
+    "# 클라우드 스토리지 입문부터 심화까지 강연 노트",
     "",
-    "대상: 컴퓨터공학 전공 학생. 객체 스토리지의 기본 모델에서 시작해 AWS S3, Azure Blob Storage, Google Cloud Storage의 설계 차이와 운영 포인트까지 다룬다.",
+    "대상: 클라우드 스토리지를 처음 듣는 사람부터 컴퓨터공학 전공 학생까지. 쉬운 파일 생애주기 설명에서 시작해 객체 스토리지의 시스템 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 운영 심화까지 이어진다.",
     "",
     `구성: ${slides.length}개 탭, 총 ${totalMinutes}분 기준. 각 탭은 강연에서 그대로 읽고 확장 설명할 수 있는 내용 중심으로 작성했다.`,
     "",
@@ -725,7 +936,7 @@ function writeNotes() {
       "",
       ...item.points.map((point) => `- ${point}`),
       "",
-      `심화 해설: ${item.field}`,
+      `상세 해설: ${item.field}`,
       "",
       `출처/근거: ${item.source}`,
       ""
@@ -744,7 +955,7 @@ function writeNotes() {
           <h3>${String(item.no).padStart(2, "0")}. ${escapeHtml(item.title)}</h3>
           <p><strong>핵심 메시지:</strong> ${escapeHtml(item.claim)}</p>
           <ul>${item.points.map((point) => `<li>${escapeHtml(point)}</li>`).join("")}</ul>
-          <p><strong>심화 해설:</strong> ${escapeHtml(item.field)}</p>
+          <p><strong>상세 해설:</strong> ${escapeHtml(item.field)}</p>
           <p><strong>출처/근거:</strong> ${escapeHtml(item.source)}</p>
         </section>`;
   }).join("\n");
@@ -755,7 +966,7 @@ function writeNotes() {
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Cloud Storage Deep Dive Notes</title>
+    <title>Cloud Storage Basics to Deep Dive Notes</title>
     <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../../assets/styles.css">
   </head>
@@ -769,11 +980,11 @@ function writeNotes() {
       </nav>
     </header>
     <main class="document-page">
-      <div class="document-kicker">Cloud Storage Deep Dive</div>
+      <div class="document-kicker">Cloud Storage Basics to Deep Dive</div>
       <article class="document">
-        <h1>클라우드 스토리지 심화 강연 노트</h1>
-        <p>컴퓨터공학 전공 학생을 대상으로 객체 스토리지의 시스템 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 운영 설계까지 이어지는 강연 노트입니다.</p>
-        <p>구성: ${slides.length}개 탭, 총 ${totalMinutes}분 기준. 각 항목은 강연 중 그대로 사용할 수 있는 기술 내용으로 작성했습니다.</p>
+        <h1>클라우드 스토리지 입문부터 심화까지 강연 노트</h1>
+        <p>클라우드 스토리지를 처음 듣는 사람도 이해할 수 있는 쉬운 설명에서 시작해 컴퓨터공학 전공자가 알아야 할 객체 스토리지 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 운영 설계까지 이어지는 강연 노트입니다.</p>
+        <p>구성: ${slides.length}개 탭, 총 ${totalMinutes}분 기준. 각 항목은 강연 중 그대로 사용할 수 있는 내용 중심으로 작성했습니다.</p>
         <h2>전체 흐름</h2>
         <ul>${categories.map((cat) => `<li>${escapeHtml(cat.range)}: ${escapeHtml(cat.label)}</li>`).join("")}</ul>
         <h2>목차</h2>
@@ -804,25 +1015,25 @@ function replaceInFile(file, replacements) {
 
 function updateIndexes() {
   replaceInFile("materials/cloud-storage/index.html", [
-    [/클라우드 스토리지를 원격 폴더가 아니라 데이터 플랫폼의 핵심 컴포넌트로 이해하기 위한 2시간 강연 묶음입니다\./, "클라우드 스토리지를 분산 객체 시스템과 데이터 플랫폼 관점에서 이해하기 위한 심화 강연 묶음입니다."],
-    [/30개 강연 탭을 브라우저에서 바로 봅니다\./, `${slides.length}개 심화 강연 탭을 브라우저에서 바로 봅니다.`],
-    [/슬라이드별 진행 노트와 공식 문서 링크입니다\./, "슬라이드별 심화 해설과 공식 문서 링크입니다."],
+    [/(?:클라우드 스토리지를 원격 폴더가 아니라 데이터 플랫폼의 핵심 컴포넌트로 이해하기 위한 2시간 강연 묶음입니다\.|클라우드 스토리지를 분산 객체 시스템과 데이터 플랫폼 관점에서 이해하기 위한 심화 강연 묶음입니다\.)/, "클라우드 스토리지를 처음 듣는 사람도 따라올 수 있는 쉬운 설명에서 시작해 객체 스토리지 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 운영 심화까지 이어지는 강연 묶음입니다."],
+    [/(?:30개 강연 탭|48개 심화 강연 탭|\d+개 입문\+심화 강연 탭)을 브라우저에서 바로 봅니다\./, `${slides.length}개 입문+심화 강연 탭을 브라우저에서 바로 봅니다.`],
+    [/(?:슬라이드별 진행 노트와 공식 문서 링크입니다\.|슬라이드별 심화 해설과 공식 문서 링크입니다\.)/, "슬라이드별 상세 해설과 공식 문서 링크입니다."],
     [/PPTX 원본 파일을 다운로드합니다\./, "초기 PPTX 초안 파일을 다운로드합니다."],
-    [/발표자 노트의 원본 Markdown 파일입니다\./, "심화 강연 노트의 원본 Markdown 파일입니다."]
+    [/(?:발표자 노트의 원본 Markdown 파일입니다\.|심화 강연 노트의 원본 Markdown 파일입니다\.)/, "입문+심화 강연 노트의 원본 Markdown 파일입니다."]
   ]);
 
   replaceInFile("materials/index.html", [
-    [/컴퓨터공학 전공자 대상 2시간 강연 자료입니다\. 인터랙티브 탭, 발표자 노트, PPTX를 함께 보관합니다\./, `컴퓨터공학 전공자 대상 클라우드 스토리지 심화 강연 자료입니다. ${slides.length}개 인터랙티브 탭과 심화 노트를 함께 보관합니다.`]
+    [/(?:컴퓨터공학 전공자 대상 2시간 강연 자료입니다\. 인터랙티브 탭, 발표자 노트, PPTX를 함께 보관합니다\.|컴퓨터공학 전공자 대상 클라우드 스토리지 심화 강연 자료입니다\. \d+개 인터랙티브 탭과 심화 노트를 함께 보관합니다\.)/, `처음 듣는 사람을 위한 쉬운 설명부터 컴퓨터공학 전공자용 심화까지 담은 클라우드 스토리지 강연 자료입니다. ${slides.length}개 인터랙티브 탭과 강연 노트를 함께 보관합니다.`]
   ]);
 
   replaceInFile("index.html", [
-    [/Lecture · 2 hours/, "Lecture · deep dive"],
-    [/객체 스토리지, lifecycle, 보안, CDN, 비용, 백업과 복제까지 이어지는 컴퓨터공학 전공자 대상 강연 자료입니다\./, "객체 스토리지 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 보안, 비용, DR까지 이어지는 컴퓨터공학 전공자 대상 심화 강연 자료입니다."]
+    [/Lecture · (?:2 hours|deep dive|basics to deep dive)/, "Lecture · basics to deep dive"],
+    [/(?:객체 스토리지, lifecycle, 보안, CDN, 비용, 백업과 복제까지 이어지는 컴퓨터공학 전공자 대상 강연 자료입니다\.|객체 스토리지 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 보안, 비용, DR까지 이어지는 컴퓨터공학 전공자 대상 심화 강연 자료입니다\.)/, "클라우드 스토리지의 쉬운 개념 설명에서 시작해 객체 스토리지 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 보안, 비용, DR까지 이어지는 강연 자료입니다."]
   ]);
 
   replaceInFile("README.md", [
-    [/- `interactive-tabs\.html`(?: \(48개 심화 탭\))*/, "- `interactive-tabs.html` (48개 심화 탭)"],
-    [/- `speaker-notes\.html`(?: \(심화 강연 노트\))*/, "- `speaker-notes.html` (심화 강연 노트)"]
+    [/- `interactive-tabs\.html`(?: \([^)]*\))*/, `- \`interactive-tabs.html\` (${slides.length}개 입문+심화 탭)`],
+    [/- `speaker-notes\.html`(?: \([^)]*\))*/, "- `speaker-notes.html` (입문+심화 강연 노트)"]
   ]);
 }
 

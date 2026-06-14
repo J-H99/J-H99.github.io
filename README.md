@@ -12,8 +12,8 @@ GitHub Pages로 올릴 개인 공부 아카이브입니다. 사이트 코드는 
 
 `materials/cloud-storage/`에 다음 자료를 넣었습니다.
 
-- `interactive-tabs.html` (48개 심화 탭)
-- `speaker-notes.html` (심화 강연 노트)
+- `interactive-tabs.html` (64개 입문+심화 탭)
+- `speaker-notes.html` (입문+심화 강연 노트)
 - `cloud-storage-lecture-speaker-notes.md`
 
 ## GitHub Pages

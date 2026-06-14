@@ -1,22 +1,248 @@
-# 클라우드 스토리지 심화 강연 노트
+# 클라우드 스토리지 입문부터 심화까지 강연 노트
 
-대상: 컴퓨터공학 전공 학생. 객체 스토리지의 기본 모델에서 시작해 AWS S3, Azure Blob Storage, Google Cloud Storage의 설계 차이와 운영 포인트까지 다룬다.
+대상: 클라우드 스토리지를 처음 듣는 사람부터 컴퓨터공학 전공 학생까지. 쉬운 파일 생애주기 설명에서 시작해 객체 스토리지의 시스템 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 운영 심화까지 이어진다.
 
-구성: 48개 탭, 총 240분 기준. 각 탭은 강연에서 그대로 읽고 확장 설명할 수 있는 내용 중심으로 작성했다.
+구성: 64개 탭, 총 320분 기준. 각 탭은 강연에서 그대로 읽고 확장 설명할 수 있는 내용 중심으로 작성했다.
 
 ## 전체 흐름
 
-- 01-08: 모델과 API
-- 09-18: AWS S3
-- 19-28: Azure Blob
-- 29-38: Google Cloud Storage
-- 39-48: 설계와 운영
+- 01-10: 처음 이해하기
+- 11-16: 웹 서비스 구현
+- 17-24: 컴공 기본 모델
+- 25-34: AWS S3
+- 35-44: Azure Blob
+- 45-54: Google Cloud Storage
+- 55-64: 운영 심화
 
 ## 슬라이드별 노트
 
-### 01. 클라우드 스토리지는 파일 저장소가 아니라 분산 객체 시스템이다 (5분)
+### 01. 클라우드 스토리지는 인터넷 너머의 개인 창고처럼 시작한다 (5분)
 
-분류: 모델과 API
+분류: 처음 이해하기
+
+핵심 메시지: 처음에는 '내 컴퓨터 밖에 파일을 안전하게 맡기는 서비스'로 이해하면 됩니다.
+
+- 휴대폰 사진을 Google Drive나 iCloud에 올리면 내 기기가 꺼져도 다른 기기에서 다시 볼 수 있습니다.
+- 중요한 차이는 파일이 한 서버의 폴더에만 놓이는 것이 아니라, 제공자의 데이터센터 안에서 여러 장치와 정책으로 관리된다는 점입니다.
+- 사용자는 업로드, 다운로드, 공유, 삭제라는 쉬운 동작으로 보지만 개발자는 인증, 주소, 복제, 비용, 감사 로그까지 함께 설계합니다.
+
+상세 해설: 입문 설명은 '인터넷 폴더'에서 시작해도 됩니다. 다만 컴공 관점에서는 그 폴더가 실제 폴더가 아니라 API, 권한, 내구성, 과금 모델을 가진 분산 저장 시스템이라는 데서 공부가 시작됩니다.
+
+출처/근거: AWS S3 User Guide; Azure Blob Storage introduction; Google Cloud Storage overview
+
+### 02. 왜 그냥 서버 하드디스크에 저장하지 않을까 (5분)
+
+분류: 처음 이해하기
+
+핵심 메시지: 서비스가 커지면 디스크 하나의 용량, 장애, 백업, 권한 관리가 곧 한계가 됩니다.
+
+- 서버 한 대에 이미지를 저장하면 서버 교체, 디스크 고장, 배포 중 삭제 실수, 트래픽 폭증을 모두 직접 책임져야 합니다.
+- 클라우드 스토리지는 저장 기능을 애플리케이션 서버 밖으로 빼서 용량 확장과 내구성, 접근 제어를 전용 서비스에 맡깁니다.
+- 서버는 파일 바이트를 오래 들고 있기보다 파일의 주소와 상태를 DB에 저장하고, 실제 바이트는 객체 스토리지에 둡니다.
+
+상세 해설: 웹 개발에서 가장 흔한 전환은 'uploads 폴더에 저장'에서 'object storage에 저장하고 DB에는 key를 저장'으로 넘어가는 것입니다. 이 한 걸음이 배포, 스케일아웃, 백업 설계를 바꿉니다.
+
+출처/근거: Provider object storage overview docs
+
+### 03. 업로드는 파일을 보내는 동작이 아니라 신뢰 경계를 넘기는 동작이다 (5분)
+
+분류: 처음 이해하기
+
+핵심 메시지: 사용자가 준 파일은 크기, 형식, 악성 여부, 소유자를 확인해야 저장할 수 있습니다.
+
+- 사진 하나를 올려도 파일명, MIME type, 확장자, 크기 제한, 바이러스 검사, 이미지 변환 같은 검증이 따라옵니다.
+- 클라이언트가 직접 스토리지에 올리게 할 때는 presigned URL이나 SAS처럼 제한된 시간의 권한 위임을 씁니다.
+- 업로드 성공 이후에도 DB 상태, 썸네일 생성, 공개 가능 여부를 별도 상태로 관리해야 합니다.
+
+상세 해설: 초보자에게는 '파일을 올린다'지만, 시스템에게는 '신뢰할 수 없는 입력을 받아 저장소와 DB 상태를 일치시키는 트랜잭션 비슷한 흐름'입니다.
+
+출처/근거: AWS S3 User Guide; Azure Blob Storage introduction; Google Cloud Storage overview
+
+### 04. 다운로드와 공유는 링크 하나처럼 보이지만 권한 계약이다 (5분)
+
+분류: 처음 이해하기
+
+핵심 메시지: 누가, 언제까지, 어떤 파일을, 어떤 네트워크 경로로 읽을 수 있는지를 명시해야 합니다.
+
+- 공개 파일은 CDN과 캐시 헤더를 통해 빠르게 전달할 수 있지만, 실수로 민감 데이터가 공개되면 사고가 됩니다.
+- 비공개 파일은 앱 인증을 거친 뒤 짧은 만료 시간을 가진 signed URL로 내려주는 방식이 흔합니다.
+- 공유 링크는 편리하지만 만료, 철회, 다운로드 횟수, 감사 로그가 없으면 운영상 위험해집니다.
+
+상세 해설: 스토리지의 읽기 권한을 영구 public으로 열지 않고, 애플리케이션의 권한 판단 결과를 짧은 URL 권한으로 변환하는 것이 안전한 기본 패턴입니다.
+
+출처/근거: Provider security and signed access docs
+
+### 05. 클라우드 스토리지에서 폴더는 대부분 진짜 폴더가 아니다 (5분)
+
+분류: 처음 이해하기
+
+핵심 메시지: 객체 스토리지는 경로처럼 보이는 문자열 key를 prefix로 묶어 폴더처럼 보여줍니다.
+
+- photos/2026/cat.jpg는 디렉터리 트리라기보다 slash가 들어간 하나의 객체 이름입니다.
+- 폴더 이동이나 이름 변경은 많은 객체 key를 새 이름으로 복사하고 이전 것을 지우는 작업이 될 수 있습니다.
+- 그래서 대량 rename, list, delete는 파일 시스템보다 비싸고 느릴 수 있으며 별도 배치 작업으로 다뤄야 합니다.
+
+상세 해설: 이 차이를 알아야 객체 스토리지에 POSIX 파일 시스템의 rename, append, lock 의미를 기대하지 않습니다. 폴더처럼 보이는 UI와 내부 API 모델을 분리해서 이해해야 합니다.
+
+출처/근거: AWS S3 User Guide; Google Cloud Storage overview
+
+### 06. 클라우드 스토리지의 네 가지 기본 동사는 upload, store, access, delete다 (5분)
+
+분류: 처음 이해하기
+
+핵심 메시지: 쉬운 흐름을 먼저 잡으면 뒤의 lifecycle, 권한, 비용 개념이 자연스럽게 붙습니다.
+
+- upload는 누가 어떤 파일을 올릴 수 있는지와 실패했을 때 어떻게 재시도할지를 다룹니다.
+- store는 어디에 어떤 이름으로 얼마나 오래 둘지, 어떤 계층과 복제로 보관할지를 다룹니다.
+- access와 delete는 읽기 권한, 공유, 감사, 개인정보 삭제, 보존 의무가 충돌하는 지점입니다.
+
+상세 해설: 초심자용 네 단어를 버리지 말고 끝까지 가져갑니다. 고급 설계도 결국 upload를 안전하게 받고, store를 싸고 튼튼하게 하고, access를 통제하고, delete를 증명하는 문제입니다.
+
+출처/근거: Provider object storage overview docs
+
+### 07. 컴공 학생이 알아야 할 첫 질문은 '파일이 어디 있나'가 아니다 (5분)
+
+분류: 처음 이해하기
+
+핵심 메시지: 더 중요한 질문은 주소, 소유권, 실패, 비용, 삭제 기준입니다.
+
+- 주소는 bucket과 key, URL, CDN path, DB row가 서로 어떻게 대응되는지를 뜻합니다.
+- 소유권은 사용자 계정, 서비스 계정, 조직 계정, 암호화 키, 감사 로그의 책임 경계를 뜻합니다.
+- 실패와 비용은 네트워크 중단, 재시도, 중복 저장, 조회 폭증, 인터넷 송신 비용까지 포함합니다.
+
+상세 해설: 단순한 사진 업로드 과제라도 이 질문을 넣으면 전공 수준의 설계 문제가 됩니다. 스토리지는 자료구조, 운영체제, 네트워크, 보안, 분산 시스템이 만나는 지점입니다.
+
+출처/근거: AWS, Azure, and Google Cloud official storage docs
+
+### 08. 세 클라우드의 이름은 달라도 큰 구조는 비슷하다 (5분)
+
+분류: 처음 이해하기
+
+핵심 메시지: AWS S3, Azure Blob Storage, Google Cloud Storage는 모두 객체를 bucket/container에 넣는 모델입니다.
+
+- AWS는 S3 bucket과 object, IAM과 bucket policy를 중심으로 설명합니다.
+- Azure는 storage account 안의 container와 blob, Entra ID/RBAC/SAS를 중심으로 설명합니다.
+- Google Cloud는 project 안의 bucket과 object, IAM과 uniform bucket-level access를 중심으로 설명합니다.
+
+상세 해설: 초반에는 이름 차이에 겁먹지 않아도 됩니다. 모두 '큰 저장 공간, 객체 이름, 바이트, 메타데이터, 권한 정책'을 가진 서비스이고, 뒤로 갈수록 계정 경계와 통합 방식이 달라집니다.
+
+출처/근거: AWS S3 User Guide; Azure Blob Storage introduction; Google Cloud Storage overview
+
+### 09. 저장소를 고를 때는 파일 종류와 읽기 패턴부터 본다 (5분)
+
+분류: 처음 이해하기
+
+핵심 메시지: 사진, 동영상, 로그, 백업, 데이터셋은 모두 같은 저장소에 둘 수 있지만 설계 기준은 다릅니다.
+
+- 프로필 이미지는 작고 자주 읽히므로 CDN, cache header, 이미지 리사이징이 중요합니다.
+- 로그와 분석 데이터는 날짜별 partition, 압축 포맷, catalog, 보관 기간이 중요합니다.
+- 백업은 자주 읽지 않지만 복구 가능성, 불변성, 별도 계정 보관, 복구 훈련이 중요합니다.
+
+상세 해설: 클라우드 스토리지는 만능 폴더가 아니라 여러 데이터 제품의 원천 저장소입니다. 같은 bucket 안에서도 object type별로 key, class, lifecycle, 권한을 다르게 가져가야 합니다.
+
+출처/근거: Official provider storage class and lifecycle docs
+
+### 10. 쉬운 이해에서 어려운 설계로 넘어가는 다리 (5분)
+
+분류: 처음 이해하기
+
+핵심 메시지: 클라우드 스토리지는 원격 폴더처럼 쓰기 시작하지만, 실제 운영에서는 분산 시스템으로 다뤄야 합니다.
+
+- 사용자 관점의 질문은 '파일을 올리고 다시 받을 수 있나'입니다.
+- 개발자 관점의 질문은 '권한, key, DB 상태, 이벤트 처리, 캐시, 비용, 삭제가 일관되나'입니다.
+- 전공자 관점의 질문은 '일관성, 내구성, 가용성, 장애 격리, 데이터 수명주기를 어떻게 모델링하나'입니다.
+
+상세 해설: 이후 내용은 쉬운 네 동작을 버리지 않고 깊게 들어갑니다. upload는 대용량 세션과 checksum으로, store는 계층과 복제로, access는 IAM과 CDN으로, delete는 versioning과 retention으로 확장됩니다.
+
+출처/근거: Provider object storage overview docs
+
+### 11. 웹 서비스에서 파일은 DB row와 객체 key가 함께 움직인다 (5분)
+
+분류: 웹 서비스 구현
+
+핵심 메시지: 객체 스토리지에는 바이트를 두고, 데이터베이스에는 소유자와 상태와 key를 둡니다.
+
+- DB에는 user_id, object_key, content_type, size, status, checksum, created_at 같은 검색 가능한 정보를 저장합니다.
+- 스토리지 객체에는 실제 바이트와 Content-Type, Cache-Control, tag, custom metadata를 저장합니다.
+- DB commit과 object upload는 완전한 단일 트랜잭션이 아니므로 pending, uploaded, verified, deleted 같은 상태 머신이 필요합니다.
+
+상세 해설: 입문자가 자주 놓치는 부분은 '파일을 저장했다'와 '서비스가 그 파일을 사용할 수 있다'가 다르다는 점입니다. DB 상태와 객체 존재 여부가 어긋나는 경우를 복구할 수 있어야 합니다.
+
+출처/근거: Provider object storage overview docs
+
+### 12. 직접 업로드는 서버 부하를 줄이지만 권한 설계가 더 중요해진다 (5분)
+
+분류: 웹 서비스 구현
+
+핵심 메시지: 브라우저가 스토리지로 바로 보내면 앱 서버는 바이트 중계 대신 제한된 업로드 권한을 발급합니다.
+
+- 앱 서버는 사용자를 인증하고 업로드 가능한 key, 크기, 만료 시간, content type 조건을 정합니다.
+- 클라이언트는 받은 presigned URL, SAS, signed policy를 사용해 스토리지에 직접 PUT/POST합니다.
+- 업로드 완료 후 서버는 callback, polling, event, head object로 실제 객체 존재와 metadata를 검증합니다.
+
+상세 해설: 직접 업로드는 트래픽 비용과 서버 메모리를 크게 줄이지만, 권한 범위를 잘못 열면 사용자가 임의 key에 파일을 올릴 수 있습니다. 조건이 좁고 만료가 짧아야 합니다.
+
+출처/근거: Provider signed access and object storage docs
+
+### 13. 업로드 후처리는 이벤트 기반 파이프라인으로 생각한다 (5분)
+
+분류: 웹 서비스 구현
+
+핵심 메시지: 저장된 객체는 썸네일, 변환, 검사, 인덱싱, 알림의 입력이 됩니다.
+
+- 스토리지 이벤트는 새 객체 생성을 Lambda, Functions, Cloud Functions, queue, Pub/Sub 같은 후속 처리로 연결합니다.
+- 이미지 서비스는 원본 저장 뒤 리사이징, EXIF 제거, 유해 이미지 검사, CDN 경로 생성을 수행할 수 있습니다.
+- 이벤트는 중복되거나 순서가 바뀔 수 있으므로 idempotency key와 객체 상태 확인이 필요합니다.
+
+상세 해설: 이벤트를 '정확히 한 번 실행되는 함수 호출'처럼 믿으면 위험합니다. 객체 스토리지 후처리는 적어도 한 번 처리, 중복 처리, 실패 재시도, dead-letter queue를 전제로 설계합니다.
+
+출처/근거: AWS S3 Event Notifications; Azure Event Grid; GCS Pub/Sub notifications
+
+### 14. 정적 파일 배포는 스토리지와 CDN의 역할 분담이다 (5분)
+
+분류: 웹 서비스 구현
+
+핵심 메시지: 스토리지는 원본을 안정적으로 보관하고 CDN은 사용자 가까이에서 빠르게 전달합니다.
+
+- HTML, CSS, JS, 이미지처럼 공개 가능한 파일은 CDN cache hit ratio가 사용자 경험을 좌우합니다.
+- 파일 이름에 hash를 넣으면 오래 캐시해도 새 배포가 안전하고, 같은 key 덮어쓰기로 인한 stale cache를 줄일 수 있습니다.
+- 민감 파일은 CDN에 올리더라도 signed cookie, signed URL, origin access control 같은 보호 경계를 둬야 합니다.
+
+상세 해설: GitHub Pages 같은 정적 사이트도 넓게 보면 object storage와 CDN의 조합입니다. 원본 파일, 캐시 정책, invalidation이 배포 품질을 만듭니다.
+
+출처/근거: Provider object storage and CDN integration docs
+
+### 15. 삭제는 remove 버튼이 아니라 수명주기 정책이다 (5분)
+
+분류: 웹 서비스 구현
+
+핵심 메시지: 사용자 삭제, 개인정보 삭제, 보존 의무, 백업 복구 가능성이 서로 충돌합니다.
+
+- 버전 관리가 켜져 있으면 현재 객체 삭제가 실제 바이트 삭제가 아니라 delete marker 추가일 수 있습니다.
+- 법적 보존이나 규정 준수 retention이 있으면 사용자 요청과 별개로 일정 기간 삭제가 제한될 수 있습니다.
+- 반대로 개인정보는 정해진 기간 뒤 확실히 제거해야 하므로 DB row, object version, derivative, backup 범위를 추적해야 합니다.
+
+상세 해설: 삭제 설계는 고급 주제가 아니라 초반부터 필요합니다. '언제 지울 것인가'를 모르면 비용은 계속 늘고, '정말 지웠는가'를 모르면 개인정보 리스크가 남습니다.
+
+출처/근거: Provider lifecycle, versioning, and retention docs
+
+### 16. 이제 객체 스토리지를 분산 시스템으로 읽을 준비가 됐다 (5분)
+
+분류: 웹 서비스 구현
+
+핵심 메시지: 쉬운 동작을 실제 시스템 속성으로 번역하면 뒤의 심화 내용이 연결됩니다.
+
+- upload는 네트워크 실패와 재시도, multipart, checksum, idempotency 문제로 확장됩니다.
+- store는 replication, storage class, lifecycle, metadata, versioning 문제로 확장됩니다.
+- access와 delete는 IAM, signed URL, CDN, audit, retention, object lock 문제로 확장됩니다.
+
+상세 해설: 이 지점부터는 용어가 어려워져도 기준은 같습니다. 사용자의 쉬운 흐름을 깨지 않으면서 분산 저장소의 실패와 비용과 보안 조건을 명시적으로 처리하는 것이 목표입니다.
+
+출처/근거: AWS, Azure, and Google Cloud official storage docs
+
+### 17. 클라우드 스토리지는 파일 저장소가 아니라 분산 객체 시스템이다 (5분)
+
+분류: 컴공 기본 모델
 
 핵심 메시지: 대규모 저장, HTTP API, 권한 정책, 수명주기 자동화가 한 서비스 표면에 묶입니다.
 
@@ -24,13 +250,13 @@
 - 애플리케이션은 파일 바이트를 직접 품기보다 객체 주소, 메타데이터, 접근 정책, 처리 상태를 조합합니다.
 - 컴퓨터공학 관점에서는 네임스페이스, 일관성, 실패 모델, 비용 모델을 함께 보는 분산 시스템입니다.
 
-심화 해설: 핵심은 저장 위치가 아니라 API 경계입니다. upload, read, list, delete, lifecycle, policy, event가 모두 시스템 설계의 입력이 됩니다.
+상세 해설: 핵심은 저장 위치가 아니라 API 경계입니다. upload, read, list, delete, lifecycle, policy, event가 모두 시스템 설계의 입력이 됩니다.
 
 출처/근거: AWS S3 User Guide; Azure Blob Storage introduction; Google Cloud Storage overview
 
-### 02. 블록, 파일, 객체 스토리지는 실패와 접근 단위가 다르다 (5분)
+### 18. 블록, 파일, 객체 스토리지는 실패와 접근 단위가 다르다 (5분)
 
-분류: 모델과 API
+분류: 컴공 기본 모델
 
 핵심 메시지: 어떤 데이터를 어떤 단위로 읽고 쓰는지가 저장소 선택의 출발점입니다.
 
@@ -38,13 +264,13 @@
 - 파일 스토리지는 POSIX/SMB/NFS처럼 경로, 디렉터리, lock, rename 의미론이 필요한 공유 작업에 맞습니다.
 - 객체 스토리지는 immutable에 가까운 큰 객체를 HTTP API로 다루며 로그, 이미지, 백업, 데이터 레이크에 맞습니다.
 
-심화 해설: 객체 스토리지에 파일 시스템처럼 append, rename, directory transaction을 기대하면 설계가 꼬입니다. 객체 API에 맞게 상태와 인덱스를 따로 설계해야 합니다.
+상세 해설: 객체 스토리지에 파일 시스템처럼 append, rename, directory transaction을 기대하면 설계가 꼬입니다. 객체 API에 맞게 상태와 인덱스를 따로 설계해야 합니다.
 
 출처/근거: Provider storage overview docs
 
-### 03. 객체는 바이트, 이름, 메타데이터, 정책의 묶음이다 (5분)
+### 19. 객체는 바이트, 이름, 메타데이터, 정책의 묶음이다 (5분)
 
-분류: 모델과 API
+분류: 컴공 기본 모델
 
 핵심 메시지: bucket + key + bytes만 보면 부족하고, 객체 주변의 제어 정보를 함께 봐야 합니다.
 
@@ -52,13 +278,13 @@
 - metadata와 tag는 Content-Type, Cache-Control, owner, retention class, processing state 같은 자동화 정보를 담습니다.
 - versioning이 켜지면 같은 key 아래 여러 세대가 존재하므로 delete marker와 noncurrent version 비용을 이해해야 합니다.
 
-심화 해설: 객체 스토리지는 데이터 자체보다 데이터 주변의 설명과 정책이 운영 품질을 결정합니다. 업로드 시점에 붙인 정보가 수백만 개 객체의 자동화를 좌우합니다.
+상세 해설: 객체 스토리지는 데이터 자체보다 데이터 주변의 설명과 정책이 운영 품질을 결정합니다. 업로드 시점에 붙인 정보가 수백만 개 객체의 자동화를 좌우합니다.
 
 출처/근거: AWS S3 User Guide; Google Cloud Storage overview
 
-### 04. 일관성, 내구성, 가용성은 서로 다른 약속이다 (5분)
+### 20. 일관성, 내구성, 가용성은 서로 다른 약속이다 (5분)
 
-분류: 모델과 API
+분류: 컴공 기본 모델
 
 핵심 메시지: 저장소가 튼튼하다는 말은 어떤 실패를 어느 수준으로 견디는지로 쪼개야 합니다.
 
@@ -66,13 +292,13 @@
 - 내구성은 저장된 객체가 디스크, 노드, 가용 영역 장애 이후에도 사라지지 않을 확률입니다.
 - 가용성은 특정 시점에 요청을 성공적으로 처리할 수 있는지이며 리전, 영역, 네트워크 장애와 연결됩니다.
 
-심화 해설: 복제본이 많다고 모든 문제가 해결되지는 않습니다. stale list, cross-region lag, KMS 권한 장애, DNS/CDN 장애는 서로 다른 계층의 실패입니다.
+상세 해설: 복제본이 많다고 모든 문제가 해결되지는 않습니다. stale list, cross-region lag, KMS 권한 장애, DNS/CDN 장애는 서로 다른 계층의 실패입니다.
 
 출처/근거: AWS S3 User Guide; Azure redundancy docs; Google Cloud Storage overview
 
-### 05. 데이터 플레인과 컨트롤 플레인을 분리해서 본다 (5분)
+### 21. 데이터 플레인과 컨트롤 플레인을 분리해서 본다 (5분)
 
-분류: 모델과 API
+분류: 컴공 기본 모델
 
 핵심 메시지: 파일을 주고받는 요청과 정책을 바꾸는 요청은 성격도 위험도 다릅니다.
 
@@ -80,13 +306,13 @@
 - 컨트롤 플레인은 bucket 생성, IAM, lifecycle, replication, retention, logging처럼 운영 상태를 바꿉니다.
 - 장애 분석에서는 데이터 요청이 실패했는지, 권한/정책 변경이 실패했는지, 이벤트 후처리가 지연되는지 분리해야 합니다.
 
-심화 해설: 프로덕션 권한도 이 분리를 따라갑니다. 애플리케이션은 객체 read/write만 갖고, 정책 변경 권한은 IaC와 리뷰 파이프라인에 묶는 편이 안전합니다.
+상세 해설: 프로덕션 권한도 이 분리를 따라갑니다. 애플리케이션은 객체 read/write만 갖고, 정책 변경 권한은 IaC와 리뷰 파이프라인에 묶는 편이 안전합니다.
 
 출처/근거: Provider object storage API docs
 
-### 06. 객체 key 설계는 검색이 아니라 운영을 위한 인덱스 설계다 (5분)
+### 22. 객체 key 설계는 검색이 아니라 운영을 위한 인덱스 설계다 (5분)
 
-분류: 모델과 API
+분류: 컴공 기본 모델
 
 핵심 메시지: 좋은 key는 보기 좋은 이름보다 정책, 목록 조회, 배치 작업, 비용 분석에 유리한 이름입니다.
 
@@ -94,13 +320,13 @@
 - 개인정보나 원본 파일명을 key에 직접 넣으면 URL, 로그, 알림, 분석 도구를 통해 노출될 수 있습니다.
 - prefix 기준 정책을 쓴다면 권한 경계와 삭제 경계가 같은 prefix에 섞이지 않게 설계해야 합니다.
 
-심화 해설: 예시는 tenant/{tenantId}/dt=2026-06-14/type=image/{uuid}.webp처럼 운영 조건을 앞에 두고, 사용자가 준 이름은 metadata나 DB에 두는 방식입니다.
+상세 해설: 예시는 tenant/{tenantId}/dt=2026-06-14/type=image/{uuid}.webp처럼 운영 조건을 앞에 두고, 사용자가 준 이름은 metadata나 DB에 두는 방식입니다.
 
 출처/근거: AWS S3 User Guide; Google Cloud Storage overview
 
-### 07. 대용량 업로드는 단일 요청이 아니라 세션과 청크의 문제다 (5분)
+### 23. 대용량 업로드는 단일 요청이 아니라 세션과 청크의 문제다 (5분)
 
-분류: 모델과 API
+분류: 컴공 기본 모델
 
 핵심 메시지: 네트워크 실패를 전제로 upload session, part, checksum, resume을 설계해야 합니다.
 
@@ -108,13 +334,13 @@
 - Azure block blob은 block을 stage한 뒤 block list를 commit하는 구조로 큰 객체를 조립합니다.
 - Google Cloud Storage는 resumable upload로 세션 URI를 만들고 중단된 offset부터 이어 올릴 수 있습니다.
 
-심화 해설: 업로드가 끝나지 않은 세션과 part는 비용과 정합성 문제를 만들 수 있으므로 abort/expire 규칙과 DB 상태 머신이 필요합니다.
+상세 해설: 업로드가 끝나지 않은 세션과 part는 비용과 정합성 문제를 만들 수 있으므로 abort/expire 규칙과 DB 상태 머신이 필요합니다.
 
 출처/근거: AWS S3 multipart docs; Azure Blob docs; Google Cloud Storage upload docs
 
-### 08. HTTP 캐시와 CDN은 객체 스토리지의 읽기 모델을 바꾼다 (5분)
+### 24. HTTP 캐시와 CDN은 객체 스토리지의 읽기 모델을 바꾼다 (5분)
 
-분류: 모델과 API
+분류: 컴공 기본 모델
 
 핵심 메시지: 객체 하나를 빠르게 읽는 문제보다 캐시 가능한 URL을 설계하는 문제가 더 큽니다.
 
@@ -122,11 +348,11 @@
 - 같은 key를 덮어쓰면 CDN purge와 stale object 문제가 생기므로 fingerprinted key가 안전합니다.
 - Range request, compression, image derivative는 bandwidth와 latency를 동시에 줄이는 설계 도구입니다.
 
-심화 해설: 정적 미디어 시스템에서 객체 스토리지는 origin이고, 사용자 경험은 CDN cache hit ratio와 invalidation 전략에 의해 좌우됩니다.
+상세 해설: 정적 미디어 시스템에서 객체 스토리지는 origin이고, 사용자 경험은 CDN cache hit ratio와 invalidation 전략에 의해 좌우됩니다.
 
 출처/근거: Provider object storage and CDN integration docs
 
-### 09. S3 bucket은 계정 안의 보안 경계이자 네임스페이스다 (5분)
+### 25. S3 bucket은 계정 안의 보안 경계이자 네임스페이스다 (5분)
 
 분류: AWS S3
 
@@ -136,11 +362,11 @@
 - Block Public Access는 실수로 public policy나 ACL을 열어도 계정/버킷 단위에서 차단하는 안전장치입니다.
 - Object Ownership과 ACL 비활성화 방향은 객체 소유권과 권한 관리를 policy 중심으로 단순화합니다.
 
-심화 해설: S3를 단순 저장소로 열기 전에 계정 레벨 guardrail, IaC, CloudTrail, bucket policy linting을 먼저 깔아야 공개 사고를 줄일 수 있습니다.
+상세 해설: S3를 단순 저장소로 열기 전에 계정 레벨 guardrail, IaC, CloudTrail, bucket policy linting을 먼저 깔아야 공개 사고를 줄일 수 있습니다.
 
 출처/근거: AWS S3 User Guide; S3 security best practices
 
-### 10. S3 권한은 IAM, bucket policy, access point가 합쳐진 결과다 (5분)
+### 26. S3 권한은 IAM, bucket policy, access point가 합쳐진 결과다 (5분)
 
 분류: AWS S3
 
@@ -150,11 +376,11 @@
 - Condition에는 prefix, object tag, source VPC endpoint, TLS, encryption header 같은 제약을 걸 수 있습니다.
 - Access Point와 VPC endpoint는 대규모 조직에서 워크로드별 접근 경계를 분리하는 데 유용합니다.
 
-심화 해설: 권한 디버깅은 allow를 찾는 일이 아니라 explicit deny, SCP, boundary, bucket policy, KMS key policy를 차례로 좁히는 과정입니다.
+상세 해설: 권한 디버깅은 allow를 찾는 일이 아니라 explicit deny, SCP, boundary, bucket policy, KMS key policy를 차례로 좁히는 과정입니다.
 
 출처/근거: AWS S3 User Guide; S3 security best practices
 
-### 11. S3 storage class는 성능, 접근 빈도, 최소 보관 기간의 선택이다 (5분)
+### 27. S3 storage class는 성능, 접근 빈도, 최소 보관 기간의 선택이다 (5분)
 
 분류: AWS S3
 
@@ -164,11 +390,11 @@
 - Infrequent Access와 Glacier 계열은 저장비를 낮추는 대신 retrieval, minimum duration, restore latency를 고려해야 합니다.
 - Intelligent-Tiering은 접근 패턴이 변하거나 예측하기 어려운 객체에서 자동 계층화를 맡기는 선택지입니다.
 
-심화 해설: 가격표 숫자를 외우는 대신 access frequency, restore objective, object size, retention duration, request volume을 모델링해야 합니다.
+상세 해설: 가격표 숫자를 외우는 대신 access frequency, restore objective, object size, retention duration, request volume을 모델링해야 합니다.
 
 출처/근거: Understanding and managing Amazon S3 storage classes
 
-### 12. S3 Lifecycle은 삭제 자동화가 아니라 상태 전이 자동화다 (5분)
+### 28. S3 Lifecycle은 삭제 자동화가 아니라 상태 전이 자동화다 (5분)
 
 분류: AWS S3
 
@@ -178,11 +404,11 @@
 - Versioning이 켜진 bucket에서는 current object와 noncurrent version의 보관 정책을 분리해야 합니다.
 - Incomplete multipart upload 정리는 대용량 업로드 실패가 장기 비용으로 쌓이지 않게 하는 필수 규칙입니다.
 
-심화 해설: Lifecycle을 전역 적용하기 전에 작은 prefix와 tag로 dry run에 가까운 실험을 하고, Inventory와 Storage Lens로 결과를 확인해야 합니다.
+상세 해설: Lifecycle을 전역 적용하기 전에 작은 prefix와 tag로 dry run에 가까운 실험을 하고, Inventory와 Storage Lens로 결과를 확인해야 합니다.
 
 출처/근거: S3 Lifecycle documentation; S3 Storage Lens optimization docs
 
-### 13. S3 multipart upload와 checksum은 데이터 무결성 설계의 일부다 (5분)
+### 29. S3 multipart upload와 checksum은 데이터 무결성 설계의 일부다 (5분)
 
 분류: AWS S3
 
@@ -192,11 +418,11 @@
 - part size, parallelism, retry budget은 throughput과 memory, timeout, 비용의 균형점입니다.
 - 최신 SDK의 checksum 지원을 사용하면 전송 중 손상과 저장 후 검증을 더 명시적으로 다룰 수 있습니다.
 
-심화 해설: 대용량 업로드 경로는 client retry, presigned part URL, abort rule, checksum validation, DB state transition을 한 흐름으로 설계해야 합니다.
+상세 해설: 대용량 업로드 경로는 client retry, presigned part URL, abort rule, checksum validation, DB state transition을 한 흐름으로 설계해야 합니다.
 
 출처/근거: Uploading and copying objects using multipart upload in Amazon S3
 
-### 14. S3 Event Notifications는 후처리 파이프라인의 시작점이다 (5분)
+### 30. S3 Event Notifications는 후처리 파이프라인의 시작점이다 (5분)
 
 분류: AWS S3
 
@@ -206,11 +432,11 @@
 - 이벤트 중복, 순서, 재시도 실패를 고려해 idempotent handler와 dead-letter queue가 필요합니다.
 - 객체 key와 metadata가 후처리 라우팅 조건이 되므로 업로드 시점의 naming과 tag가 중요합니다.
 
-심화 해설: 실무에서는 업로드 완료와 서비스 공개를 같은 상태로 보지 않습니다. scan 완료, 변환 완료, DB publish 상태를 분리해야 합니다.
+상세 해설: 실무에서는 업로드 완료와 서비스 공개를 같은 상태로 보지 않습니다. scan 완료, 변환 완료, DB publish 상태를 분리해야 합니다.
 
 출처/근거: AWS S3 User Guide
 
-### 15. S3 Replication은 DR뿐 아니라 데이터 거버넌스 기능이다 (5분)
+### 31. S3 Replication은 DR뿐 아니라 데이터 거버넌스 기능이다 (5분)
 
 분류: AWS S3
 
@@ -220,11 +446,11 @@
 - 복제는 비동기이므로 RPO를 0으로 만들지 못하며, replication lag와 failed operations를 모니터링해야 합니다.
 - KMS로 암호화한 객체는 원본과 대상의 key policy, IAM, region 조건이 모두 맞아야 복제됩니다.
 
-심화 해설: 복제를 켠다고 백업이 완성되지는 않습니다. 삭제와 암호화 실수까지 복제할지, 독립 복구 계정을 둘지 별도 결정이 필요합니다.
+상세 해설: 복제를 켠다고 백업이 완성되지는 않습니다. 삭제와 암호화 실수까지 복제할지, 독립 복구 계정을 둘지 별도 결정이 필요합니다.
 
 출처/근거: Amazon S3 Replication documentation
 
-### 16. Object Lock은 삭제 방지가 아니라 규정 준수 상태 머신이다 (5분)
+### 32. Object Lock은 삭제 방지가 아니라 규정 준수 상태 머신이다 (5분)
 
 분류: AWS S3
 
@@ -234,11 +460,11 @@
 - Legal hold는 기간이 아니라 사건 기반 보존이며 retention period와 함께 적용될 수 있습니다.
 - Object Lock은 bucket 생성 시점 설정과 versioning 조건이 얽히므로 나중에 켜는 계획을 가볍게 보면 안 됩니다.
 
-심화 해설: 랜섬웨어 대응 백업 bucket은 application write role과 admin delete role을 분리하고, Object Lock 및 cross-account 복구 경로를 함께 설계합니다.
+상세 해설: 랜섬웨어 대응 백업 bucket은 application write role과 admin delete role을 분리하고, Object Lock 및 cross-account 복구 경로를 함께 설계합니다.
 
 출처/근거: Amazon S3 Object Lock documentation
 
-### 17. S3 Storage Lens, Inventory, Batch Operations는 운영 규모의 도구다 (5분)
+### 33. S3 Storage Lens, Inventory, Batch Operations는 운영 규모의 도구다 (5분)
 
 분류: AWS S3
 
@@ -248,11 +474,11 @@
 - Inventory는 객체 목록과 metadata를 주기적으로 생성해 Athena, Glue, batch job의 입력으로 쓰기 좋습니다.
 - Batch Operations는 대량 tag 변경, copy, restore, Lambda invoke 같은 객체 단위 작업을 관리형으로 수행합니다.
 
-심화 해설: 운영자는 bucket 하나를 보는 사람이 아니라 fleet을 보는 사람입니다. 모든 객체를 즉석 LIST로 찾는 설계는 규모가 커지면 비용과 시간이 폭발합니다.
+상세 해설: 운영자는 bucket 하나를 보는 사람이 아니라 fleet을 보는 사람입니다. 모든 객체를 즉석 LIST로 찾는 설계는 규모가 커지면 비용과 시간이 폭발합니다.
 
 출처/근거: Amazon S3 Storage Lens documentation
 
-### 18. S3를 데이터 레이크로 쓸 때는 파일 포맷과 catalog가 핵심이다 (5분)
+### 34. S3를 데이터 레이크로 쓸 때는 파일 포맷과 catalog가 핵심이다 (5분)
 
 분류: AWS S3
 
@@ -262,11 +488,11 @@
 - Glue Catalog, Athena, EMR, Spark, Iceberg/Hudi/Delta 계열 테이블 포맷이 객체 묶음을 테이블처럼 해석합니다.
 - 작은 파일이 너무 많으면 request와 planning overhead가 커지므로 compaction과 partition 설계가 필요합니다.
 
-심화 해설: 데이터 레이크의 성능 문제는 S3 자체보다 file layout, partition cardinality, metadata catalog, query engine 설정에서 자주 생깁니다.
+상세 해설: 데이터 레이크의 성능 문제는 S3 자체보다 file layout, partition cardinality, metadata catalog, query engine 설정에서 자주 생깁니다.
 
 출처/근거: AWS S3 User Guide; AWS analytics docs
 
-### 19. Azure Storage Account는 Blob만이 아니라 계정 단위 플랫폼이다 (5분)
+### 35. Azure Storage Account는 Blob만이 아니라 계정 단위 플랫폼이다 (5분)
 
 분류: Azure Blob
 
@@ -276,11 +502,11 @@
 - 계정 종류와 성능 계층은 지원 기능, 비용, redundancy 옵션, 프로토콜 선택에 영향을 줍니다.
 - Blob 데이터는 account, container, blob 계층으로 관리되고 container는 접근 정책의 기본 경계가 됩니다.
 
-심화 해설: Azure 설계에서는 bucket부터 생각하기보다 account boundary를 먼저 생각합니다. account가 네트워크, 암호화, 복제, RBAC의 묶음이기 때문입니다.
+상세 해설: Azure 설계에서는 bucket부터 생각하기보다 account boundary를 먼저 생각합니다. account가 네트워크, 암호화, 복제, RBAC의 묶음이기 때문입니다.
 
 출처/근거: Azure storage account overview; Azure Blob Storage introduction
 
-### 20. Block, Append, Page Blob은 같은 Blob Storage 안의 다른 쓰기 모델이다 (5분)
+### 36. Block, Append, Page Blob은 같은 Blob Storage 안의 다른 쓰기 모델이다 (5분)
 
 분류: Azure Blob
 
@@ -290,11 +516,11 @@
 - Append blob은 로그처럼 뒤에 이어 붙이는 패턴에 맞지만 임의 위치 수정에는 맞지 않습니다.
 - Page blob은 random read/write page 단위가 필요했던 VHD와 특수 워크로드에 쓰입니다.
 
-심화 해설: 객체 스토리지를 모두 immutable로만 보면 Azure의 blob type 차이를 놓칩니다. 쓰기 패턴에 맞는 타입을 고르는 것이 API 오류와 비용을 줄입니다.
+상세 해설: 객체 스토리지를 모두 immutable로만 보면 Azure의 blob type 차이를 놓칩니다. 쓰기 패턴에 맞는 타입을 고르는 것이 API 오류와 비용을 줄입니다.
 
 출처/근거: Azure Blob Storage introduction
 
-### 21. Azure access tier는 Hot, Cool, Cold, Archive의 경제 모델이다 (5분)
+### 37. Azure access tier는 Hot, Cool, Cold, Archive의 경제 모델이다 (5분)
 
 분류: Azure Blob
 
@@ -304,11 +530,11 @@
 - Archive tier 객체는 읽기 전에 online tier로 rehydrate해야 하므로 복구 시간 목표와 충돌할 수 있습니다.
 - Lifecycle management policy로 age와 prefix 조건에 따라 tier 이동과 삭제를 자동화할 수 있습니다.
 
-심화 해설: Azure의 Cold tier는 Archive와 다르게 online tier입니다. 수업 자료에서는 Hot/Cool/Cold/Archive를 모두 같은 '차가움'으로 뭉개지 말고 online/offline 차이를 분명히 둡니다.
+상세 해설: Azure의 Cold tier는 Archive와 다르게 online tier입니다. 수업 자료에서는 Hot/Cool/Cold/Archive를 모두 같은 '차가움'으로 뭉개지 말고 online/offline 차이를 분명히 둡니다.
 
 출처/근거: Azure Blob access tiers documentation
 
-### 22. Azure redundancy는 LRS, ZRS, GRS, GZRS, RA 옵션의 조합이다 (5분)
+### 38. Azure redundancy는 LRS, ZRS, GRS, GZRS, RA 옵션의 조합이다 (5분)
 
 분류: Azure Blob
 
@@ -318,11 +544,11 @@
 - GRS/GZRS는 paired region으로 비동기 복제해 regional disaster에 대비합니다.
 - RA-GRS/RA-GZRS는 secondary endpoint 읽기를 제공하지만 데이터는 비동기 복제 지연을 가질 수 있습니다.
 
-심화 해설: Azure redundancy는 account 수준 선택입니다. 한 container만 다른 redundancy로 바꾸는 모델이 아니므로 workload 경계와 account 분리를 함께 설계해야 합니다.
+상세 해설: Azure redundancy는 account 수준 선택입니다. 한 container만 다른 redundancy로 바꾸는 모델이 아니므로 workload 경계와 account 분리를 함께 설계해야 합니다.
 
 출처/근거: Azure Storage redundancy documentation
 
-### 23. Azure 권한은 Entra ID, RBAC, SAS, account key가 공존한다 (5분)
+### 39. Azure 권한은 Entra ID, RBAC, SAS, account key가 공존한다 (5분)
 
 분류: Azure Blob
 
@@ -332,11 +558,11 @@
 - User delegation SAS는 Entra ID로 승인된 단기 위임 토큰이라 account key 기반 SAS보다 통제하기 좋습니다.
 - Account key는 강력하지만 회전과 유출 대응 부담이 크므로 애플리케이션에 직접 배포하지 않는 것이 안전합니다.
 
-심화 해설: SAS는 URL 자체가 권한입니다. 만료 시간, IP 제한, protocol 제한, permission scope를 좁히고 로그에서 URL 전체가 노출되지 않게 다뤄야 합니다.
+상세 해설: SAS는 URL 자체가 권한입니다. 만료 시간, IP 제한, protocol 제한, permission scope를 좁히고 로그에서 URL 전체가 노출되지 않게 다뤄야 합니다.
 
 출처/근거: Azure Blob security recommendations
 
-### 24. Private Endpoint와 firewall은 Blob 접근 경로를 네트워크로 제한한다 (5분)
+### 40. Private Endpoint와 firewall은 Blob 접근 경로를 네트워크로 제한한다 (5분)
 
 분류: Azure Blob
 
@@ -346,11 +572,11 @@
 - Private Endpoint는 Blob endpoint를 VNet private IP로 노출해 공용 인터넷 경로를 줄입니다.
 - DNS split-horizon과 private DNS zone 구성이 잘못되면 애플리케이션이 public endpoint로 우회할 수 있습니다.
 
-심화 해설: 네트워크 경계는 IAM을 대체하지 않습니다. identity, network, encryption, logging을 겹쳐서 defense-in-depth로 봅니다.
+상세 해설: 네트워크 경계는 IAM을 대체하지 않습니다. identity, network, encryption, logging을 겹쳐서 defense-in-depth로 봅니다.
 
 출처/근거: Azure Blob security recommendations; Azure architecture best practices
 
-### 25. Blob soft delete, versioning, immutability는 삭제 사고의 복구 계층이다 (5분)
+### 41. Blob soft delete, versioning, immutability는 삭제 사고의 복구 계층이다 (5분)
 
 분류: Azure Blob
 
@@ -360,11 +586,11 @@
 - Blob versioning은 overwrite와 delete 이전 상태를 version으로 남겨 복구 지점을 제공합니다.
 - Immutable storage policy와 legal hold는 규정 준수 보존과 변경 방지를 제공합니다.
 
-심화 해설: 복구 기능을 켜는 것만으로 충분하지 않습니다. 보존 기간, unlock 권한, lifecycle 정리, 복원 리허설을 함께 정해야 합니다.
+상세 해설: 복구 기능을 켜는 것만으로 충분하지 않습니다. 보존 기간, unlock 권한, lifecycle 정리, 복원 리허설을 함께 정해야 합니다.
 
 출처/근거: Azure Blob security and data protection docs
 
-### 26. Object replication은 계정 간 비동기 복제 정책이다 (5분)
+### 42. Object replication은 계정 간 비동기 복제 정책이다 (5분)
 
 분류: Azure Blob
 
@@ -374,11 +600,11 @@
 - 온라인 tier의 block blob 복제가 중심이며 archive tier와 rehydration 시나리오는 제한을 확인해야 합니다.
 - 복제 지연, 실패, delete propagation 정책은 RPO와 운영 절차에 직접 영향을 줍니다.
 
-심화 해설: 복제 대상은 같은 권한 실수를 공유하지 않게 별도 account, 별도 subscription, 별도 role assignment로 격리하는 방식을 검토합니다.
+상세 해설: 복제 대상은 같은 권한 실수를 공유하지 않게 별도 account, 별도 subscription, 별도 role assignment로 격리하는 방식을 검토합니다.
 
 출처/근거: Azure object replication for block blobs
 
-### 27. Event Grid와 Functions는 Blob 변경을 애플리케이션 이벤트로 바꾼다 (5분)
+### 43. Event Grid와 Functions는 Blob 변경을 애플리케이션 이벤트로 바꾼다 (5분)
 
 분류: Azure Blob
 
@@ -388,11 +614,11 @@
 - Function은 작은 후처리에 적합하지만 대규모 이미지/영상 처리에는 queue와 worker pool을 따로 설계해야 합니다.
 - 이벤트 소비자는 중복 처리, 순서 불일치, 객체가 이미 삭제된 race condition을 견뎌야 합니다.
 
-심화 해설: Blob 이벤트는 데이터베이스 트랜잭션과 원자적으로 묶이지 않습니다. 상태 저장소에 idempotency key와 processing status를 남겨야 합니다.
+상세 해설: Blob 이벤트는 데이터베이스 트랜잭션과 원자적으로 묶이지 않습니다. 상태 저장소에 idempotency key와 processing status를 남겨야 합니다.
 
 출처/근거: Azure Blob Storage introduction; Azure architecture best practices
 
-### 28. Data Lake Storage Gen2는 Blob Storage에 계층형 namespace를 더한다 (5분)
+### 44. Data Lake Storage Gen2는 Blob Storage에 계층형 namespace를 더한다 (5분)
 
 분류: Azure Blob
 
@@ -402,11 +628,11 @@
 - ADLS Gen2는 Blob Storage 기반이지만 ACL과 path operation이 데이터 레이크 운영에 더 잘 맞습니다.
 - 분석 테이블에서는 partition layout, file size, access tier, lifecycle이 query cost에 영향을 줍니다.
 
-심화 해설: Azure에서 단순 Blob과 ADLS Gen2 선택은 저장소 이름 문제가 아니라 분석 엔진과 권한 모델, rename semantics 요구의 문제입니다.
+상세 해설: Azure에서 단순 Blob과 ADLS Gen2 선택은 저장소 이름 문제가 아니라 분석 엔진과 권한 모델, rename semantics 요구의 문제입니다.
 
 출처/근거: Azure Storage account overview; Azure Blob architecture guidance
 
-### 29. Google Cloud Storage는 bucket, object, location, storage class로 시작한다 (5분)
+### 45. Google Cloud Storage는 bucket, object, location, storage class로 시작한다 (5분)
 
 분류: Google Cloud Storage
 
@@ -416,11 +642,11 @@
 - Object는 immutable generation을 가지며 metadata와 storage class를 함께 가집니다.
 - 기본 storage class와 lifecycle rule은 새 객체와 기존 객체의 비용 모델에 영향을 줍니다.
 
-심화 해설: GCS는 bucket 생성 시 location과 protection 설정이 뒤의 운영 제약을 만듭니다. data residency와 analytics region을 미리 맞추는 것이 중요합니다.
+상세 해설: GCS는 bucket 생성 시 location과 protection 설정이 뒤의 운영 제약을 만듭니다. data residency와 analytics region을 미리 맞추는 것이 중요합니다.
 
 출처/근거: Cloud Storage overview
 
-### 30. Uniform bucket-level access는 GCS 권한 모델을 IAM 중심으로 단순화한다 (5분)
+### 46. Uniform bucket-level access는 GCS 권한 모델을 IAM 중심으로 단순화한다 (5분)
 
 분류: Google Cloud Storage
 
@@ -430,11 +656,11 @@
 - Public Access Prevention은 public grant가 생기는 것을 막아 실수 노출을 줄입니다.
 - Service account, workload identity, signed URL 권한을 목적별로 분리해야 운영 추적이 쉬워집니다.
 
-심화 해설: GCS 권한도 identity, resource, condition, organization policy가 합쳐진 결과입니다. 공개 객체가 필요한 경우에도 public bucket보다 CDN signed URL을 검토합니다.
+상세 해설: GCS 권한도 identity, resource, condition, organization policy가 합쳐진 결과입니다. 공개 객체가 필요한 경우에도 public bucket보다 CDN signed URL을 검토합니다.
 
 출처/근거: Cloud Storage overview; Google Cloud Storage security docs
 
-### 31. GCS signed URL과 signed policy는 제한된 시간의 객체 접근 계약이다 (5분)
+### 47. GCS signed URL과 signed policy는 제한된 시간의 객체 접근 계약이다 (5분)
 
 분류: Google Cloud Storage
 
@@ -444,11 +670,11 @@
 - Upload policy는 content type, size, prefix 같은 조건을 강제해 client-side direct upload를 제한할 수 있습니다.
 - 서명 주체의 key 관리와 expiration 설계가 유출 시 피해 범위를 결정합니다.
 
-심화 해설: 직접 업로드 설계에서는 signed URL이 곧 권한입니다. DB에는 issued, uploaded, scanned, published 같은 상태를 별도 저장해야 합니다.
+상세 해설: 직접 업로드 설계에서는 signed URL이 곧 권한입니다. DB에는 issued, uploaded, scanned, published 같은 상태를 별도 저장해야 합니다.
 
 출처/근거: Cloud Storage overview
 
-### 32. GCS storage class와 Autoclass는 접근 패턴을 비용 정책으로 바꾼다 (5분)
+### 48. GCS storage class와 Autoclass는 접근 패턴을 비용 정책으로 바꾼다 (5분)
 
 분류: Google Cloud Storage
 
@@ -458,11 +684,11 @@
 - Nearline/Coldline/Archive는 낮은 저장비와 낮은 접근 빈도를 전제로 하며 retrieval과 최소 보관 기간을 봐야 합니다.
 - Autoclass는 객체 접근 패턴에 따라 storage class 전환을 자동화해 운영 부담을 줄입니다.
 
-심화 해설: Autoclass는 모든 비용 고민을 없애는 기능이 아니라 접근 패턴 판단을 서비스에 맡기는 선택입니다. 예외 workload와 reporting은 계속 봐야 합니다.
+상세 해설: Autoclass는 모든 비용 고민을 없애는 기능이 아니라 접근 패턴 판단을 서비스에 맡기는 선택입니다. 예외 workload와 reporting은 계속 봐야 합니다.
 
 출처/근거: Google Cloud Storage classes; Autoclass
 
-### 33. GCS Lifecycle rule은 age, version, class, prefix 조건으로 객체를 전이한다 (5분)
+### 49. GCS Lifecycle rule은 age, version, class, prefix 조건으로 객체를 전이한다 (5분)
 
 분류: Google Cloud Storage
 
@@ -472,11 +698,11 @@
 - 조건에는 age, createdBefore, matchesPrefix/Suffix, storageClass, numNewerVersions 등이 포함될 수 있습니다.
 - 로그와 usage data를 보고 작은 범위부터 적용해야 예상치 못한 데이터 삭제를 막을 수 있습니다.
 
-심화 해설: GCS lifecycle은 비용 절감 도구이면서 데이터 보존 정책 구현 도구입니다. 삭제 policy는 개인정보, 감사, 복구 요구와 같이 검토해야 합니다.
+상세 해설: GCS lifecycle은 비용 절감 도구이면서 데이터 보존 정책 구현 도구입니다. 삭제 policy는 개인정보, 감사, 복구 요구와 같이 검토해야 합니다.
 
 출처/근거: Google Cloud Object Lifecycle Management
 
-### 34. Object Versioning, retention policy, hold는 GCS의 데이터 보호 계층이다 (5분)
+### 50. Object Versioning, retention policy, hold는 GCS의 데이터 보호 계층이다 (5분)
 
 분류: Google Cloud Storage
 
@@ -486,11 +712,11 @@
 - Retention policy와 bucket lock은 일정 기간 객체 삭제와 수정을 막는 강한 보존 모델을 제공합니다.
 - Event-based hold와 temporary hold는 사건이나 워크플로우 완료 전까지 객체 변경을 제한하는 데 쓰입니다.
 
-심화 해설: GCS에서 generation과 metageneration은 조건부 업데이트의 핵심입니다. ifGenerationMatch를 사용하면 overwrite race를 줄일 수 있습니다.
+상세 해설: GCS에서 generation과 metageneration은 조건부 업데이트의 핵심입니다. ifGenerationMatch를 사용하면 overwrite race를 줄일 수 있습니다.
 
 출처/근거: Object Versioning; Retention policies and Bucket Lock
 
-### 35. Pub/Sub notifications는 GCS 변경을 이벤트 스트림으로 노출한다 (5분)
+### 51. Pub/Sub notifications는 GCS 변경을 이벤트 스트림으로 노출한다 (5분)
 
 분류: Google Cloud Storage
 
@@ -500,11 +726,11 @@
 - Subscriber는 at-least-once delivery를 전제로 idempotency와 retry/backoff를 구현해야 합니다.
 - Event payload에는 bucket, object name, generation 같은 후처리 식별자가 들어갑니다.
 
-심화 해설: GCS 이벤트는 처리 시작 신호이지 처리 완료 신호가 아닙니다. downstream DB와 search index는 별도의 상태 전이를 가져야 합니다.
+상세 해설: GCS 이벤트는 처리 시작 신호이지 처리 완료 신호가 아닙니다. downstream DB와 search index는 별도의 상태 전이를 가져야 합니다.
 
 출처/근거: Configure Pub/Sub notifications for Cloud Storage
 
-### 36. GCS resumable upload와 compose는 대용량 객체 처리의 핵심 도구다 (5분)
+### 52. GCS resumable upload와 compose는 대용량 객체 처리의 핵심 도구다 (5분)
 
 분류: Google Cloud Storage
 
@@ -514,11 +740,11 @@
 - Compose operation은 여러 객체를 하나로 합쳐 client-side chunk upload나 server-side assembly에 활용할 수 있습니다.
 - CRC32C와 MD5 검증 정보를 활용하면 전송 중 손상과 저장 무결성 확인을 명시적으로 할 수 있습니다.
 
-심화 해설: 대용량 업로드는 API 하나가 아니라 상태 머신입니다. init, upload, verify, compose, publish, cleanup의 실패 지점을 모두 설계해야 합니다.
+상세 해설: 대용량 업로드는 API 하나가 아니라 상태 머신입니다. init, upload, verify, compose, publish, cleanup의 실패 지점을 모두 설계해야 합니다.
 
 출처/근거: Cloud Storage upload documentation
 
-### 37. Storage Insights와 Inventory 계열 데이터는 bucket 운영을 분석 문제로 만든다 (5분)
+### 53. Storage Insights와 Inventory 계열 데이터는 bucket 운영을 분석 문제로 만든다 (5분)
 
 분류: Google Cloud Storage
 
@@ -528,11 +754,11 @@
 - 객체 metadata export와 usage log를 BigQuery로 분석하면 lifecycle 후보와 비용 이상치를 찾을 수 있습니다.
 - prefix와 tag 전략이 좋을수록 비용 배분과 삭제 후보 추출이 단순해집니다.
 
-심화 해설: 운영자는 객체 목록을 사람이 훑는 것이 아니라 inventory를 질의합니다. 저장소 운영은 결국 analytics workload가 됩니다.
+상세 해설: 운영자는 객체 목록을 사람이 훑는 것이 아니라 inventory를 질의합니다. 저장소 운영은 결국 analytics workload가 됩니다.
 
 출처/근거: Storage Insights datasets; Object Lifecycle Management
 
-### 38. BigQuery, Dataflow, GKE와 연결될 때 GCS는 데이터 플랫폼의 landing zone이 된다 (5분)
+### 54. BigQuery, Dataflow, GKE와 연결될 때 GCS는 데이터 플랫폼의 landing zone이 된다 (5분)
 
 분류: Google Cloud Storage
 
@@ -542,13 +768,13 @@
 - Dataflow/Spark는 object listing, small file, region locality, shuffle/staging 위치의 영향을 받습니다.
 - ML artifact와 feature 데이터는 보존 기간, lineage, 접근 권한이 모델 재현성과 연결됩니다.
 
-심화 해설: 데이터 플랫폼에서 GCS bucket은 단순 업로드 대상이 아니라 schema, catalog, region, IAM, lifecycle이 엮인 landing zone입니다.
+상세 해설: 데이터 플랫폼에서 GCS bucket은 단순 업로드 대상이 아니라 schema, catalog, region, IAM, lifecycle이 엮인 landing zone입니다.
 
 출처/근거: Cloud Storage overview; Google Cloud analytics docs
 
-### 39. 직접 업로드 아키텍처는 권한 위임과 상태 머신의 조합이다 (5분)
+### 55. 직접 업로드 아키텍처는 권한 위임과 상태 머신의 조합이다 (5분)
 
-분류: 설계와 운영
+분류: 운영 심화
 
 핵심 메시지: 서버가 파일 바이트를 프록시하지 않게 하되, 권한과 검증은 서버가 통제해야 합니다.
 
@@ -556,13 +782,13 @@
 - Client는 storage에 직접 업로드하고, callback이나 event pipeline이 scan/transform/index 상태를 갱신합니다.
 - 서비스 공개는 upload 완료가 아니라 validation 완료와 metadata DB commit 이후에 일어나야 합니다.
 
-심화 해설: 이 패턴의 핵심 실패는 orphan object, DB row 없는 object, scan 전 공개 object, 중복 event입니다. 상태 머신으로 다뤄야 합니다.
+상세 해설: 이 패턴의 핵심 실패는 orphan object, DB row 없는 object, scan 전 공개 object, 중복 event입니다. 상태 머신으로 다뤄야 합니다.
 
 출처/근거: Provider upload and event docs
 
-### 40. 멀티테넌트 저장소는 prefix, tag, policy, KMS key 경계를 맞춰야 한다 (5분)
+### 56. 멀티테넌트 저장소는 prefix, tag, policy, KMS key 경계를 맞춰야 한다 (5분)
 
-분류: 설계와 운영
+분류: 운영 심화
 
 핵심 메시지: tenant isolation은 bucket을 나눌지 prefix를 나눌지보다 감사와 blast radius가 더 중요합니다.
 
@@ -570,13 +796,13 @@
 - Prefix-per-tenant는 효율적이지만 policy condition, inventory query, delete operation을 정교하게 설계해야 합니다.
 - KMS key, access log, lifecycle, cost allocation tag가 tenant 경계와 어긋나면 사고 분석이 어려워집니다.
 
-심화 해설: 테넌트 삭제는 DB row 삭제가 아니라 object delete job, version cleanup, retention exception, audit evidence까지 포함합니다.
+상세 해설: 테넌트 삭제는 DB row 삭제가 아니라 object delete job, version cleanup, retention exception, audit evidence까지 포함합니다.
 
 출처/근거: Provider IAM, lifecycle, and KMS docs
 
-### 41. CDN 앞의 객체 스토리지는 immutable asset pipeline으로 설계한다 (5분)
+### 57. CDN 앞의 객체 스토리지는 immutable asset pipeline으로 설계한다 (5분)
 
-분류: 설계와 운영
+분류: 운영 심화
 
 핵심 메시지: 사용자에게 보이는 URL은 cache와 rollback의 단위이므로 build artifact처럼 다룹니다.
 
@@ -584,13 +810,13 @@
 - 같은 URL overwrite는 cache invalidation 비용과 stale content 문제를 만듭니다.
 - private media는 signed URL/cookie, origin access identity/control, token exchange로 직접 bucket 공개를 피합니다.
 
-심화 해설: 정적 파일 배포의 좋은 key는 content hash를 포함합니다. /app.4f3a.js처럼 바뀌면 새 URL, 안 바뀌면 영구 캐시가 가능합니다.
+상세 해설: 정적 파일 배포의 좋은 key는 content hash를 포함합니다. /app.4f3a.js처럼 바뀌면 새 URL, 안 바뀌면 영구 캐시가 가능합니다.
 
 출처/근거: Provider CDN and object storage integration docs
 
-### 42. 보안 사고는 public bucket 하나가 아니라 제어 경계 실패로 발생한다 (5분)
+### 58. 보안 사고는 public bucket 하나가 아니라 제어 경계 실패로 발생한다 (5분)
 
-분류: 설계와 운영
+분류: 운영 심화
 
 핵심 메시지: 노출, 권한 상승, 서명 URL 유출, 로그 속 개인정보, KMS 권한 장애를 함께 모델링해야 합니다.
 
@@ -598,13 +824,13 @@
 - Signed URL은 bearer token이므로 만료 시간과 scope를 줄이고 로그/analytics에 전체 URL이 남지 않게 해야 합니다.
 - KMS key policy가 틀리면 객체는 있어도 읽을 수 없는 장애가 생기며, 반대로 넓으면 복호화 경계가 무너집니다.
 
-심화 해설: 스토리지 보안 리뷰는 'bucket public인가' 한 줄이 아니라 identity, network, encryption, retention, audit, event pipeline을 모두 체크합니다.
+상세 해설: 스토리지 보안 리뷰는 'bucket public인가' 한 줄이 아니라 identity, network, encryption, retention, audit, event pipeline을 모두 체크합니다.
 
 출처/근거: AWS/Azure/GCP security recommendations
 
-### 43. 암호화는 기본값이 아니라 키 수명주기 운영이다 (5분)
+### 59. 암호화는 기본값이 아니라 키 수명주기 운영이다 (5분)
 
-분류: 설계와 운영
+분류: 운영 심화
 
 핵심 메시지: 서버 측 암호화가 켜져 있어도 key ownership, rotation, audit, deletion protection이 설계 대상입니다.
 
@@ -612,13 +838,13 @@
 - Customer-managed KMS key는 접근 경계와 감사가 강해지지만 key policy 오류가 서비스 장애가 됩니다.
 - Envelope encryption, per-tenant key, key rotation, key disable drill은 데이터 보호와 운영 부담의 균형입니다.
 
-심화 해설: 키를 삭제하거나 비활성화하면 객체 삭제보다 더 큰 장애가 됩니다. key admin과 data admin을 분리하고 break-glass 절차를 문서화해야 합니다.
+상세 해설: 키를 삭제하거나 비활성화하면 객체 삭제보다 더 큰 장애가 됩니다. key admin과 data admin을 분리하고 break-glass 절차를 문서화해야 합니다.
 
 출처/근거: Provider encryption and KMS docs
 
-### 44. 관측성은 bytes 저장량보다 요청 모양과 정책 효과를 본다 (5분)
+### 60. 관측성은 bytes 저장량보다 요청 모양과 정책 효과를 본다 (5분)
 
-분류: 설계와 운영
+분류: 운영 심화
 
 핵심 메시지: storage observability는 capacity, request, error, latency, lifecycle, replication, egress를 나눠 봅니다.
 
@@ -626,13 +852,13 @@
 - Lifecycle transition과 deletion volume은 비용 최적화와 데이터 유실 위험을 동시에 보여줍니다.
 - Replication lag, failed operations, inventory freshness는 DR과 compliance의 실제 상태입니다.
 
-심화 해설: 대시보드는 TB 총량 하나로 끝나지 않습니다. 요청당 비용, egress 상위 prefix, orphan objects, stale temporary uploads가 더 실무적인 지표입니다.
+상세 해설: 대시보드는 TB 총량 하나로 끝나지 않습니다. 요청당 비용, egress 상위 prefix, orphan objects, stale temporary uploads가 더 실무적인 지표입니다.
 
 출처/근거: AWS S3 Storage Lens; Azure architecture best practices; GCS Insights
 
-### 45. 비용 모델은 저장 GB보다 요청, 송신, 복구, 최소 보관 기간이 더 어렵다 (5분)
+### 61. 비용 모델은 저장 GB보다 요청, 송신, 복구, 최소 보관 기간이 더 어렵다 (5분)
 
-분류: 설계와 운영
+분류: 운영 심화
 
 핵심 메시지: 객체 스토리지 비용은 capacity, operation, transfer, retrieval, monitoring, replication이 합쳐집니다.
 
@@ -640,13 +866,13 @@
 - 인터넷 egress와 cross-region transfer는 저장비보다 훨씬 빠르게 비용을 키울 수 있습니다.
 - Archive 계층은 저장비가 낮아도 retrieval, rehydration, early deletion, restore time을 함께 계산해야 합니다.
 
-심화 해설: 비용 최적화의 순서는 삭제가 아니라 측정입니다. inventory, access log, prefix/tag cost allocation을 먼저 만들고 정책을 적용합니다.
+상세 해설: 비용 최적화의 순서는 삭제가 아니라 측정입니다. inventory, access log, prefix/tag cost allocation을 먼저 만들고 정책을 적용합니다.
 
 출처/근거: Provider pricing and lifecycle docs
 
-### 46. DR은 복제 설정이 아니라 복원 절차와 권한 분리다 (5분)
+### 62. DR은 복제 설정이 아니라 복원 절차와 권한 분리다 (5분)
 
-분류: 설계와 운영
+분류: 운영 심화
 
 핵심 메시지: RPO/RTO는 숫자가 아니라 어떤 데이터, 어떤 계정, 어떤 권한으로 복구할지의 계약입니다.
 
@@ -654,13 +880,13 @@
 - 복구 테스트는 객체 목록, version restore, KMS decrypt, application metadata rebuild를 모두 포함해야 합니다.
 - Immutable backup은 삭제를 막지만 잘못된 데이터를 영원히 보관할 수도 있으므로 retention과 검증이 필요합니다.
 
-심화 해설: 백업의 완료 기준은 '저장했다'가 아니라 '정해진 시간 안에 서비스가 읽을 수 있게 되돌렸다'입니다.
+상세 해설: 백업의 완료 기준은 '저장했다'가 아니라 '정해진 시간 안에 서비스가 읽을 수 있게 되돌렸다'입니다.
 
 출처/근거: Provider replication, object lock, and redundancy docs
 
-### 47. AWS, Azure, Google의 차이는 이름보다 기본 경계와 통합 방식에서 나온다 (5분)
+### 63. AWS, Azure, Google의 차이는 이름보다 기본 경계와 통합 방식에서 나온다 (5분)
 
-분류: 설계와 운영
+분류: 운영 심화
 
 핵심 메시지: 세 서비스는 모두 객체 저장소지만 account/project, policy, event, analytics 통합이 다릅니다.
 
@@ -668,13 +894,13 @@
 - Azure Blob은 storage account, container, Entra ID/RBAC, SAS, Event Grid, ADLS Gen2/Synapse와 연결됩니다.
 - Google Cloud Storage는 project/bucket IAM, uniform access, Pub/Sub, BigQuery/Dataflow와 연결됩니다.
 
-심화 해설: 멀티클라우드 추상화는 PUT/GET만 숨기기 쉽습니다. 실제 어려움은 IAM, KMS, event, lifecycle, cost, audit semantic 차이입니다.
+상세 해설: 멀티클라우드 추상화는 PUT/GET만 숨기기 쉽습니다. 실제 어려움은 IAM, KMS, event, lifecycle, cost, audit semantic 차이입니다.
 
 출처/근거: AWS, Azure, and Google Cloud official storage docs
 
-### 48. 최종 설계는 객체 하나가 아니라 데이터 제품의 수명주기를 다룬다 (5분)
+### 64. 최종 설계는 객체 하나가 아니라 데이터 제품의 수명주기를 다룬다 (5분)
 
-분류: 설계와 운영
+분류: 운영 심화
 
 핵심 메시지: 업로드, 검증, 파생물 생성, 공개, 보관, 감사, 삭제까지 하나의 설계 문서로 연결해야 합니다.
 
@@ -682,7 +908,7 @@
 - 로그 보관소는 ingestion, partition, compression, catalog, retention, legal hold, query cost가 함께 설계됩니다.
 - 백업 저장소는 immutability, cross-account restore, KMS recovery, drill evidence까지 포함해야 신뢰할 수 있습니다.
 
-심화 해설: 강연의 결론은 특정 버튼 위치가 아니라 설계 질문입니다. 어떤 객체가 있고, 누가 읽고, 무엇이 실패하며, 언제 지우고, 어떻게 복구하는가를 끝까지 추적해야 합니다.
+상세 해설: 강연의 결론은 특정 버튼 위치가 아니라 설계 질문입니다. 어떤 객체가 있고, 누가 읽고, 무엇이 실패하며, 언제 지우고, 어떻게 복구하는가를 끝까지 추적해야 합니다.
 
 출처/근거: Official provider documentation and architecture guidance
 
