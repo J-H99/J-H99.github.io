@@ -1980,7 +1980,7 @@ function writeInteractive() {
       'progressLabel.textContent = `${String(slide.no).padStart(2, "0")} / ${slides.length}`;'
     )
     .replace(
-      '<div class="section-title">Lecture points</div>',
+      '<div class="section-title">Study points</div>',
       '<div class="section-title">핵심 내용</div>'
     )
     .replace(
@@ -2109,11 +2109,11 @@ function updateIndexes() {
   replaceInFile("materials/cloud-storage/index.html", [
     [
       /(?:클라우드 스토리지를 원격 폴더가 아니라 데이터 플랫폼의 핵심 컴포넌트로 이해하기 위한 2시간 강연 묶음입니다\.|클라우드 스토리지를 분산 객체 시스템과 데이터 플랫폼 관점에서 이해하기 위한 심화 강연 묶음입니다\.)/,
-      "클라우드 스토리지를 처음 듣는 사람도 따라올 수 있는 쉬운 설명에서 시작해 객체 스토리지 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 운영 심화까지 이어지는 강연 묶음입니다."
+      "클라우드 스토리지를 처음 듣는 사람도 따라올 수 있는 쉬운 설명에서 시작해 객체 스토리지 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 운영 심화까지 이어지는 학습 묶음입니다."
     ],
     [
       /(?:30개 강연 탭|48개 심화 강연 탭|\d+개 입문\+심화 강연 탭)을 브라우저에서 바로 봅니다\./,
-      `${slides.length}개 입문+심화 강연 탭을 브라우저에서 바로 봅니다.`
+      `${slides.length}개 입문+심화 학습 탭을 브라우저에서 바로 봅니다.`
     ],
     [
       /(?:슬라이드별 진행 노트와 공식 문서 링크입니다\.|슬라이드별 심화 해설과 공식 문서 링크입니다\.)/,
@@ -2122,19 +2122,19 @@ function updateIndexes() {
     [/PPTX 원본 파일을 다운로드합니다\./, "초기 PPTX 초안 파일을 다운로드합니다."],
     [
       /(?:발표자 노트의 원본 Markdown 파일입니다\.|심화 강연 노트의 원본 Markdown 파일입니다\.)/,
-      "입문+심화 강연 노트의 원본 Markdown 파일입니다."
+      "입문+심화 학습 노트의 원본 Markdown 파일입니다."
     ]
   ]);
 
   replaceInFile("materials/index.html", [
     [
       /(?:컴퓨터공학 전공자 대상 2시간 강연 자료입니다\. 인터랙티브 탭, 발표자 노트, PPTX를 함께 보관합니다\.|컴퓨터공학 전공자 대상 클라우드 스토리지 심화 강연 자료입니다\. \d+개 인터랙티브 탭과 심화 노트를 함께 보관합니다\.)/,
-      `처음 듣는 사람을 위한 쉬운 설명부터 컴퓨터공학 전공자용 심화까지 담은 클라우드 스토리지 강연 자료입니다. ${slides.length}개 인터랙티브 탭과 강연 노트를 함께 보관합니다.`
+      `처음 듣는 사람을 위한 쉬운 설명부터 컴퓨터공학 전공자용 심화까지 담은 클라우드 스토리지 공부 자료입니다. ${slides.length}개 인터랙티브 탭과 학습 노트를 함께 보관합니다.`
     ]
   ]);
 
   replaceInFile("index.html", [
-    [/Lecture · (?:2 hours|deep dive|basics to deep dive)/, "Lecture · basics to deep dive"],
+    [/Lecture · (?:2 hours|deep dive|basics to deep dive)/, "Study · basics to deep dive"],
     [
       /(?:객체 스토리지, lifecycle, 보안, CDN, 비용, 백업과 복제까지 이어지는 컴퓨터공학 전공자 대상 강연 자료입니다\.|객체 스토리지 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 보안, 비용, DR까지 이어지는 컴퓨터공학 전공자 대상 심화 강연 자료입니다\.)/,
       "클라우드 스토리지의 쉬운 개념 설명에서 시작해 객체 스토리지 모델, AWS S3, Azure Blob Storage, Google Cloud Storage, 보안, 비용, DR까지 이어지는 강연 자료입니다."
@@ -2146,7 +2146,7 @@ function updateIndexes() {
       /- `interactive-tabs\.html`(?: \([^)]*\))*/,
       `- \`interactive-tabs.html\` (${slides.length}개 입문+심화 탭)`
     ],
-    [/- `speaker-notes\.html`(?: \([^)]*\))*/, "- `speaker-notes.html` (입문+심화 강연 노트)"]
+    [/- `speaker-notes\.html`(?: \([^)]*\))*/, "- `speaker-notes.html` (입문+심화 학습 노트)"]
   ]);
 }
 

@@ -29,12 +29,12 @@ npm run fix
 - `npm run fix`: 포맷과 가능한 lint 자동 수정을 함께 실행합니다.
 - `npm run check`: 포맷 체크와 전체 lint를 함께 실행합니다.
 
-## Cloud Storage Lecture
+## Cloud Storage Study
 
 `materials/cloud-storage/`에 다음 자료를 넣었습니다.
 
 - `interactive-tabs.html` (64개 입문+심화 탭)
-- `speaker-notes.html` (입문+심화 강연 노트)
+- `speaker-notes.html` (입문+심화 학습 노트)
 - `cloud-storage-lecture-speaker-notes.md`
 
 ## 2026 Notes
