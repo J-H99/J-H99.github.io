@@ -13,8 +13,7 @@
     ".panel",
     ".material-row",
     ".resource",
-    ".document-kicker",
-    ".document"
+    ".document-kicker"
   ].join(",");
 
   const items = Array.from(document.querySelectorAll(revealSelector));
