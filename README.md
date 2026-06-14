@@ -1,6 +1,10 @@
 # Study Archive
 
-GitHub Pages로 올릴 개인 공부 아카이브입니다. 사이트 코드는 수동 코딩 없이 LLM(CODEX PRO)만으로 온전히 제작했습니다.
+GitHub Pages로 올릴 개인 공부 아카이브입니다. 사이트 코드는 직접 작성하지 않고 ChatGPT Pro의 Codex 세션을 통해 제작했습니다.
+
+## 제작 방식
+
+본 프로젝트는 직접 코드를 작성하거나 코드 품질을 라인 단위로 수동 검토하지 않고, ChatGPT Pro의 Codex 세션을 통해 요구사항 정의, 구현, 수정, 검증을 진행해 제작했습니다.
 
 ## Sections
 
