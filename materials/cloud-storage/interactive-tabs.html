@@ -122,6 +122,9 @@
       font-weight: 800;
       cursor: pointer;
       min-width: 0;
+      text-decoration: none;
+      display: grid;
+      place-items: center;
     }
 
     .tool-btn:hover {
@@ -1036,14 +1039,18 @@
       }
 
       .sidebar {
-        position: relative;
+        position: sticky;
+        top: 0;
+        z-index: 20;
         height: auto;
-        max-height: none;
+        max-height: min(360px, 48vh);
         width: 100%;
         max-width: 100%;
-        overflow-x: hidden;
+        overflow: auto;
         border-right: 0;
         border-bottom: 1px solid var(--line);
+        box-shadow: 0 18px 34px rgba(20, 31, 46, .08);
+        padding: 20px 22px 18px;
       }
 
       .brand,
@@ -1059,7 +1066,7 @@
       }
 
       .toolbar {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .category-filter {
@@ -1108,7 +1115,7 @@
       }
 
       .stage {
-        padding: 20px 14px 30px;
+        padding: 14px 14px 30px;
       }
 
       .topbar {
@@ -1120,8 +1127,24 @@
         font-size: 34px;
       }
 
-      .slide {
-        min-height: auto;
+      .slide,
+      .slide.scroll-safe {
+        aspect-ratio: auto;
+        display: block;
+        min-height: 0;
+        overflow: hidden;
+        width: 100%;
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: 1fr;
+        overflow: visible;
+        padding: 18px 18px 24px;
+      }
+
+      .visual {
+        min-height: 0;
       }
 
       .card-grid, .matrix {
@@ -1172,6 +1195,8 @@
     </div>
 
     <div class="toolbar">
+      <a class="tool-btn" href="./">자료 목록</a>
+      <a class="tool-btn" href="../../">홈</a>
       <button class="tool-btn" type="button" id="printBtn">인쇄</button>
       <button class="tool-btn" type="button" id="fullscreenBtn">전체화면</button>
     </div>
