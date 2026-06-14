@@ -326,6 +326,8 @@ main {
 
 .archive-timeline {
   --archive-axis-offset: 34px;
+  --archive-marker-radius: 12px;
+  --archive-marker-size: 24px;
 
   display: grid;
   grid-template-columns: 180px minmax(0, 1fr);
@@ -365,14 +367,12 @@ main {
 
 .archive-items::before {
   position: absolute;
-  z-index: 2;
   top: 0;
   bottom: 0;
   left: 0;
   width: 3px;
   background: var(--archive-border);
   content: "";
-  pointer-events: none;
   transform: translateX(-50%);
 }
 
@@ -397,16 +397,16 @@ main {
 .archive-month::before,
 .archive-item::before {
   position: absolute;
-  z-index: 1;
-  left: calc(var(--archive-axis-offset) * -1);
+  box-sizing: border-box;
+  left: calc((var(--archive-axis-offset) * -1) - var(--archive-marker-radius));
   top: 50%;
-  width: 18px;
-  height: 18px;
+  width: var(--archive-marker-size);
+  height: var(--archive-marker-size);
   border: 3px solid var(--archive-border);
   border-radius: 50%;
   background: var(--cat-notes-dot);
   content: "";
-  transform: translate(-50%, -50%);
+  transform: translateY(-50%);
 }
 
 .archive-month span {
