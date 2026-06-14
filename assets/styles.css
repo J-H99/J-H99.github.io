@@ -383,13 +383,13 @@ main {
 
 .document-meta-line {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px 14px;
   align-items: center;
-  margin-top: 44px;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 44px 0 14px;
   color: var(--muted);
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .document-kicker {
@@ -398,13 +398,31 @@ main {
   font-weight: 900;
 }
 
+.document-history {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  justify-content: flex-end;
+}
+
+.document-time {
+  white-space: nowrap;
+}
+
 .document-time strong {
-  color: var(--accent-dark);
+  color: var(--muted);
+  font-size: 11px;
   font-weight: 900;
+  text-transform: uppercase;
+}
+
+.document-time time {
+  color: #344047;
+  font-weight: 800;
 }
 
 .document {
-  margin: 14px 0 72px;
+  margin: 0 0 72px;
   padding: 34px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -680,6 +698,10 @@ main {
   .document-meta-line {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .document-history {
+    justify-content: flex-start;
   }
 
   .compact-toc {
