@@ -325,10 +325,8 @@ main {
 }
 
 .archive-timeline {
-  --archive-axis-offset: 34px;
-  --archive-marker-radius: 12px;
+  --archive-axis-track: 52px;
   --archive-marker-size: 24px;
-  --archive-marker-parent-border: 2px;
 
   display: grid;
   grid-template-columns: 180px minmax(0, 1fr);
@@ -363,22 +361,39 @@ main {
   align-content: start;
   align-items: start;
   gap: 15px;
-  padding-left: var(--archive-axis-offset);
 }
 
 .archive-items::before {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 0;
+  left: calc(var(--archive-axis-track) / 2);
   width: 3px;
   background: var(--archive-border);
   content: "";
   transform: translateX(-50%);
 }
 
-.archive-month {
+.archive-row,
+.archive-item {
+  display: grid;
+  grid-template-columns: var(--archive-axis-track) minmax(0, 1fr);
+  align-items: center;
+}
+
+.archive-marker {
   position: relative;
+  z-index: 1;
+  display: block;
+  width: var(--archive-marker-size);
+  height: var(--archive-marker-size);
+  border: 3px solid var(--archive-border);
+  border-radius: 50%;
+  background: var(--cat-notes-dot);
+  justify-self: center;
+}
+
+.archive-month {
   display: grid;
   grid-template-columns: auto auto;
   width: 176px;
@@ -395,24 +410,6 @@ main {
   box-shadow: 5px 5px 0 rgb(43 33 22 / 12%);
 }
 
-.archive-month::before,
-.archive-item::before {
-  position: absolute;
-  box-sizing: border-box;
-  left: calc(
-    (var(--archive-axis-offset) * -1) - var(--archive-marker-radius) -
-      var(--archive-marker-parent-border)
-  );
-  top: 50%;
-  width: var(--archive-marker-size);
-  height: var(--archive-marker-size);
-  border: 3px solid var(--archive-border);
-  border-radius: 50%;
-  background: var(--cat-notes-dot);
-  content: "";
-  transform: translateY(-50%);
-}
-
 .archive-month span {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   font-size: 13px;
@@ -423,15 +420,18 @@ main {
   font-size: 13px;
 }
 
-.archive-month.is-hidden {
+.archive-row.is-hidden,
+.archive-item.is-hidden {
   display: none;
 }
 
 .archive-item {
-  position: relative;
+  align-self: start;
+}
+
+.archive-item-card {
   display: grid;
   grid-template-columns: 92px minmax(0, 1fr) auto;
-  align-self: start;
   align-items: center;
   gap: 22px;
   min-height: 156px;
@@ -442,15 +442,11 @@ main {
   box-shadow: var(--shadow);
 }
 
-.archive-item[data-archive-category="deep-dives"]::before {
+.archive-item[data-archive-category="deep-dives"] .archive-marker {
   background: var(--cat-deep-dot);
 }
 
-.archive-item.is-hidden {
-  display: none;
-}
-
-.archive-item time {
+.archive-item-card time {
   display: inline-grid;
   min-height: 62px;
   place-items: center;
@@ -462,18 +458,18 @@ main {
   font-weight: 950;
 }
 
-.archive-item h3 {
+.archive-item-card h3 {
   margin: 5px 0 8px;
   font-size: 27px;
   line-height: 1.15;
 }
 
-.archive-item p {
+.archive-item-card p {
   margin: 0;
   color: var(--archive-muted);
 }
 
-.archive-item > a {
+.archive-item-card > a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -486,7 +482,7 @@ main {
   font-weight: 950;
 }
 
-.archive-item-soft {
+.archive-item-soft .archive-item-card {
   background: var(--archive-card-soft);
 }
 
@@ -1171,24 +1167,24 @@ main {
     position: static;
   }
 
-  .archive-items {
-    padding-left: 0;
-  }
-
   .archive-items::before {
     display: none;
   }
 
-  .archive-month::before,
-  .archive-item::before {
+  .archive-row,
+  .archive-item {
+    display: block;
+  }
+
+  .archive-marker {
     display: none;
   }
 
-  .archive-item {
+  .archive-item-card {
     grid-template-columns: 92px minmax(0, 1fr);
   }
 
-  .archive-item > a {
+  .archive-item-card > a {
     grid-column: 1 / -1;
     justify-self: start;
   }
@@ -1285,11 +1281,11 @@ main {
 }
 
 @media (width <= 560px) {
-  .archive-item {
+  .archive-item-card {
     grid-template-columns: 1fr;
   }
 
-  .archive-item time {
+  .archive-item-card time {
     width: 112px;
   }
 
