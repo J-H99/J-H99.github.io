@@ -254,6 +254,14 @@ main {
   color: var(--muted);
 }
 
+.feature-row .date-meta,
+.material-row .date-meta {
+  margin-top: 10px;
+  color: var(--accent-dark);
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .meta {
   display: block;
   margin: 0;
@@ -407,6 +415,39 @@ main {
 .document h1 {
   margin: 0 0 24px;
   font-size: 34px;
+}
+
+.article-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin: 0 0 24px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  overflow: hidden;
+}
+
+.article-meta div {
+  padding: 14px 16px;
+  border-right: 1px solid var(--line);
+}
+
+.article-meta div:last-child {
+  border-right: 0;
+}
+
+.article-meta dt {
+  color: var(--accent-dark);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.article-meta dd {
+  margin: 3px 0 0;
+  color: #344047;
+  font-size: 14px;
+  font-weight: 800;
 }
 
 .document h2 {
@@ -660,6 +701,19 @@ main {
 
   .document {
     padding: 22px;
+  }
+
+  .article-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .article-meta div {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .article-meta div:last-child {
+    border-bottom: 0;
   }
 
   .compact-toc {
