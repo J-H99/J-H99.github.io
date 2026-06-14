@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>클라우드 스토리지 2시간 강연</title>
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <style>
     :root {
       --bg: #f4f6f8;
@@ -39,7 +38,6 @@
     body {
       display: grid;
       grid-template-columns: var(--side) 1fr;
-      animation: page-in .42s cubic-bezier(.16, 1, .3, 1) both;
     }
 
     button, input {
@@ -54,7 +52,6 @@
       border-right: 1px solid var(--line);
       background: #fbfcfe;
       padding: 26px 22px 32px;
-      animation: sidebar-in .52s cubic-bezier(.16, 1, .3, 1) both;
     }
 
     .brand {
@@ -125,14 +122,11 @@
       font-weight: 800;
       cursor: pointer;
       min-width: 0;
-      transition: border-color .18s ease, background .18s ease, box-shadow .22s cubic-bezier(.16, 1, .3, 1), transform .22s cubic-bezier(.16, 1, .3, 1);
     }
 
     .tool-btn:hover {
       border-color: #b8ad9b;
       background: white;
-      box-shadow: 0 10px 18px rgba(20, 31, 46, .08);
-      transform: translateY(-1px);
     }
 
     .category-filter {
@@ -151,11 +145,6 @@
       font-size: 12px;
       font-weight: 800;
       cursor: pointer;
-      transition: border-color .18s ease, background .18s ease, color .18s ease, transform .2s cubic-bezier(.16, 1, .3, 1);
-    }
-
-    .chip:hover {
-      transform: translateY(-1px);
     }
 
     .chip.active {
@@ -198,13 +187,11 @@
       align-items: start;
       color: var(--ink);
       white-space: normal;
-      transition: border-color .18s ease, background .18s ease, box-shadow .22s cubic-bezier(.16, 1, .3, 1), color .18s ease, transform .22s cubic-bezier(.16, 1, .3, 1);
     }
 
     .tab:hover {
       background: #edf3f8;
       border-color: #d8e2ec;
-      transform: translateX(2px);
     }
 
     .tab.active {
@@ -212,7 +199,6 @@
       color: white;
       border-color: var(--dark);
       box-shadow: 0 12px 26px rgba(17, 27, 38, .18);
-      transform: translateX(3px);
     }
 
     .tab-no {
@@ -238,7 +224,6 @@
       min-width: 0;
       min-height: 100vh;
       padding: 34px clamp(28px, 4vw, 58px) 42px;
-      animation: stage-in .58s cubic-bezier(.16, 1, .3, 1) both;
     }
 
     .topbar {
@@ -283,14 +268,6 @@
       font-weight: 850;
       color: var(--ink);
       cursor: pointer;
-      transition: border-color .18s ease, background .18s ease, box-shadow .22s cubic-bezier(.16, 1, .3, 1), transform .22s cubic-bezier(.16, 1, .3, 1);
-    }
-
-    .nav-btn:not(:disabled):hover {
-      border-color: #bcc7d2;
-      background: #fbfdff;
-      box-shadow: 0 10px 22px rgba(20, 31, 46, .08);
-      transform: translateY(-1px);
     }
 
     .nav-btn:disabled {
@@ -319,7 +296,6 @@
         linear-gradient(120deg, rgba(47, 109, 246, .08), transparent 45%),
         linear-gradient(270deg, rgba(34, 167, 122, .08), transparent 35%),
         var(--panel);
-      animation: slide-head-in .38s cubic-bezier(.16, 1, .3, 1) both;
     }
 
     .hero-meta {
@@ -355,7 +331,6 @@
       grid-template-columns: minmax(0, 1.05fr) minmax(330px, .95fr);
       gap: clamp(22px, 3vw, 40px);
       align-items: start;
-      animation: slide-body-in .44s cubic-bezier(.16, 1, .3, 1) 70ms both;
     }
 
     .text-stack {
@@ -388,13 +363,7 @@
       border-radius: 7px;
       line-height: 1.55;
       font-size: 17px;
-      animation: point-in .34s cubic-bezier(.16, 1, .3, 1) both;
     }
-
-    .point-list li:nth-child(2) { animation-delay: 45ms; }
-    .point-list li:nth-child(3) { animation-delay: 90ms; }
-    .point-list li:nth-child(4) { animation-delay: 135ms; }
-    .point-list li:nth-child(5) { animation-delay: 180ms; }
 
     .point-list li::before {
       content: "";
@@ -776,77 +745,6 @@
       text-underline-offset: 3px;
     }
 
-    @keyframes page-in {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes sidebar-in {
-      from {
-        opacity: 0;
-        transform: translateX(-14px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @keyframes stage-in {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes slide-head-in {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes slide-body-in {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes point-in {
-      from {
-        opacity: 0;
-        transform: translateX(-8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 1ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-        transition-duration: 1ms !important;
-      }
-    }
-
     @media (max-width: 1100px) {
       :root { --side: 310px; }
       .content { grid-template-columns: 1fr; }
@@ -987,7 +885,7 @@
   <aside class="sidebar">
     <div class="brand">
       <h1>클라우드 스토리지</h1>
-      <p>2시간 강연용 HTML 자료. 30개 탭을 내용 흐름별로 묶고, 각 탭에 발표 포인트와 실무 체크를 함께 넣었습니다.</p>
+      <p>2시간 입문 강연용 HTML 자료. 처음 듣는 학생도 따라올 수 있게 쉬운 비유에서 시작해, 마지막에만 현업 감각을 살짝 얹었습니다.</p>
     </div>
 
     <div class="progress-wrap">
@@ -1007,7 +905,6 @@
       <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html">AWS S3 User Guide</a>
       <a href="https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview">Azure Blob access tiers</a>
       <a href="https://cloud.google.com/storage/docs/introduction">Google Cloud Storage docs</a>
-      <a href="cloud-storage-lecture-speaker-notes.md">발표자 노트 Markdown</a>
     </div>
   </aside>
 
@@ -1025,18 +922,17 @@
 
   <script>
     const categories = [
-      { id: "foundation", label: "기본 모델", range: "01-06", accent: "#2f6df6" },
-      { id: "services", label: "서비스와 수명주기", range: "07-09", accent: "#22a77a" },
-      { id: "implementation", label: "업로드와 객체 설계", range: "10-13", accent: "#d39125" },
-      { id: "security", label: "보안과 복구 기초", range: "14-17", accent: "#e65f4d" },
-      { id: "pipeline", label: "파이프라인과 배포", range: "18-20", accent: "#0f8f6e" },
-      { id: "operations", label: "비용과 운영", range: "21-26", accent: "#7458f4" },
-      { id: "practice", label: "실무 설계", range: "27-30", accent: "#0f8f6e" }
+      { id: "intro", label: "처음 감 잡기", range: "01-05", accent: "#2f6df6" },
+      { id: "concept", label: "핵심 개념", range: "06-10", accent: "#22a77a" },
+      { id: "service", label: "서비스 선택", range: "11-14", accent: "#d39125" },
+      { id: "usecase", label: "사용 예시", range: "15-19", accent: "#0f8f6e" },
+      { id: "safety", label: "공유와 보안", range: "20-23", accent: "#e65f4d" },
+      { id: "ops", label: "비용과 운영", range: "24-27", accent: "#7458f4" },
+      { id: "workshop", label: "마무리 실습", range: "28-30", accent: "#0f8f6e" }
     ];
 
     const sourceLinks = {
       aws: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html",
-      multipart: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html",
       presigned: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/ShareObjectPreSignedURL.html",
       awsSecurity: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html",
       azureTier: "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview",
@@ -1048,591 +944,1224 @@
     };
 
     const slides = [
-      {
-        no: 1, cat: "foundation", minutes: 4,
-        title: "클라우드 스토리지",
-        claim: "파일을 올리는 서비스에서 데이터 플랫폼으로",
-        points: [
-          "클라우드 스토리지는 원격 폴더가 아니라 애플리케이션 아키텍처의 중심 컴포넌트입니다.",
-          "오늘의 질문은 저장 위치, 접근 권한, 삭제 시점, 장애와 비용 관리입니다.",
-          "처음에는 파일/폴더 감각에서 시작하고, 마지막에는 설계 리뷰 질문으로 끝냅니다."
-        ],
-        field: "강연의 기준점: '저장한다'가 아니라 '운영 가능한 데이터 흐름을 만든다'로 시야를 올립니다.",
-        visual: { type: "cards", title: "Lecture rail", items: [
-          ["개념", "object / block / file"],
-          ["구현", "upload / event / CDN"],
-          ["운영", "security / cost / recovery"],
-          ["실습", "하루 1TB 사진 서비스 설계"]
-        ]},
-        source: "AWS S3 User Guide; Azure Blob Storage; Google Cloud Storage docs",
-        links: ["aws", "azureTier", "gcs"]
-      },
-      {
-        no: 2, cat: "foundation", minutes: 4,
-        title: "2시간은 개념에서 운영까지 한 번에 이어진다",
-        claim: "초반은 쉬운 모델, 후반은 신입 엔지니어가 설계 리뷰에서 듣는 질문으로 갑니다.",
-        points: [
-          "0-24분: block, file, object의 차이를 잡습니다.",
-          "24-52분: 주요 서비스, storage class, lifecycle, 직접 업로드와 key 설계를 연결합니다.",
-          "52-80분: 보안 기초와 event, CDN, data lake 패턴을 다룹니다.",
-          "80-120분: 비용, 복구, replication, monitoring, 미니 설계를 다룹니다."
-        ],
-        field: "각 장은 따로 외우는 단원이 아니라 하나의 서비스 설계 흐름으로 이어집니다.",
-        visual: { type: "timeline", title: "Two-hour route", items: [
-          ["0-24분", "저장소의 기본 모델"],
-          ["24-52분", "서비스, 클래스, 업로드 설계"],
-          ["52-80분", "보안 기초와 파이프라인"],
-          ["80-104분", "비용, 백업, 복제, 모니터링"],
-          ["104-120분", "미니 설계 토론"]
-        ]},
-        source: "Author synthesis"
-      },
-      {
-        no: 3, cat: "foundation", minutes: 4,
-        title: "스토리지 선택은 '읽고 쓰는 방식'에서 시작한다",
-        claim: "같은 저장소처럼 보여도 코드가 기대하는 인터페이스가 다르면 선택지가 달라집니다.",
-        points: [
-          "Block은 OS가 파일 시스템을 얹는 가상 디스크에 가깝습니다.",
-          "File은 여러 서버가 경로 기반으로 공유하는 파일 시스템에 가깝습니다.",
-          "Object는 HTTP API로 접근하는 큰 key-value 저장소에 가깝습니다.",
-          "rename, append, POSIX lock 같은 파일 시스템 기대는 객체 스토리지와 맞지 않을 수 있습니다."
-        ],
-        field: "현업 질문: 이 데이터는 자주 수정되는가, 공유 파일 시스템이 필요한가, 아니면 큰 객체를 오래 보관하는가?",
-        visual: { type: "cards", title: "Storage model", items: [
-          ["Block", "DB/VM 디스크, 낮은 지연시간"],
-          ["File", "공유 경로, POSIX 유사 semantics"],
-          ["Object", "bucket + key, metadata와 policy"],
-          ["Decision", "읽기/쓰기 패턴에서 출발"]
-        ]},
-        source: "Author synthesis"
-      },
-      {
-        no: 4, cat: "foundation", minutes: 4,
-        title: "객체 스토리지는 디렉터리가 아니라 bucket + key + metadata다",
-        claim: "버킷은 정책 단위, key는 주소, 객체는 바이트와 설명서의 묶음입니다.",
-        points: [
-          "Bucket은 네임스페이스와 정책, 과금, lifecycle의 경계입니다.",
-          "Key는 객체 식별자입니다. 슬래시는 폴더가 아니라 prefix 관습으로 보는 편이 안전합니다.",
-          "Object는 bytes, metadata, tags, version 정보를 함께 가질 수 있습니다."
-        ],
-        field: "객체 스토리지에서 이름 짓기는 UI 문제가 아니라 권한, 비용, 검색, 삭제 정책의 문제입니다.",
-        visual: { type: "kv", title: "Object anatomy", items: [
-          ["bucket", "media-prod-kr"],
-          ["key", "tenant/acme/year/2026/month/06/image.webp"],
-          ["object", "bytes + metadata + tags"],
-          ["policy", "access, lifecycle, versioning"]
-        ]},
-        source: "AWS S3 User Guide; Google Cloud Storage overview",
-        links: ["aws", "gcs"]
-      },
-      {
-        no: 5, cat: "foundation", minutes: 4,
-        title: "좋은 저장소는 안 잃고, 빨리 읽고, 싸야 한다: 셋은 함께 움직이지 않는다",
-        claim: "내구성, 가용성, 지연시간, 비용은 따로 계산해야 합니다.",
-        points: [
-          "Archive 계열은 저장비가 낮을 수 있지만 복구 지연과 retrieval 비용이 붙습니다.",
-          "Single-zone 선택은 비용과 지연시간에는 유리할 수 있지만 장애 반경이 다릅니다.",
-          "프로덕션에서는 '가장 좋은 저장소'보다 '이 워크로드에 맞는 저장소'를 고릅니다."
-        ],
-        field: "설계 리뷰 질문: durable? available? fast enough? affordable?",
-        visual: { type: "matrix", title: "Trade-off board", items: [
-          ["Durability", "데이터를 잃지 않는가"],
-          ["Availability", "장애 중에도 접근 가능한가"],
-          ["Latency", "사용자 경험에 충분히 빠른가"],
-          ["Cost", "저장, 요청, 송신, 복구 비용을 감당하는가"],
-          ["Region", "데이터 위치가 사용자와 규제에 맞는가"],
-          ["Operations", "복구와 관측 절차가 있는가"]
-        ]},
-        source: "AWS S3 User Guide; Azure redundancy docs; Google Cloud storage classes",
-        links: ["aws", "azureRedundancy", "gcsClasses"]
-      },
-      {
-        no: 6, cat: "foundation", minutes: 4,
-        title: "클라우드 스토리지는 한 제품이 아니라 제품군이다",
-        claim: "객체 스토리지는 범용 기반이지만 모든 문제의 답은 아닙니다.",
-        points: [
-          "DB에는 트랜잭션과 인덱스가 있고, 객체 스토리지에는 싸고 큰 durable 객체가 있습니다.",
-          "메시지 큐, 캐시, CDN, 파일 스토리지, 아카이브는 서로 다른 역할을 가집니다.",
-          "현업에서는 '왜 S3가 아니라 DB인가'와 '왜 DB가 아니라 S3인가'를 모두 묻습니다."
-        ],
-        field: "제품 이름보다 책임 경계를 먼저 그리면 저장소 선택이 훨씬 쉬워집니다.",
-        visual: { type: "cards", title: "Storage portfolio", items: [
-          ["Object storage", "이미지, 백업, 로그, 데이터레이크"],
-          ["Block volume", "DB/VM 디스크"],
-          ["Shared file", "여러 서버의 path 기반 공유"],
-          ["Database", "질의, 트랜잭션, 인덱스"],
-          ["Archive", "장기 보관"],
-          ["Cache/CDN", "반복 읽기와 edge delivery"]
-        ]},
-        source: "Author synthesis"
-      },
-      {
-        no: 7, cat: "services", minutes: 4,
-        title: "서비스 이름은 달라도 운영 질문은 거의 같다",
-        claim: "벤더별 용어를 암기하기보다 같은 운영 질문을 매핑하는 습관이 중요합니다.",
-        points: [
-          "AWS는 S3, Azure는 Blob Storage, Google Cloud는 Cloud Storage를 중심으로 봅니다.",
-          "객체 컨테이너, 객체 이름, 접근 제어, storage class, lifecycle, 삭제 방어는 공통 축입니다.",
-          "가격과 세부 제약은 계속 바뀌므로 공식 문서와 계산기로 확인해야 합니다."
-        ],
-        field: "면접과 실무에서 강한 답은 특정 버튼 위치가 아니라 공통 설계 축을 설명하는 답입니다.",
-        visual: { type: "table", title: "Cross-cloud map", headers: ["질문", "AWS", "Azure", "Google Cloud"], rows: [
-          ["컨테이너", "Bucket", "Storage account + container", "Bucket"],
-          ["객체 이름", "Key", "Blob name", "Object name"],
-          ["접근 제어", "IAM / bucket policy", "RBAC / SAS / policy", "IAM / signed URL"],
-          ["수명주기", "S3 Lifecycle", "Lifecycle management", "Object Lifecycle Management"]
-        ]},
-        source: "AWS S3; Azure Blob; Google Cloud Storage docs",
-        links: ["aws", "azureTier", "gcs"]
-      },
-      {
-        no: 8, cat: "services", minutes: 4,
-        title: "스토리지 클래스는 가격표가 아니라 접근 패턴 선언이다",
-        claim: "접근 빈도, 최소 보관 기간, 복구 지연을 함께 봐야 합니다.",
-        points: [
-          "Hot/Standard는 자주 읽고 즉시 접근해야 하는 데이터에 맞습니다.",
-          "Cool/Nearline/Coldline은 낮은 저장비와 접근 비용, 최소 보관 기간을 함께 봐야 합니다.",
-          "Archive 계열은 복구 지연을 감당할 수 있을 때만 선택합니다."
-        ],
-        field: "실무 규칙: '싸니까 Archive'가 아니라 복구 지연, 최소 보관 기간, early deletion, minimum object size를 함께 봅니다.",
-        visual: { type: "timeline", title: "Temperature lane", items: [
-          ["Hot / Standard", "자주 읽고 즉시 응답"],
-          ["Cool / Nearline", "가끔 읽는 데이터"],
-          ["Cold / Coldline", "드물게 읽지만 온라인"],
-          ["Archive / Glacier", "거의 안 읽는 장기 보관"]
-        ]},
-        source: "AWS S3 storage classes; Azure access tiers; Google Cloud storage classes",
-        links: ["azureTier", "gcsClasses", "aws"]
-      },
-      {
-        no: 9, cat: "services", minutes: 4,
-        title: "수명주기 정책은 비용 자동화의 첫 번째 도구다",
-        claim: "객체가 나이를 먹을수록 정책이 자동으로 달라지게 만듭니다.",
-        points: [
-          "조건은 age, prefix, tag, version 상태 같은 형태로 잡습니다.",
-          "동작은 tier transition, delete, incomplete multipart abort처럼 구성됩니다.",
-          "처음부터 전체 버킷에 적용하지 말고 dev 데이터나 제한된 prefix로 테스트합니다."
-        ],
-        field: "Lifecycle은 비용 도구이면서 동시에 사고 방지 도구입니다. 특히 미완료 multipart 정리에 유용합니다.",
-        visual: { type: "timeline", title: "Lifecycle example", items: [
-          ["0일", "Standard에 업로드, tag 기록"],
-          ["30일", "Cool/Nearline 후보"],
-          ["90일", "Cold/Coldline 후보"],
-          ["1년+", "Archive 또는 삭제"]
-        ]},
-        source: "AWS S3 Lifecycle; Azure Blob lifecycle; Google Cloud Object Lifecycle Management",
-        links: ["gcsLifecycle", "aws", "azureTier"]
-      },
-      {
-        no: 10, cat: "implementation", minutes: 4,
-        title: "대부분의 웹 업로드는 서버를 통과하지 않고 직접 스토리지로 간다",
-        claim: "서버는 권한을 발급하고, 바이트 전송은 스토리지가 처리합니다.",
-        points: [
-          "서버가 파일 바이트를 프록시하면 네트워크와 CPU가 병목이 됩니다.",
-          "API 서버는 인증과 정책 확인 후 짧게 만료되는 presigned URL 또는 SAS를 발급합니다.",
-          "업로드 후 DB 상태를 갱신하거나 이벤트 후처리를 시작합니다."
-        ],
-        field: "중요한 분리: 인증은 애플리케이션 서버, 대용량 전송은 객체 스토리지.",
-        visual: { type: "flow", title: "Direct upload", items: [
-          ["Client", "업로드 요청"],
-          ["API Server", "인증, 정책 확인, URL 발급"],
-          ["Object Storage", "직접 업로드"],
-          ["DB / Worker", "상태 저장, 후처리"]
-        ]},
-        source: "AWS S3 presigned URL docs",
-        links: ["presigned"]
-      },
-      {
-        no: 11, cat: "implementation", minutes: 4,
-        title: "대용량 파일은 여러 조각으로 올려 실패 범위를 줄인다",
-        claim: "실패한 조각만 다시 보내면 되기 때문에 대용량 업로드가 안정적입니다.",
-        points: [
-          "AWS는 100 MB 이상 객체에 multipart upload 사용을 권장합니다.",
-          "각 part는 독립적으로 재시도할 수 있고 병렬 업로드로 처리량을 높일 수 있습니다.",
-          "완료하지 않은 multipart upload는 비용이 생길 수 있으므로 abort lifecycle 규칙을 둡니다."
-        ],
-        field: "대용량 업로드에서 안정성은 '한 번에 성공'이 아니라 '부분 실패를 작게 만드는 구조'에서 나옵니다.",
-        visual: { type: "flow", title: "Multipart upload", items: [
-          ["Initiate", "upload ID 생성"],
-          ["Upload parts", "part 1..N 병렬 전송"],
-          ["Retry failed parts", "실패 part만 재시도"],
-          ["Complete / abort", "완료 또는 정리"]
-        ]},
-        source: "AWS S3 multipart upload docs",
-        links: ["multipart"]
-      },
-      {
-        no: 12, cat: "implementation", minutes: 4,
-        title: "객체 key는 이름이 아니라 운영 인덱스다",
-        claim: "나중에 조회, 권한, 수명주기, 비용 분석을 쉽게 만드는 이름이 좋은 key입니다.",
-        points: [
-          "tenant/date/type/hash 같은 prefix는 정책과 배치 작업을 쉽게 만듭니다.",
-          "개인정보를 key에 직접 넣으면 로그와 URL에 민감정보가 퍼질 수 있습니다.",
-          "같은 규칙을 유지해야 inventory, lifecycle, 장애 조사가 쉬워집니다."
-        ],
-        field: "좋은 key는 사람이 예쁘게 보는 이름이 아니라 운영 시스템이 잘 자르는 인덱스입니다.",
-        visual: { type: "kv", title: "Key examples", items: [
-          ["좋은 예", "tenant=acme/year=2026/month=06/type=image/uuid.webp"],
-          ["좋은 예", "logs/app=api/dt=2026-06-14/hour=10/part-00017.parquet"],
-          ["나쁜 예", "final_final_really_final.jpg"],
-          ["나쁜 예", "name_rrn_contract.pdf"]
-        ]},
-        source: "AWS S3 object key docs; Google Cloud object name docs",
-        links: ["aws", "gcs"]
-      },
-      {
-        no: 13, cat: "implementation", minutes: 4,
-        title: "메타데이터와 태그는 나중의 자동화를 만든다",
-        claim: "처음에 붙인 작은 정보가 후처리, 비용 분석, 보안 정책의 기준이 됩니다.",
-        points: [
-          "Content-Type과 Cache-Control은 브라우저 렌더링과 CDN 캐시에 영향을 줍니다.",
-          "checksum과 ETag는 전송 오류와 재처리 안전성을 확인하는 데 쓰입니다.",
-          "tenant, owner, retention 같은 tag는 lifecycle과 cost allocation의 기준이 됩니다."
-        ],
-        field: "업로드 순간에 메타데이터를 정하는 것이 나중에 전체 객체를 다시 스캔하는 것보다 싸고 안전합니다.",
-        visual: { type: "table", title: "Metadata matrix", headers: ["종류", "예시", "쓰임"], rows: [
-          ["HTTP metadata", "Content-Type, Cache-Control", "렌더링, 캐시"],
-          ["Integrity", "checksum, ETag", "전송 검증"],
-          ["Business tags", "tenant, product, owner", "비용 배분, 권한"],
-          ["Lifecycle tags", "retention=90d", "자동 이동, 삭제"]
-        ]},
-        source: "AWS S3 object metadata/tags; Google Cloud lifecycle conditions",
-        links: ["aws", "gcsLifecycle"]
-      },
-      {
-        no: 14, cat: "security", minutes: 4,
-        title: "권한 모델은 private by default에서 시작한다",
-        claim: "읽기와 쓰기 권한을 넓게 열어두고 나중에 막는 방식은 사고를 부릅니다.",
-        points: [
-          "기본은 비공개, 접근은 최소 권한, 공개는 명시적인 예외로 둡니다.",
-          "사람, 서비스 계정, bucket policy, prefix 조건, 네트워크 경계, 임시 URL이 함께 권한을 만듭니다.",
-          "가능하면 ACL 중심보다 정책 기반 접근을 선호합니다."
-        ],
-        field: "실무에서 public read는 기능이 아니라 위험한 예외입니다.",
-        visual: { type: "matrix", title: "Access layers", items: [
-          ["조직 경계", "public access block, guardrail"],
-          ["계정/역할", "IAM role, RBAC, service account"],
-          ["버킷 정책", "prefix, tag, network condition"],
-          ["객체 접근", "short-lived signed URL"],
-          ["원칙", "private by default"],
-          ["감사", "audit everything"]
-        ]},
-        source: "AWS S3 security best practices; Azure security recommendations; GCS IAM docs",
-        links: ["awsSecurity", "azureSecurity", "gcs"]
-      },
-      {
-        no: 15, cat: "security", minutes: 4,
-        title: "공개 버킷 사고는 기능 문제가 아니라 경계 설계 실패다",
-        claim: "사고를 사람의 주의력에 맡기지 말고 여러 방어선으로 막습니다.",
-        points: [
-          "공개 버킷 사고는 '누가 켰나'보다 '왜 켤 수 있었나'를 봐야 합니다.",
-          "조직 수준 block public access, policy linting, IaC review가 앞단 방어선입니다.",
-          "sensitive-data scan, access log alert, 자동 revoke runbook이 뒤를 받칩니다."
-        ],
-        field: "콘솔에서 수동으로 공개 전환하는 작업을 허용할수록 사고 가능성은 올라갑니다.",
-        visual: { type: "flow", title: "Incident guardrail", items: [
-          ["실수", "public read 허용"],
-          ["차단", "org-level block"],
-          ["검출", "policy analyzer, alert"],
-          ["복구", "revoke, runbook"]
-        ]},
-        source: "AWS S3 Block Public Access; Azure/GCS security guidance",
-        links: ["awsSecurity", "azureSecurity", "gcs"]
-      },
-      {
-        no: 16, cat: "security", minutes: 4,
-        title: "암호화는 체크박스가 아니라 키 운영이다",
-        claim: "데이터를 암호화하는 것과 키를 안전하게 운영하는 것은 별개의 문제입니다.",
-        points: [
-          "서버 측 암호화가 켜져 있어도 키 소유권, 권한, 감사 로그가 중요합니다.",
-          "KMS 권한이 잘못되면 데이터는 있어도 읽을 수 없는 장애가 생길 수 있습니다.",
-          "규제 환경에서는 customer-managed key, HSM, rotation, deletion protection 요구가 붙습니다."
-        ],
-        field: "암호화 장애는 조용합니다. 데이터는 있는데 키 권한이 없어 못 읽는 상황이 대표적입니다.",
-        visual: { type: "flow", title: "Encryption path", items: [
-          ["App role", "GenerateDataKey, Decrypt"],
-          ["KMS key", "policy, rotation, audit"],
-          ["Object storage", "encrypted object"],
-          ["Audit", "who used key and why"]
-        ]},
-        source: "AWS S3 encryption docs; Azure Blob encryption; Google Cloud encryption docs",
-        links: ["awsSecurity", "azureSecurity", "gcs"]
-      },
-      {
-        no: 17, cat: "security", minutes: 4,
-        title: "버전 관리와 불변성은 삭제 사고를 복구 가능한 사건으로 바꾼다",
-        claim: "삭제 방어는 versioning, immutability, lifecycle이 함께 있어야 작동합니다.",
-        points: [
-          "Versioning은 과거 버전으로 되돌리는 수단입니다.",
-          "Object Lock이나 immutable storage는 일정 기간 삭제와 변경을 막는 방어선입니다.",
-          "버전이 늘면 비용도 늘기 때문에 lifecycle로 오래된 버전을 관리해야 합니다."
-        ],
-        field: "삭제 사고와 랜섬웨어 대응은 '복구할 수 있는 과거'가 남아 있는지에 달려 있습니다.",
-        visual: { type: "timeline", title: "Recovery timeline", items: [
-          ["T0", "v1 업로드"],
-          ["T1", "v2 덮어쓰기"],
-          ["T2", "실수로 delete"],
-          ["T3", "delete marker 확인"],
-          ["T4", "v2 복원"]
-        ]},
-        source: "AWS S3 Versioning/Object Lock; Azure immutable storage; GCS retention policies",
-        links: ["aws", "azureSecurity", "gcs"]
-      },
-      {
-        no: 18, cat: "pipeline", minutes: 4,
-        title: "객체 업로드는 후처리 파이프라인의 시작 신호가 된다",
-        claim: "스토리지는 단순 보관소가 아니라 업무 흐름의 이벤트 소스가 됩니다.",
-        points: [
-          "업로드 완료 이벤트가 이미지 리사이즈, 바이러스 검사, OCR, 인덱싱을 시작할 수 있습니다.",
-          "이벤트는 중복 또는 순서 문제가 있을 수 있어 idempotency와 재처리 큐가 필요합니다.",
-          "스토리지, 큐, 함수, DB 상태가 함께 설계되어야 합니다."
-        ],
-        field: "이벤트 기반 구조에서는 '한 번만 실행된다'를 믿지 말고 '여러 번 실행되어도 안전하다'를 만듭니다.",
-        visual: { type: "flow", title: "Event pipeline", items: [
-          ["Object created", "업로드 완료"],
-          ["Event / Queue", "비동기 전달"],
-          ["Worker", "검증, 변환, 인덱싱"],
-          ["DB / Notify", "상태 저장, 알림"]
-        ]},
-        source: "AWS S3 Event Notifications; GCS Pub/Sub notifications; Azure Event Grid",
-        links: ["aws", "gcs"]
-      },
-      {
-        no: 19, cat: "pipeline", minutes: 4,
-        title: "정적 미디어 시스템은 스토리지 + CDN + 캐시 규칙이다",
-        claim: "사용자에게 빠르게 보이는 것은 저장소가 아니라 캐시 경로입니다.",
-        points: [
-          "사용자 요청은 보통 CDN edge를 먼저 거치고, miss일 때 origin storage로 갑니다.",
-          "Cache-Control, signed URL/cookie, origin access control이 핵심입니다.",
-          "같은 URL 덮어쓰기보다 fingerprinted key가 캐시 무효화 문제를 줄입니다."
-        ],
-        field: "이미지 배포 문제는 저장보다 캐시와 무효화 전략에서 자주 터집니다.",
-        visual: { type: "flow", title: "Media delivery", items: [
-          ["Browser", "GET /img/hash.webp"],
-          ["CDN edge", "cache hit or miss"],
-          ["Origin access", "private bucket"],
-          ["Object storage", "fingerprinted key"]
-        ]},
-        source: "AWS CloudFront/S3 pattern; Azure CDN/Blob; Cloud CDN/GCS pattern",
-        links: ["aws", "gcs"]
-      },
-      {
-        no: 20, cat: "pipeline", minutes: 4,
-        title: "데이터 레이크는 객체 스토리지를 테이블처럼 쓰게 만든다",
-        claim: "객체 파일에 포맷, 카탈로그, 쿼리 엔진이 붙으면 분석 플랫폼이 됩니다.",
-        points: [
-          "객체 스토리지는 싸고 durable하지만 그 자체로 SQL 테이블은 아닙니다.",
-          "Parquet, Iceberg, Delta, Hudi 같은 파일/테이블 포맷과 카탈로그가 필요합니다.",
-          "Bronze, Silver, Gold 레이어로 원본, 정제, 서비스 데이터를 분리합니다."
-        ],
-        field: "Object storage는 바닥이고, table format은 그 위에 질의 가능한 의미를 올립니다.",
-        visual: { type: "timeline", title: "Lake layers", items: [
-          ["Bronze", "raw events, append-only"],
-          ["Silver", "cleaned parquet, partitioned"],
-          ["Gold", "curated tables, business metrics"],
-          ["Query", "SQL / ML / dashboard"]
-        ]},
-        source: "AWS S3 Tables/Iceberg mentions; Google Cloud Storage analytics guidance; Author synthesis",
-        links: ["aws", "gcs"]
-      },
-      {
-        no: 21, cat: "operations", minutes: 4,
-        title: "성능 병목은 저장소보다 요청 모양에서 자주 생긴다",
-        claim: "스토리지 자체보다 호출 방식이 나쁠 때 더 자주 느려집니다.",
-        points: [
-          "작은 객체가 너무 많으면 요청 비용과 metadata/list 작업이 병목이 됩니다.",
-          "멀리 있는 리전, 동기 프록시 업로드, 높은 동시성은 지연시간을 악화시킵니다.",
-          "배치, 압축, 파티셔닝, CDN, multipart, 리전 배치로 해결합니다."
-        ],
-        field: "성능 튜닝은 저장소를 바꾸기 전에 요청 수, 객체 크기, 위치, 동시성을 먼저 봅니다.",
-        visual: { type: "cards", title: "Bottleneck patterns", items: [
-          ["작은 객체 폭증", "request/list 비용 증가"],
-          ["리전 거리", "latency와 egress 증가"],
-          ["동기 서버 프록시", "업로드 병목"],
-          ["비압축 로그", "스캔 비용 증가"]
-        ]},
-        source: "AWS S3 performance guidance; Google Cloud request rate guidance; Author synthesis",
-        links: ["aws", "gcs"]
-      },
-      {
-        no: 22, cat: "operations", minutes: 4,
-        title: "스토리지 비용은 GB 저장비보다 요청·송신·복구가 더 위험할 때가 많다",
-        claim: "요금 계산은 숫자보다 항목을 빠뜨리지 않는 것이 먼저입니다.",
-        points: [
-          "정확한 가격 숫자는 변하므로 공식 계산기로 확인해야 합니다.",
-          "capacity, request, retrieval, data transfer, replication, monitoring, early deletion을 나눠 봅니다.",
-          "Archive로 옮기는 것보다 복구 비용과 최소 보관 기간을 놓치는 실수가 더 위험할 수 있습니다."
-        ],
-        field: "비용 리뷰의 핵심은 'GB가 몇 원인가'가 아니라 '어떤 항목을 빠뜨렸는가'입니다.",
-        visual: { type: "matrix", title: "Cost stack", items: [
-          ["Capacity", "GB-month"],
-          ["Requests", "PUT / GET / LIST"],
-          ["Transfer", "egress / cross-region"],
-          ["Retrieval", "archive / cool read"],
-          ["Retention", "early deletion"],
-          ["Monitoring", "inventory / logs / metrics"]
-        ]},
-        source: "AWS/Azure/GCP pricing model docs; Azure access tier billing notes",
-        links: ["azureTier", "aws", "gcsClasses"]
-      },
-      {
-        no: 23, cat: "operations", minutes: 4,
-        title: "비용 최적화는 삭제보다 관측에서 시작한다",
-        claim: "무작정 archive로 보내기 전에 무엇이 있는지부터 봅니다.",
-        points: [
-          "무엇이 얼마나 있고 누가 쓰는지 모르면 lifecycle도 위험합니다.",
-          "Inventory와 usage metrics로 후보를 찾고 작은 prefix에서 먼저 실험합니다.",
-          "작은 객체 압축, 중복 제거, 만료 정책이 tier 이동보다 효과적일 수 있습니다."
-        ],
-        field: "FinOps는 삭제 스크립트가 아니라 관측, 분류, 실험, 자동화, 리뷰의 반복입니다.",
-        visual: { type: "flow", title: "FinOps loop", items: [
-          ["Observe", "Inventory, metrics"],
-          ["Classify", "owner, retention, access"],
-          ["Experiment", "prefix-limited policy"],
-          ["Automate", "lifecycle, alerts"]
-        ]},
-        source: "AWS S3 Storage Lens/Inventory; GCS lifecycle docs; Azure lifecycle docs",
-        links: ["aws", "gcsLifecycle", "azureTier"]
-      },
-      {
-        no: 24, cat: "operations", minutes: 4,
-        title: "백업은 저장이 아니라 복원 시간 약속이다",
-        claim: "복사본이 있다고 끝이 아니라, 언제 어느 정도로 되돌릴 수 있는지가 계약입니다.",
-        points: [
-          "RPO는 얼마나 잃을 수 있는가, RTO는 얼마나 빨리 복구해야 하는가입니다.",
-          "데이터를 저장해도 복원 절차가 없으면 백업이 아닙니다.",
-          "정기 복원 테스트, 권한 분리, immutable backup, cross-account/cross-region 복제가 중요합니다."
-        ],
-        field: "백업 정책은 반드시 복원 리허설로 검증해야 합니다.",
-        visual: { type: "matrix", title: "Recovery choices", items: [
-          ["Hot standby", "낮은 RPO, 낮은 RTO"],
-          ["Replica + restore", "중간 비용, 빠른 복구"],
-          ["Daily backup", "단순하지만 손실 구간 존재"],
-          ["Snapshot", "일관된 복원 지점"],
-          ["Archive copy", "싸지만 느린 복구"],
-          ["Cold restore", "절차 리허설 필수"]
-        ]},
-        source: "Author synthesis"
-      },
-      {
-        no: 25, cat: "operations", minutes: 4,
-        title: "복제는 가용성만이 아니라 법·지연·비용 선택이다",
-        claim: "데이터 위치는 장애 대응, 규제, 사용자 지연시간, 비용을 동시에 바꿉니다.",
-        points: [
-          "동일 리전 복제와 다른 리전 복제는 해결하는 문제가 다릅니다.",
-          "규제상 데이터가 특정 국가를 벗어나면 안 되는 경우도 있습니다.",
-          "삭제 복제 여부, 복제 지연, 장애 전환 책임까지 정해야 합니다."
-        ],
-        field: "Replication은 버튼 하나가 아니라 정책입니다. 무엇을, 어디로, 얼마나 빨리, 어떤 삭제 semantics로 복제할지 정해야 합니다.",
-        visual: { type: "cards", title: "Replication options", items: [
-          ["Single region", "낮은 비용, 단순 운영"],
-          ["Same-region replica", "실수 방어, 빠른 복구"],
-          ["Cross-region replica", "재해 복구, 지연/비용 증가"],
-          ["Multi-region", "높은 가용성, 규제 검토 필요"]
-        ]},
-        source: "AWS S3 Replication; Azure redundancy; Google Cloud location/redundancy docs",
-        links: ["azureRedundancy", "aws", "gcs"]
-      },
-      {
-        no: 26, cat: "operations", minutes: 4,
-        title: "운영 가능한 버킷은 용량보다 노출과 실패를 먼저 본다",
-        claim: "운영 대시보드는 '얼마나 썼나'보다 '무엇이 위험한가'를 먼저 보여야 합니다.",
-        points: [
-          "capacity, request errors, latency, public exposure, lifecycle action, replication lag를 봅니다.",
-          "대시보드와 알람은 revoke, retry, restore, investigate 같은 대응 행동으로 이어져야 합니다.",
-          "CloudTrail, Activity logs, Audit logs는 보안 조사에 중요합니다."
-        ],
-        field: "알람 이름보다 중요한 것은 알람을 봤을 때 누가 어떤 행동을 할지입니다.",
-        visual: { type: "matrix", title: "Storage ops board", items: [
-          ["Public exposure", "0 buckets"],
-          ["4xx / 5xx", "spike alert"],
-          ["Replication lag", "< 15 min"],
-          ["Lifecycle actions", "12k/day"],
-          ["Cost anomaly", "+18% WoW"],
-          ["Inventory age", "24h fresh"]
-        ]},
-        source: "AWS S3 monitoring/logging; Azure Monitor; Google Cloud monitoring",
-        links: ["aws", "gcs"]
-      },
-      {
-        no: 27, cat: "practice", minutes: 4,
-        title: "사용자 이미지 서비스는 업로드보다 검증과 배포가 더 중요하다",
-        claim: "업로드 성공보다 중요한 것은 검증 전 공개를 막고 상태를 일관되게 만드는 것입니다.",
-        points: [
-          "Client, API, presigned URL, raw bucket, event, scan/resize, metadata DB, CDN을 연결합니다.",
-          "스캔 전 파일은 private이어야 하고, DB 상태는 uploaded/scanned/published로 관리합니다.",
-          "업로드는 됐는데 DB 상태가 없거나, 스캔 전 파일이 공개되는 경우가 대표 실패입니다."
-        ],
-        field: "이미지 서비스의 진짜 품질은 upload 성공률보다 안전한 공개 전환과 orphan cleanup에 있습니다.",
-        visual: { type: "flow", title: "Image service", items: [
-          ["Client", "upload request"],
-          ["API", "sign URL"],
-          ["Raw bucket", "private object"],
-          ["Worker/CDN", "scan, resize, publish"]
-        ]},
-        source: "Author synthesis using provider upload/event/CDN patterns"
-      },
-      {
-        no: 28, cat: "practice", minutes: 4,
-        title: "로그 보관소는 저장보다 파티션과 삭제 정책이 성패를 가른다",
-        claim: "로그는 잘 넣는 것보다 나중에 싸고 빠르게 찾게 만드는 것이 어렵습니다.",
-        points: [
-          "하루 수십 GB에서 TB 로그가 들어오는 상황을 가정합니다.",
-          "시간 파티션, 압축, columnar format, lifecycle, catalog, query engine이 함께 필요합니다.",
-          "무한 보관은 비용과 개인정보 리스크를 키우므로 retention 정책이 설계의 일부입니다."
-        ],
-        field: "로그 레이크의 성패는 저장 용량보다 partition, compression, retention, schema에서 갈립니다.",
-        visual: { type: "flow", title: "Log lake", items: [
-          ["App servers", "stdout / log agent"],
-          ["Buffer", "stream / queue"],
-          ["Object storage", "raw partition"],
-          ["Catalog + query", "Parquet, SQL"]
-        ]},
-        source: "Author synthesis using object storage and data lake practices"
-      },
-      {
-        no: 29, cat: "practice", minutes: 4,
-        title: "미니 설계 과제: 하루 1TB 사진 서비스를 설계해 보자",
-        claim: "정답보다 trade-off를 설명하는 능력을 보는 설계 토론입니다.",
-        points: [
-          "3-4명씩 5분 논의하고, 선택한 구조 하나와 포기한 것 하나를 말합니다.",
-          "업로드 경로, key 규칙, storage class, 보안 경계, 후처리, 삭제 정책을 정합니다.",
-          "장애 복구, 비용 항목, CDN 캐시, 검증 전 공개 방지까지 포함합니다."
-        ],
-        field: "좋은 답안은 완벽한 그림이 아니라 선택과 포기를 말할 수 있는 그림입니다.",
-        visual: { type: "matrix", title: "Workshop canvas", items: [
-          ["Workload", "하루 1TB, 피크 10배"],
-          ["Upload", "직접 업로드, multipart"],
-          ["Keys", "tenant/date/hash prefix"],
-          ["Security", "scan 전 private"],
-          ["Cost", "원본/썸네일 보관 기간"],
-          ["Recovery", "versioning, RPO/RTO"]
-        ]},
-        source: "Workshop prompt"
-      },
-      {
-        no: 30, cat: "practice", minutes: 4,
-        title: "현업에서는 이 10가지만 물어도 설계 품질이 크게 올라간다",
-        claim: "벤더별 화면보다 중요한 것은 반복 가능한 질문입니다.",
-        points: [
-          "데이터 단위는 block/file/object 중 무엇인가?",
-          "key와 metadata가 운영 기준을 담는가?",
-          "기본 비공개와 최소 권한이 보장되는가?",
-          "직접 업로드와 multipart가 필요한가?",
-          "storage class, lifecycle, RPO/RTO, 비용 항목, 이벤트 idempotency를 설명할 수 있는가?"
-        ],
-        field: "강의의 최종 산출물은 특정 클라우드 암기가 아니라 설계 질문 목록입니다.",
-        visual: { type: "cards", title: "Production checklist", items: [
-          ["Access", "private by default, least privilege"],
-          ["Lifecycle", "tier, delete, version cleanup"],
-          ["Events", "idempotency, retry, queue"],
-          ["Cost", "capacity, request, egress, retrieval"],
-          ["Recovery", "RPO/RTO, restore rehearsal"],
-          ["Observability", "exposure, errors, lag, anomaly"]
-        ]},
-        source: "Official docs listed in speaker notes",
-        links: ["aws", "azureTier", "gcs"]
-      }
+          {
+                "no": 1,
+                "cat": "intro",
+                "minutes": 4,
+                "title": "클라우드 스토리지는 무엇인가",
+                "claim": "내 컴퓨터가 아니라 인터넷 너머의 저장 공간을 빌려 쓰는 방식입니다.",
+                "points": [
+                      "사진, 동영상, 백업 파일, 로그처럼 큰 데이터를 클라우드에 저장합니다.",
+                      "사용자는 인터넷을 통해 올리고, 내려받고, 공유합니다.",
+                      "중요한 질문은 어디에 저장되는가보다 누가, 언제, 어떻게 접근하는가입니다."
+                ],
+                "field": "첫 문장으로 말하면: 클라우드 스토리지는 서버실에 직접 디스크를 꽂지 않고 저장 공간을 서비스로 빌려 쓰는 것입니다.",
+                "visual": {
+                      "type": "flow",
+                      "title": "Simple picture",
+                      "items": [
+                            [
+                                  "내 기기",
+                                  "사진을 올림"
+                            ],
+                            [
+                                  "인터넷",
+                                  "요청을 전달"
+                            ],
+                            [
+                                  "클라우드",
+                                  "파일을 보관"
+                            ],
+                            [
+                                  "다른 기기",
+                                  "다시 내려받음"
+                            ]
+                      ]
+                },
+                "source": "AWS S3 User Guide; Google Cloud Storage docs",
+                "links": [
+                      "aws",
+                      "gcs"
+                ]
+          },
+          {
+                "no": 2,
+                "cat": "intro",
+                "minutes": 4,
+                "title": "왜 그냥 내 서버 디스크에 저장하지 않을까",
+                "claim": "서비스가 커지면 디스크 관리가 개발보다 더 어려워질 수 있습니다.",
+                "points": [
+                      "사용자가 많아지면 저장 공간을 계속 늘려야 합니다.",
+                      "서버가 고장 나도 파일이 사라지지 않아야 합니다.",
+                      "여러 지역의 사용자가 빠르게 접근하려면 위치와 네트워크도 중요합니다."
+                ],
+                "field": "작은 과제 서비스는 서버 디스크로도 충분합니다. 하지만 서비스가 커질수록 저장소 운영이 별도 일이 됩니다.",
+                "visual": {
+                      "type": "cards",
+                      "title": "Why cloud storage",
+                      "items": [
+                            [
+                                  "용량",
+                                  "필요할 때 늘림"
+                            ],
+                            [
+                                  "고장 대비",
+                                  "복사본과 복구"
+                            ],
+                            [
+                                  "접근",
+                                  "인터넷 API로 사용"
+                            ],
+                            [
+                                  "운영",
+                                  "백업과 권한 관리"
+                            ]
+                      ]
+                },
+                "source": "강의 설명용 예시"
+          },
+          {
+                "no": 3,
+                "cat": "intro",
+                "minutes": 4,
+                "title": "우리 주변의 클라우드 스토리지",
+                "claim": "이미 매일 쓰는 서비스 안에 클라우드 스토리지가 숨어 있습니다.",
+                "points": [
+                      "프로필 사진, 게시글 이미지, 강의 녹화 영상은 보통 별도 저장소에 둡니다.",
+                      "휴대폰 사진 백업과 문서 공유도 같은 아이디어를 씁니다.",
+                      "앱 서버는 파일을 직접 들고 있기보다 저장 위치와 권한을 관리합니다."
+                ],
+                "field": "학생에게 익숙한 예시로 시작하면 좋습니다: 메신저 사진, 구글 드라이브, 유튜브 영상, LMS 과제 파일.",
+                "visual": {
+                      "type": "matrix",
+                      "title": "Everyday examples",
+                      "items": [
+                            [
+                                  "메신저",
+                                  "사진과 파일 전송"
+                            ],
+                            [
+                                  "LMS",
+                                  "과제 제출 파일"
+                            ],
+                            [
+                                  "SNS",
+                                  "이미지와 동영상"
+                            ],
+                            [
+                                  "게임",
+                                  "리플레이와 패치 파일"
+                            ],
+                            [
+                                  "기업",
+                                  "계약서와 백업"
+                            ],
+                            [
+                                  "개발팀",
+                                  "로그와 빌드 결과물"
+                            ]
+                      ]
+                },
+                "source": "강의 설명용 예시"
+          },
+          {
+                "no": 4,
+                "cat": "intro",
+                "minutes": 4,
+                "title": "오늘은 올리고, 찾고, 공유하고, 지우는 흐름으로 본다",
+                "claim": "클라우드 스토리지는 어려운 용어보다 파일의 생애 주기로 이해하면 쉽습니다.",
+                "points": [
+                      "업로드: 누가 어떤 파일을 올리는가.",
+                      "보관: 어디에, 어떤 이름으로, 얼마나 오래 둘 것인가.",
+                      "접근: 누가 볼 수 있고 어떻게 공유할 것인가.",
+                      "정리: 비용과 개인정보 때문에 언제 지울 것인가."
+                ],
+                "field": "이 강연의 핵심 흐름은 upload, store, access, delete입니다. 뒤의 모든 개념을 여기에 붙여 설명합니다.",
+                "visual": {
+                      "type": "timeline",
+                      "title": "File life",
+                      "items": [
+                            [
+                                  "1. 업로드",
+                                  "파일을 클라우드로 보냄"
+                            ],
+                            [
+                                  "2. 보관",
+                                  "이름과 정보를 붙여 저장"
+                            ],
+                            [
+                                  "3. 접근",
+                                  "다운로드, 공유, 공개"
+                            ],
+                            [
+                                  "4. 정리",
+                                  "이동, 백업, 삭제"
+                            ]
+                      ]
+                },
+                "source": "강의 설명용 예시"
+          },
+          {
+                "no": 5,
+                "cat": "intro",
+                "minutes": 4,
+                "title": "비유로 보면 창고와 도서관 사이에 있다",
+                "claim": "그냥 박스만 쌓는 창고도 아니고, 검색과 규칙이 있는 보관 시스템입니다.",
+                "points": [
+                      "창고처럼 많은 물건을 오래 보관합니다.",
+                      "도서관처럼 이름표, 분류, 대출 규칙이 필요합니다.",
+                      "금고처럼 아무나 열 수 없게 권한과 기록을 남깁니다."
+                ],
+                "field": "처음 듣는 학생에게는 인터넷 창고 + 이름표 + 출입 권한이라는 비유가 가장 잘 먹힙니다.",
+                "visual": {
+                      "type": "cards",
+                      "title": "Analogy",
+                      "items": [
+                            [
+                                  "창고",
+                                  "많이 보관한다"
+                            ],
+                            [
+                                  "도서관",
+                                  "분류하고 찾는다"
+                            ],
+                            [
+                                  "금고",
+                                  "허락된 사람만 연다"
+                            ],
+                            [
+                                  "택배",
+                                  "인터넷으로 주고받는다"
+                            ]
+                      ]
+                },
+                "source": "강의 설명용 비유"
+          },
+          {
+                "no": 6,
+                "cat": "concept",
+                "minutes": 4,
+                "title": "파일과 객체는 비슷하지만 같은 말은 아니다",
+                "claim": "객체 스토리지는 파일 시스템보다 단순한 대신 대규모 보관에 강합니다.",
+                "points": [
+                      "파일 시스템은 폴더 안 파일처럼 생각합니다.",
+                      "객체 스토리지는 이름표가 붙은 큰 데이터 조각을 보관한다고 보면 됩니다.",
+                      "객체에는 내용뿐 아니라 파일 종류, 만든 사람, 만료일 같은 정보도 붙일 수 있습니다."
+                ],
+                "field": "너무 깊게 들어가지 말고, 객체는 데이터 + 이름 + 설명이라고 잡으면 충분합니다.",
+                "visual": {
+                      "type": "kv",
+                      "title": "Object = data + label",
+                      "items": [
+                            [
+                                  "데이터",
+                                  "이미지 bytes, 영상 bytes, 로그 파일"
+                            ],
+                            [
+                                  "이름",
+                                  "photos/2026/06/a.jpg"
+                            ],
+                            [
+                                  "정보",
+                                  "Content-Type, owner, createdAt"
+                            ],
+                            [
+                                  "규칙",
+                                  "누가 읽고 언제 지울지"
+                            ]
+                      ]
+                },
+                "source": "AWS S3 User Guide; Google Cloud Storage docs",
+                "links": [
+                      "aws",
+                      "gcs"
+                ]
+          },
+          {
+                "no": 7,
+                "cat": "concept",
+                "minutes": 4,
+                "title": "버킷은 큰 보관함, 객체는 그 안의 물건이다",
+                "claim": "버킷은 저장 공간의 큰 경계이고, 객체는 실제 저장되는 하나하나의 데이터입니다.",
+                "points": [
+                      "버킷에는 많은 객체가 들어갑니다.",
+                      "버킷마다 권한, 지역, 수명주기 규칙을 다르게 둘 수 있습니다.",
+                      "프로젝트나 서비스 단위로 버킷을 나누면 관리가 쉬워집니다."
+                ],
+                "field": "버킷을 폴더 하나로 오해하기 쉽지만, 실무에서는 정책과 비용의 경계로 보는 편이 좋습니다.",
+                "visual": {
+                      "type": "cards",
+                      "title": "Bucket and object",
+                      "items": [
+                            [
+                                  "Bucket",
+                                  "큰 보관함"
+                            ],
+                            [
+                                  "Object",
+                                  "보관된 파일 하나"
+                            ],
+                            [
+                                  "Name",
+                                  "찾기 위한 주소"
+                            ],
+                            [
+                                  "Policy",
+                                  "접근 규칙"
+                            ]
+                      ]
+                },
+                "source": "AWS S3 User Guide",
+                "links": [
+                      "aws"
+                ]
+          },
+          {
+                "no": 8,
+                "cat": "concept",
+                "minutes": 4,
+                "title": "객체 이름은 폴더처럼 보이지만 사실 주소표다",
+                "claim": "photos/2026/cat.jpg 같은 이름은 폴더라기보다 긴 주소라고 이해하면 쉽습니다.",
+                "points": [
+                      "슬래시가 들어가면 폴더처럼 보이지만, 객체 스토리지에서는 이름의 일부입니다.",
+                      "이름 규칙을 잘 잡으면 나중에 찾고 지우고 비용을 나누기 쉽습니다.",
+                      "이름 안에 주민번호, 이메일 같은 개인정보를 넣는 것은 피해야 합니다."
+                ],
+                "field": "좋은 객체 이름은 예쁜 이름이 아니라 나중에 관리하기 쉬운 이름입니다.",
+                "visual": {
+                      "type": "kv",
+                      "title": "Name examples",
+                      "items": [
+                            [
+                                  "좋은 이름",
+                                  "class/2026/week01/team-a/report.pdf"
+                            ],
+                            [
+                                  "좋은 이름",
+                                  "photos/2026/06/uuid.webp"
+                            ],
+                            [
+                                  "불편한 이름",
+                                  "final_final_real_final.jpg"
+                            ],
+                            [
+                                  "위험한 이름",
+                                  "kim_01012345678_idcard.png"
+                            ]
+                      ]
+                },
+                "source": "강의 설명용 예시"
+          },
+          {
+                "no": 9,
+                "cat": "concept",
+                "minutes": 4,
+                "title": "메타데이터는 파일에 붙이는 설명 스티커다",
+                "claim": "파일 내용은 그대로 두고, 파일을 어떻게 다룰지 알려주는 정보입니다.",
+                "points": [
+                      "Content-Type은 브라우저가 이미지인지 PDF인지 알게 해줍니다.",
+                      "owner, team, purpose 같은 정보는 나중에 비용과 권한을 나누는 데 도움 됩니다.",
+                      "만료일이나 보관 기간을 태그로 붙이면 자동 정리에 쓸 수 있습니다."
+                ],
+                "field": "메타데이터는 처음엔 사소해 보이지만, 파일이 수백만 개가 되면 거의 유일한 길잡이가 됩니다.",
+                "visual": {
+                      "type": "table",
+                      "title": "Sticker examples",
+                      "headers": [
+                            "스티커",
+                            "뜻",
+                            "쓰임"
+                      ],
+                      "rows": [
+                            [
+                                  "Content-Type",
+                                  "파일 종류",
+                                  "브라우저 표시"
+                            ],
+                            [
+                                  "Owner",
+                                  "담당자",
+                                  "문의와 비용 배분"
+                            ],
+                            [
+                                  "Retention",
+                                  "보관 기간",
+                                  "자동 삭제"
+                            ],
+                            [
+                                  "Purpose",
+                                  "사용 목적",
+                                  "정리와 검색"
+                            ]
+                      ]
+                },
+                "source": "AWS S3 metadata docs; Google Cloud Storage docs",
+                "links": [
+                      "aws",
+                      "gcs"
+                ]
+          },
+          {
+                "no": 10,
+                "cat": "concept",
+                "minutes": 4,
+                "title": "스토리지에는 객체, 파일, 블록 방식이 있다",
+                "claim": "이름은 어렵지만 어떻게 읽고 쓰는가로 나누면 됩니다.",
+                "points": [
+                      "객체 스토리지는 이미지, 영상, 백업, 로그처럼 큰 덩어리 보관에 많이 씁니다.",
+                      "파일 스토리지는 여러 서버가 같은 폴더를 함께 쓰는 느낌입니다.",
+                      "블록 스토리지는 서버에 붙이는 디스크에 가깝고 데이터베이스 디스크에 자주 쓰입니다."
+                ],
+                "field": "초심자에게는 외울 필요 없습니다. 사진 보관은 객체, 공유 폴더는 파일, 서버 디스크는 블록 정도면 충분합니다.",
+                "visual": {
+                      "type": "cards",
+                      "title": "Three storage styles",
+                      "items": [
+                            [
+                                  "Object",
+                                  "사진, 영상, 백업"
+                            ],
+                            [
+                                  "File",
+                                  "공유 폴더"
+                            ],
+                            [
+                                  "Block",
+                                  "서버 디스크"
+                            ],
+                            [
+                                  "Question",
+                                  "어떻게 읽고 쓰는가"
+                            ]
+                      ]
+                },
+                "source": "강의 설명용 정리"
+          },
+          {
+                "no": 11,
+                "cat": "service",
+                "minutes": 4,
+                "title": "AWS S3, Azure Blob, Google Cloud Storage는 같은 범주의 서비스다",
+                "claim": "회사마다 이름은 다르지만 큰 아이디어는 비슷합니다.",
+                "points": [
+                      "AWS에서는 S3라는 이름을 많이 듣습니다.",
+                      "Azure에서는 Blob Storage, Google Cloud에서는 Cloud Storage라고 부릅니다.",
+                      "처음에는 이름보다 버킷, 객체, 권한, 비용이라는 공통 개념을 잡는 것이 중요합니다."
+                ],
+                "field": "벤더 이름을 다 외우는 강연이 아닙니다. 같은 질문을 다른 서비스에 적용하는 감각을 만드는 강연입니다.",
+                "visual": {
+                      "type": "table",
+                      "title": "Cloud names",
+                      "headers": [
+                            "구름 회사",
+                            "서비스 이름",
+                            "처음 볼 개념"
+                      ],
+                      "rows": [
+                            [
+                                  "AWS",
+                                  "S3",
+                                  "Bucket, Object"
+                            ],
+                            [
+                                  "Azure",
+                                  "Blob Storage",
+                                  "Container, Blob"
+                            ],
+                            [
+                                  "Google Cloud",
+                                  "Cloud Storage",
+                                  "Bucket, Object"
+                            ],
+                            [
+                                  "공통 질문",
+                                  "권한, 비용, 보관 기간",
+                                  "누가 어떻게 쓰는가"
+                            ]
+                      ]
+                },
+                "source": "AWS S3; Azure Blob; Google Cloud Storage docs",
+                "links": [
+                      "aws",
+                      "azureTier",
+                      "gcs"
+                ]
+          },
+          {
+                "no": 12,
+                "cat": "service",
+                "minutes": 4,
+                "title": "자주 쓰는 파일과 오래 보관하는 파일은 다르게 둔다",
+                "claim": "스토리지 클래스는 파일의 온도를 고르는 일입니다.",
+                "points": [
+                      "매일 보는 이미지는 바로 읽을 수 있는 곳에 둡니다.",
+                      "가끔 보는 백업은 더 싼 곳에 둘 수 있습니다.",
+                      "거의 안 보는 자료는 싸게 보관할 수 있지만 꺼내는 데 시간이 걸릴 수 있습니다."
+                ],
+                "field": "학생에게는 hot, cool, archive를 냉장고 비유로 설명하면 쉽습니다.",
+                "visual": {
+                      "type": "timeline",
+                      "title": "File temperature",
+                      "items": [
+                            [
+                                  "Hot",
+                                  "자주 읽는 파일"
+                            ],
+                            [
+                                  "Cool",
+                                  "가끔 읽는 파일"
+                            ],
+                            [
+                                  "Cold",
+                                  "거의 안 읽는 파일"
+                            ],
+                            [
+                                  "Archive",
+                                  "오래 보관만 하는 파일"
+                            ]
+                      ]
+                },
+                "source": "Azure access tiers; Google Cloud storage classes",
+                "links": [
+                      "azureTier",
+                      "gcsClasses"
+                ]
+          },
+          {
+                "no": 13,
+                "cat": "service",
+                "minutes": 4,
+                "title": "오래된 파일은 자동으로 옮기거나 지울 수 있다",
+                "claim": "수명주기 정책은 파일 정리 규칙을 자동화하는 기능입니다.",
+                "points": [
+                      "30일 지난 임시 파일 삭제처럼 단순한 규칙부터 시작할 수 있습니다.",
+                      "90일 지난 로그를 더 싼 저장 공간으로 옮길 수 있습니다.",
+                      "자동화 전에는 작은 범위에서 먼저 테스트해야 합니다."
+                ],
+                "field": "클라우드 스토리지는 저장만 하는 곳이 아니라 정리 규칙까지 가질 수 있습니다.",
+                "visual": {
+                      "type": "timeline",
+                      "title": "Lifecycle",
+                      "items": [
+                            [
+                                  "오늘",
+                                  "파일 업로드"
+                            ],
+                            [
+                                  "30일 후",
+                                  "덜 자주 쓰는 곳으로 이동"
+                            ],
+                            [
+                                  "180일 후",
+                                  "보관용 저장소로 이동"
+                            ],
+                            [
+                                  "1년 후",
+                                  "삭제 또는 보존 결정"
+                            ]
+                      ]
+                },
+                "source": "Google Cloud lifecycle docs; AWS S3 Lifecycle",
+                "links": [
+                      "gcsLifecycle",
+                      "aws"
+                ]
+          },
+          {
+                "no": 14,
+                "cat": "service",
+                "minutes": 4,
+                "title": "어느 지역에 저장할지도 선택이다",
+                "claim": "파일이 어디에 있느냐는 속도, 법, 장애 대응과 연결됩니다.",
+                "points": [
+                      "한국 사용자에게 너무 먼 지역의 파일은 느릴 수 있습니다.",
+                      "일부 데이터는 특정 국가나 지역 밖으로 나가면 안 될 수 있습니다.",
+                      "여러 지역에 복사하면 장애에는 강하지만 비용과 복잡도가 올라갑니다."
+                ],
+                "field": "처음에는 사용자와 가까운 곳, 규정에 맞는 곳, 장애에 버틸 수 있는 곳 정도로 설명하면 충분합니다.",
+                "visual": {
+                      "type": "matrix",
+                      "title": "Location choices",
+                      "items": [
+                            [
+                                  "가까움",
+                                  "더 빠른 응답"
+                            ],
+                            [
+                                  "규정",
+                                  "데이터 위치 제한"
+                            ],
+                            [
+                                  "복사본",
+                                  "장애 대비"
+                            ],
+                            [
+                                  "비용",
+                                  "멀리 보낼수록 증가 가능"
+                            ],
+                            [
+                                  "단순함",
+                                  "한 지역이 쉬움"
+                            ],
+                            [
+                                  "안전함",
+                                  "여러 지역이 강함"
+                            ]
+                      ]
+                },
+                "source": "Azure redundancy docs; Google Cloud Storage docs",
+                "links": [
+                      "azureRedundancy",
+                      "gcs"
+                ]
+          },
+          {
+                "no": 15,
+                "cat": "usecase",
+                "minutes": 4,
+                "title": "웹 서비스에서 파일 업로드는 보통 이렇게 흐른다",
+                "claim": "앱 서버가 파일을 다 들고 있기보다 클라우드 저장소에 맡깁니다.",
+                "points": [
+                      "사용자가 업로드 버튼을 누르면 앱 서버가 업로드 허가를 확인합니다.",
+                      "파일은 클라우드 스토리지로 올라갑니다.",
+                      "앱 서버는 DB에 파일 이름, 주인, 상태 같은 정보를 저장합니다."
+                ],
+                "field": "초심자에게는 presigned URL 같은 단어보다 서버는 허가증을 주고, 파일은 창고로 간다고 말하면 됩니다.",
+                "visual": {
+                      "type": "flow",
+                      "title": "Upload flow",
+                      "items": [
+                            [
+                                  "사용자",
+                                  "파일 선택"
+                            ],
+                            [
+                                  "앱 서버",
+                                  "업로드 허가"
+                            ],
+                            [
+                                  "스토리지",
+                                  "파일 저장"
+                            ],
+                            [
+                                  "DB",
+                                  "파일 기록 저장"
+                            ]
+                      ]
+                },
+                "source": "AWS S3 presigned URL docs",
+                "links": [
+                      "presigned"
+                ]
+          },
+          {
+                "no": 16,
+                "cat": "usecase",
+                "minutes": 4,
+                "title": "다운로드와 공유 링크는 권한을 담은 문이다",
+                "claim": "링크 하나를 만들 때도 누가 언제까지 볼 수 있는지 정해야 합니다.",
+                "points": [
+                      "공개 파일은 누구나 볼 수 있지만 위험합니다.",
+                      "비공개 파일은 로그인한 사용자나 임시 링크로만 접근하게 할 수 있습니다.",
+                      "임시 링크는 시간이 지나면 자동으로 만료되게 만들 수 있습니다."
+                ],
+                "field": "학생들이 익숙한 구글 드라이브 공유 링크를 떠올리게 하면 바로 이해합니다.",
+                "visual": {
+                      "type": "cards",
+                      "title": "Sharing modes",
+                      "items": [
+                            [
+                                  "공개",
+                                  "누구나 접근"
+                            ],
+                            [
+                                  "로그인 필요",
+                                  "회원만 접근"
+                            ],
+                            [
+                                  "임시 링크",
+                                  "정해진 시간만 접근"
+                            ],
+                            [
+                                  "내부 전용",
+                                  "회사나 학교 안에서만"
+                            ]
+                      ]
+                },
+                "source": "AWS S3 presigned URL docs",
+                "links": [
+                      "presigned"
+                ]
+          },
+          {
+                "no": 17,
+                "cat": "usecase",
+                "minutes": 4,
+                "title": "이미지 서비스는 원본과 썸네일을 따로 생각한다",
+                "claim": "한 장의 사진도 서비스 안에서는 여러 형태로 저장될 수 있습니다.",
+                "points": [
+                      "사용자가 올린 원본 이미지는 보관합니다.",
+                      "목록 화면을 위해 작은 썸네일을 따로 만듭니다.",
+                      "바이러스 검사나 이미지 크기 제한 같은 검증도 필요합니다."
+                ],
+                "field": "사진 업로드 예시는 학생들이 가장 쉽게 이해하는 클라우드 스토리지 사용 사례입니다.",
+                "visual": {
+                      "type": "flow",
+                      "title": "Image service",
+                      "items": [
+                            [
+                                  "원본 업로드",
+                                  "큰 이미지 저장"
+                            ],
+                            [
+                                  "검증",
+                                  "파일 종류와 크기 확인"
+                            ],
+                            [
+                                  "변환",
+                                  "썸네일 생성"
+                            ],
+                            [
+                                  "배포",
+                                  "웹/앱에서 보여주기"
+                            ]
+                      ]
+                },
+                "source": "강의 설명용 예시"
+          },
+          {
+                "no": 18,
+                "cat": "usecase",
+                "minutes": 4,
+                "title": "백업은 파일을 한 벌 더 안전한 곳에 두는 일이다",
+                "claim": "백업은 사고가 났을 때 되돌아가기 위한 보험입니다.",
+                "points": [
+                      "실수로 삭제하거나 서버가 고장 나도 복구할 수 있어야 합니다.",
+                      "백업 파일은 원본과 다른 곳에 두는 것이 안전합니다.",
+                      "백업이 있어도 실제로 복구해 본 적이 없으면 안심하기 어렵습니다."
+                ],
+                "field": "백업의 핵심은 저장했다가 아니라 되돌릴 수 있다입니다.",
+                "visual": {
+                      "type": "timeline",
+                      "title": "Backup idea",
+                      "items": [
+                            [
+                                  "평소",
+                                  "원본 파일 사용"
+                            ],
+                            [
+                                  "정기적으로",
+                                  "복사본 만들기"
+                            ],
+                            [
+                                  "사고 발생",
+                                  "삭제 또는 장애"
+                            ],
+                            [
+                                  "복구",
+                                  "복사본에서 되돌리기"
+                            ]
+                      ]
+                },
+                "source": "강의 설명용 예시"
+          },
+          {
+                "no": 19,
+                "cat": "usecase",
+                "minutes": 4,
+                "title": "동영상과 이미지가 빠른 이유에는 CDN이 있다",
+                "claim": "자주 보는 파일은 사용자 가까운 곳에 복사해두면 빠릅니다.",
+                "points": [
+                      "모든 사용자가 원본 저장소까지 가면 느리고 비쌀 수 있습니다.",
+                      "CDN은 자주 쓰는 파일을 여러 지역에 임시로 보관합니다.",
+                      "스토리지와 CDN을 함께 쓰면 정적 파일을 빠르게 제공할 수 있습니다."
+                ],
+                "field": "CDN은 오늘 깊게 배우지 않고 사용자 가까운 복사본 정도로만 잡습니다.",
+                "visual": {
+                      "type": "flow",
+                      "title": "Fast delivery",
+                      "items": [
+                            [
+                                  "사용자",
+                                  "이미지 요청"
+                            ],
+                            [
+                                  "가까운 캐시",
+                                  "있으면 바로 응답"
+                            ],
+                            [
+                                  "원본 저장소",
+                                  "없으면 가져오기"
+                            ],
+                            [
+                                  "다음 요청",
+                                  "더 빠르게 응답"
+                            ]
+                      ]
+                },
+                "source": "강의 설명용 예시"
+          },
+          {
+                "no": 20,
+                "cat": "safety",
+                "minutes": 4,
+                "title": "기본은 비공개여야 한다",
+                "claim": "클라우드 스토리지에서 가장 중요한 기본값은 아무나 못 보게 하는 것입니다.",
+                "points": [
+                      "업로드된 파일은 기본적으로 비공개라고 생각해야 안전합니다.",
+                      "공개가 필요한 파일만 따로 공개합니다.",
+                      "개인정보와 과제 파일, 계약서 같은 자료는 절대 공개되면 안 됩니다."
+                ],
+                "field": "처음 배우는 학생에게도 private by default는 꼭 남겨야 하는 핵심 원칙입니다.",
+                "visual": {
+                      "type": "cards",
+                      "title": "Default rule",
+                      "items": [
+                            [
+                                  "기본",
+                                  "비공개"
+                            ],
+                            [
+                                  "예외",
+                                  "필요한 파일만 공개"
+                            ],
+                            [
+                                  "확인",
+                                  "누가 볼 수 있는지 점검"
+                            ],
+                            [
+                                  "기록",
+                                  "누가 열었는지 남김"
+                            ]
+                      ]
+                },
+                "source": "AWS S3 security best practices",
+                "links": [
+                      "awsSecurity"
+                ]
+          },
+          {
+                "no": 21,
+                "cat": "safety",
+                "minutes": 4,
+                "title": "권한은 문 열쇠를 나눠주는 일이다",
+                "claim": "모든 사람에게 마스터키를 주면 편하지만 위험합니다.",
+                "points": [
+                      "읽기만 필요한 사람에게 삭제 권한까지 주면 안 됩니다.",
+                      "서비스도 필요한 작업만 할 수 있게 권한을 좁혀야 합니다.",
+                      "임시 권한은 시간이 지나면 자동으로 사라지게 만들 수 있습니다."
+                ],
+                "field": "권한은 누가 무엇을 할 수 있는가를 쓰는 표라고 설명하면 쉽습니다.",
+                "visual": {
+                      "type": "table",
+                      "title": "Permission examples",
+                      "headers": [
+                            "대상",
+                            "허용",
+                            "막아야 할 것"
+                      ],
+                      "rows": [
+                            [
+                                  "일반 사용자",
+                                  "내 파일 다운로드",
+                                  "다른 사람 파일 보기"
+                            ],
+                            [
+                                  "관리자",
+                                  "문제 파일 확인",
+                                  "불필요한 전체 공개"
+                            ],
+                            [
+                                  "업로드 서버",
+                                  "업로드 허가 발급",
+                                  "모든 파일 삭제"
+                            ],
+                            [
+                                  "배치 작업",
+                                  "오래된 파일 정리",
+                                  "새 파일 임의 수정"
+                            ]
+                      ]
+                },
+                "source": "강의 설명용 예시"
+          },
+          {
+                "no": 22,
+                "cat": "safety",
+                "minutes": 4,
+                "title": "공개 버킷 사고는 생각보다 흔한 실수다",
+                "claim": "편하려고 열어둔 저장소가 개인정보 유출로 이어질 수 있습니다.",
+                "points": [
+                      "테스트 중 공개로 바꿨다가 그대로 운영에 남는 경우가 있습니다.",
+                      "권한이 너무 넓으면 의도하지 않은 사람이 파일을 볼 수 있습니다.",
+                      "공개 여부를 자동으로 검사하고 알림을 받는 습관이 필요합니다."
+                ],
+                "field": "사고 사례를 자극적으로 말하기보다, 편한 설정은 위험한 설정일 수 있다로 정리합니다.",
+                "visual": {
+                      "type": "flow",
+                      "title": "How accidents happen",
+                      "items": [
+                            [
+                                  "테스트",
+                                  "잠깐 공개"
+                            ],
+                            [
+                                  "방치",
+                                  "설정이 남음"
+                            ],
+                            [
+                                  "외부 접근",
+                                  "의도치 않은 노출"
+                            ],
+                            [
+                                  "대응",
+                                  "차단, 조사, 재발 방지"
+                            ]
+                      ]
+                },
+                "source": "AWS S3 security best practices",
+                "links": [
+                      "awsSecurity"
+                ]
+          },
+          {
+                "no": 23,
+                "cat": "safety",
+                "minutes": 4,
+                "title": "암호화는 잠금장치, 키 관리는 열쇠 관리다",
+                "claim": "파일을 암호화해도 열쇠를 아무 데나 두면 안전하지 않습니다.",
+                "points": [
+                      "저장된 파일을 암호화하면 디스크가 노출되어도 내용을 읽기 어렵습니다.",
+                      "하지만 누가 키를 쓸 수 있는지 관리해야 합니다.",
+                      "초급 강연에서는 암호화 켜기와 키 권한 조심 정도만 기억하면 됩니다."
+                ],
+                "field": "암호화의 깊은 수학은 다루지 않습니다. 운영 관점에서는 잠금장치와 열쇠 비유가 더 중요합니다.",
+                "visual": {
+                      "type": "cards",
+                      "title": "Encryption idea",
+                      "items": [
+                            [
+                                  "파일",
+                                  "보관할 내용"
+                            ],
+                            [
+                                  "잠금장치",
+                                  "암호화"
+                            ],
+                            [
+                                  "열쇠",
+                                  "키"
+                            ],
+                            [
+                                  "기록",
+                                  "누가 열었는지"
+                            ]
+                      ]
+                },
+                "source": "AWS S3 security best practices; Azure security recommendations",
+                "links": [
+                      "awsSecurity",
+                      "azureSecurity"
+                ]
+          },
+          {
+                "no": 24,
+                "cat": "ops",
+                "minutes": 4,
+                "title": "비용은 저장 용량만 보면 안 된다",
+                "claim": "클라우드 스토리지 비용은 보관료, 요청 수, 다운로드, 복구가 함께 만듭니다.",
+                "points": [
+                      "파일을 많이 저장하면 용량 비용이 듭니다.",
+                      "파일을 자주 읽고 쓰면 요청 비용이 늘 수 있습니다.",
+                      "인터넷으로 많이 내려보내면 전송 비용이 커질 수 있습니다."
+                ],
+                "field": "가격 숫자는 계속 바뀌므로 외우지 않습니다. 대신 비용 항목을 빠뜨리지 않는 습관을 만듭니다.",
+                "visual": {
+                      "type": "matrix",
+                      "title": "Cost pieces",
+                      "items": [
+                            [
+                                  "저장",
+                                  "GB-month"
+                            ],
+                            [
+                                  "업로드/다운로드",
+                                  "요청 수"
+                            ],
+                            [
+                                  "전송",
+                                  "밖으로 나가는 데이터"
+                            ],
+                            [
+                                  "복구",
+                                  "차가운 저장소에서 꺼내기"
+                            ],
+                            [
+                                  "복제",
+                                  "다른 지역 복사"
+                            ],
+                            [
+                                  "로그/모니터링",
+                                  "운영 데이터"
+                            ]
+                      ]
+                },
+                "source": "Azure access tiers; Google Cloud storage classes",
+                "links": [
+                      "azureTier",
+                      "gcsClasses"
+                ]
+          },
+          {
+                "no": 25,
+                "cat": "ops",
+                "minutes": 4,
+                "title": "지우지 않는 파일은 언젠가 비용과 위험이 된다",
+                "claim": "무한 보관은 편하지만 비용과 개인정보 리스크를 키웁니다.",
+                "points": [
+                      "임시 파일은 시간이 지나면 자동으로 지우는 편이 좋습니다.",
+                      "로그와 백업은 보관 기간을 정해야 합니다.",
+                      "삭제 규칙은 실수로 중요한 파일을 지우지 않게 작은 범위에서 먼저 테스트합니다."
+                ],
+                "field": "학생 프로젝트에도 적용 가능합니다. 업로드 테스트 파일을 자동으로 지우는 것부터 시작하면 됩니다.",
+                "visual": {
+                      "type": "timeline",
+                      "title": "Cleanup plan",
+                      "items": [
+                            [
+                                  "1일",
+                                  "임시 파일 확인"
+                            ],
+                            [
+                                  "7일",
+                                  "미사용 업로드 삭제"
+                            ],
+                            [
+                                  "90일",
+                                  "오래된 로그 이동"
+                            ],
+                            [
+                                  "1년",
+                                  "보관 또는 삭제 결정"
+                            ]
+                      ]
+                },
+                "source": "Google Cloud lifecycle docs",
+                "links": [
+                      "gcsLifecycle"
+                ]
+          },
+          {
+                "no": 26,
+                "cat": "ops",
+                "minutes": 4,
+                "title": "백업은 복구해봐야 백업이다",
+                "claim": "복사본이 있어도 실제로 되돌릴 수 없다면 백업이라고 부르기 어렵습니다.",
+                "points": [
+                      "실수로 삭제했을 때 되돌릴 수 있어야 합니다.",
+                      "정기적으로 복구 연습을 해야 합니다.",
+                      "백업 권한은 원본 권한과 분리하는 것이 안전합니다."
+                ],
+                "field": "어려운 복구 용어는 빼고, 핵심은 얼마나 잃어도 되는지와 얼마나 빨리 돌아와야 하는지입니다.",
+                "visual": {
+                      "type": "cards",
+                      "title": "Backup questions",
+                      "items": [
+                            [
+                                  "무엇을",
+                                  "어떤 데이터를 백업?"
+                            ],
+                            [
+                                  "얼마나 자주",
+                                  "매시간, 매일, 매주?"
+                            ],
+                            [
+                                  "어디에",
+                                  "원본과 다른 곳?"
+                            ],
+                            [
+                                  "어떻게 복구",
+                                  "연습해 봤나?"
+                            ]
+                      ]
+                },
+                "source": "강의 설명용 정리"
+          },
+          {
+                "no": 27,
+                "cat": "ops",
+                "minutes": 4,
+                "title": "운영자는 저장량보다 이상 징후를 먼저 본다",
+                "claim": "파일이 잘 저장되는지만 아니라 이상하게 공개되거나 실패하지 않는지도 봐야 합니다.",
+                "points": [
+                      "갑자기 다운로드가 늘면 비용이나 유출을 의심할 수 있습니다.",
+                      "업로드 실패가 늘면 사용자 경험이 나빠집니다.",
+                      "공개 파일이 생겼는지, 오래된 파일이 쌓이는지 보는 대시보드가 필요합니다."
+                ],
+                "field": "입문 강연에서는 운영을 어렵게 말하지 말고 상태판을 보고 이상하면 알림 받기로 설명합니다.",
+                "visual": {
+                      "type": "matrix",
+                      "title": "What to watch",
+                      "items": [
+                            [
+                                  "용량",
+                                  "얼마나 쌓였나"
+                            ],
+                            [
+                                  "실패",
+                                  "업로드/다운로드 오류"
+                            ],
+                            [
+                                  "공개",
+                                  "의도치 않은 공개"
+                            ],
+                            [
+                                  "비용",
+                                  "갑작스러운 증가"
+                            ],
+                            [
+                                  "삭제",
+                                  "정리 규칙 동작"
+                            ],
+                            [
+                                  "복구",
+                                  "백업 상태"
+                            ]
+                      ]
+                },
+                "source": "강의 설명용 정리"
+          },
+          {
+                "no": 28,
+                "cat": "workshop",
+                "minutes": 4,
+                "title": "미니 설계 1: 사진 업로드 서비스를 그려보자",
+                "claim": "배운 개념을 가장 익숙한 예시 하나에 붙여봅니다.",
+                "points": [
+                      "사용자는 사진을 올리고, 친구는 사진을 봅니다.",
+                      "원본은 비공개로 두고, 보여줄 이미지만 안전하게 공개합니다.",
+                      "오래된 임시 파일과 실패한 업로드는 자동으로 정리합니다."
+                ],
+                "field": "이 실습의 목표는 정답이 아니라 용어를 실제 흐름에 붙여보는 것입니다.",
+                "visual": {
+                      "type": "flow",
+                      "title": "Photo app",
+                      "items": [
+                            [
+                                  "사용자",
+                                  "사진 업로드"
+                            ],
+                            [
+                                  "앱 서버",
+                                  "권한 확인"
+                            ],
+                            [
+                                  "스토리지",
+                                  "원본 보관"
+                            ],
+                            [
+                                  "서비스",
+                                  "검증 후 보여주기"
+                            ]
+                      ]
+                },
+                "source": "Workshop prompt"
+          },
+          {
+                "no": 29,
+                "cat": "workshop",
+                "minutes": 4,
+                "title": "미니 설계 2: 학교 과제 제출함을 만들어보자",
+                "claim": "수업에서 바로 떠올릴 수 있는 저장소 문제를 설계해 봅니다.",
+                "points": [
+                      "학생은 자기 과제만 올리고, 교수자는 전체 과제를 볼 수 있어야 합니다.",
+                      "마감 이후 수정 가능 여부를 정해야 합니다.",
+                      "학기 종료 후 언제까지 보관하고 언제 삭제할지 정해야 합니다."
+                ],
+                "field": "학생들이 스스로 권한, 보관 기간, 비용을 말하게 만들기 좋은 예시입니다.",
+                "visual": {
+                      "type": "matrix",
+                      "title": "Assignment box",
+                      "items": [
+                            [
+                                  "학생",
+                                  "내 과제 업로드"
+                            ],
+                            [
+                                  "교수자",
+                                  "전체 다운로드"
+                            ],
+                            [
+                                  "조교",
+                                  "검사와 채점 보조"
+                            ],
+                            [
+                                  "마감",
+                                  "수정 가능 여부"
+                            ],
+                            [
+                                  "보관",
+                                  "학기 후 기간"
+                            ],
+                            [
+                                  "삭제",
+                                  "정책에 따라 정리"
+                            ]
+                      ]
+                },
+                "source": "Workshop prompt"
+          },
+          {
+                "no": 30,
+                "cat": "workshop",
+                "minutes": 4,
+                "title": "마지막으로 이 10가지만 기억하자",
+                "claim": "오늘의 목표는 어려운 용어 암기가 아니라 저장소를 보는 눈입니다.",
+                "points": [
+                      "클라우드 스토리지는 인터넷으로 쓰는 저장 공간 서비스입니다.",
+                      "버킷은 큰 보관함, 객체는 데이터와 이름표입니다.",
+                      "파일은 기본 비공개로 두고 필요한 사람에게만 열어줍니다.",
+                      "오래된 파일은 자동 정리하고, 중요한 파일은 복구 연습을 합니다.",
+                      "비용은 저장 용량뿐 아니라 요청, 전송, 복구까지 함께 봅니다."
+                ],
+                "field": "현업 심화는 나중에 해도 됩니다. 오늘은 저장, 접근, 보안, 비용, 복구 다섯 단어가 남으면 성공입니다.",
+                "visual": {
+                      "type": "cards",
+                      "title": "Takeaways",
+                      "items": [
+                            [
+                                  "저장",
+                                  "어디에 둘까"
+                            ],
+                            [
+                                  "이름",
+                                  "어떻게 찾을까"
+                            ],
+                            [
+                                  "접근",
+                                  "누가 볼까"
+                            ],
+                            [
+                                  "보안",
+                                  "기본은 비공개"
+                            ],
+                            [
+                                  "비용",
+                                  "무엇이 돈이 될까"
+                            ],
+                            [
+                                  "복구",
+                                  "되돌릴 수 있을까"
+                            ]
+                      ]
+                },
+                "source": "강의 요약",
+                "links": [
+                      "aws",
+                      "azureTier",
+                      "gcs"
+                ]
+          }
     ];
 
     const categoryById = Object.fromEntries(categories.map((cat) => [cat.id, cat]));

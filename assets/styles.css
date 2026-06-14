@@ -426,6 +426,27 @@ main {
   text-underline-offset: 0.18em;
 }
 
+.compact-toc {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 20px;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.compact-toc li {
+  padding-left: 2px;
+}
+
+.note-section {
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+}
+
+.note-section:first-of-type {
+  border-top: 0;
+}
+
 .motion-ready .motion-item {
   opacity: 0;
   transform: translateY(18px);
@@ -548,5 +569,9 @@ main {
 
   .document {
     padding: 22px;
+  }
+
+  .compact-toc {
+    grid-template-columns: 1fr;
   }
 }
