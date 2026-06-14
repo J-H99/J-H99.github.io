@@ -65,6 +65,18 @@ function kv(title, items) {
   return { type: "kv", title, items };
 }
 
+function diagram(title, nodes, links, caption) {
+  return { type: "diagram", title, nodes, links, caption };
+}
+
+function dNode(id, label, sub, x, y, accent = "#2f6df6", shape = "rect") {
+  return { id, label, sub, x, y, accent, shape };
+}
+
+function dLink(from, to, label = "", tone = "solid") {
+  return { from, to, label, tone };
+}
+
 function slide(no, cat, title, claim, points, field, visual, source, links = []) {
   return { no, cat, minutes: 5, title, claim, points, field, visual, source, links };
 }
@@ -846,7 +858,7 @@ const deepCategoryMap = {
   architecture: "ops"
 };
 
-const slides = [
+const slidesWithoutDiagrams = [
   ...introSlides,
   ...deepSlidesBase.map((item) => ({
     ...item,
@@ -854,6 +866,292 @@ const slides = [
     cat: deepCategoryMap[item.cat] ?? item.cat
   }))
 ];
+
+const diagramOverrides = {
+  1: diagram("Cloud storage mental model", [
+    dNode("device", "사용자 기기", "사진, 문서, 로그 생성", 130, 260),
+    dNode("api", "HTTPS API", "업로드/다운로드", 320, 260, "#7458f4"),
+    dNode("storage", "Cloud Storage", "객체 + 메타데이터 + 정책", 540, 260, "#22a77a"),
+    dNode("copy1", "복제본 A", "같은 리전", 790, 160, "#d39125"),
+    dNode("copy2", "복제본 B", "다른 장애 도메인", 790, 360, "#e65f4d")
+  ], [
+    dLink("device", "api", "upload"),
+    dLink("api", "storage", "PUT object"),
+    dLink("storage", "copy1", "replicate"),
+    dLink("storage", "copy2", "protect")
+  ], "처음에는 원격 창고처럼 보이지만 내부적으로는 API, 복제, 정책이 함께 움직입니다."),
+
+  2: diagram("Server disk vs storage service", [
+    dNode("user", "사용자", "파일 요청", 90, 260),
+    dNode("app1", "앱 서버 A", "배포/스케일아웃", 310, 170, "#7458f4"),
+    dNode("app2", "앱 서버 B", "동일 코드", 310, 350, "#7458f4"),
+    dNode("disk", "로컬 디스크", "서버에 묶임", 540, 170, "#e65f4d"),
+    dNode("object", "객체 스토리지", "앱 밖의 데이터 계층", 740, 350, "#22a77a")
+  ], [
+    dLink("user", "app1"),
+    dLink("user", "app2"),
+    dLink("app1", "disk", "나쁜 결합", "dashed"),
+    dLink("app1", "object", "key 저장"),
+    dLink("app2", "object", "같은 객체 읽기")
+  ], "서버 디스크에 묶인 파일을 앱 밖으로 빼면 배포와 확장이 쉬워집니다."),
+
+  3: diagram("Upload trust boundary", [
+    dNode("browser", "브라우저", "신뢰할 수 없는 입력", 120, 260, "#e65f4d"),
+    dNode("auth", "앱 API", "인증 + 제한 조건", 330, 260, "#2f6df6"),
+    dNode("storage", "스토리지", "임시 권한으로 PUT", 540, 260, "#22a77a"),
+    dNode("worker", "검사 Worker", "scan / transform", 750, 170, "#d39125"),
+    dNode("db", "DB 상태", "ready / rejected", 750, 350, "#7458f4")
+  ], [
+    dLink("browser", "auth", "요청"),
+    dLink("auth", "storage", "signed upload"),
+    dLink("storage", "worker", "event"),
+    dLink("worker", "db", "status"),
+    dLink("db", "browser", "결과", "dashed")
+  ], "파일 업로드는 바이트 전송이 아니라 신뢰 경계를 통과시키는 절차입니다."),
+
+  4: diagram("Private access contract", [
+    dNode("user", "사용자", "권한 요청", 110, 260),
+    dNode("app", "앱 서버", "소유자 검사", 320, 260, "#2f6df6"),
+    dNode("token", "Signed URL", "짧은 만료", 530, 260, "#d39125"),
+    dNode("cdn", "CDN", "캐시/전송", 740, 170, "#7458f4"),
+    dNode("object", "Object", "원본 데이터", 740, 350, "#22a77a")
+  ], [
+    dLink("user", "app", "auth"),
+    dLink("app", "token", "issue"),
+    dLink("token", "cdn", "read"),
+    dLink("cdn", "object", "origin fetch")
+  ], "공유 링크는 URL 문자열이 아니라 시간과 범위를 가진 읽기 계약입니다."),
+
+  5: diagram("Folder illusion over object keys", [
+    dNode("ui", "UI 폴더", "photos/2026/", 140, 260),
+    dNode("key1", "객체 key", "photos/2026/a.jpg", 390, 145, "#22a77a"),
+    dNode("key2", "객체 key", "photos/2026/b.jpg", 390, 260, "#22a77a"),
+    dNode("key3", "객체 key", "photos/2026/c.jpg", 390, 375, "#22a77a"),
+    dNode("batch", "Batch 작업", "copy + delete", 700, 260, "#e65f4d")
+  ], [
+    dLink("ui", "key1", "prefix"),
+    dLink("ui", "key2", "prefix"),
+    dLink("ui", "key3", "prefix"),
+    dLink("key2", "batch", "rename?")
+  ], "폴더처럼 보이는 화면 뒤에는 prefix가 같은 문자열 key들이 있습니다."),
+
+  8: diagram("Three provider vocabulary map", [
+    dNode("model", "공통 모델", "객체 저장소", 150, 260, "#2f6df6"),
+    dNode("aws", "AWS S3", "account / bucket / object", 430, 120, "#f59e0b"),
+    dNode("azure", "Azure Blob", "storage account / container / blob", 430, 260, "#2563eb"),
+    dNode("gcp", "Google Cloud Storage", "project / bucket / object", 430, 400, "#22a77a"),
+    dNode("ops", "운영 차이", "IAM, event, analytics", 760, 260, "#7458f4")
+  ], [
+    dLink("model", "aws"),
+    dLink("model", "azure"),
+    dLink("model", "gcp"),
+    dLink("aws", "ops"),
+    dLink("azure", "ops"),
+    dLink("gcp", "ops")
+  ], "이름은 다르지만 큰 모델은 비슷하고, 진짜 차이는 운영 경계와 통합에서 커집니다."),
+
+  11: diagram("Object plus database state", [
+    dNode("dbPending", "DB row", "status=pending", 140, 190, "#7458f4"),
+    dNode("upload", "Object upload", "bytes 저장", 370, 190, "#22a77a"),
+    dNode("verify", "검증/변환", "checksum, scan", 600, 190, "#d39125"),
+    dNode("dbReady", "DB row", "status=ready", 830, 190, "#2f6df6"),
+    dNode("cleanup", "정리 작업", "orphan / failed", 490, 370, "#e65f4d")
+  ], [
+    dLink("dbPending", "upload"),
+    dLink("upload", "verify"),
+    dLink("verify", "dbReady"),
+    dLink("upload", "cleanup", "실패", "dashed"),
+    dLink("cleanup", "dbPending", "보정", "dashed")
+  ], "DB와 객체 저장소는 단일 트랜잭션이 아니므로 상태 머신과 보정 작업이 필요합니다."),
+
+  12: diagram("Direct upload architecture", [
+    dNode("client", "Client", "file 선택", 120, 280),
+    dNode("app", "App API", "인증 후 서명", 330, 160, "#2f6df6"),
+    dNode("policy", "Upload policy", "key, size, type, expiry", 540, 160, "#d39125"),
+    dNode("storage", "Object Storage", "direct PUT", 540, 365, "#22a77a"),
+    dNode("callback", "Verify", "HEAD/event", 760, 280, "#7458f4")
+  ], [
+    dLink("client", "app", "1 request"),
+    dLink("app", "policy", "2 sign"),
+    dLink("policy", "client", "3 URL", "dashed"),
+    dLink("client", "storage", "4 upload"),
+    dLink("storage", "callback", "5 verify")
+  ], "서버가 파일 바이트를 중계하지 않고 제한된 업로드 권한만 발급합니다."),
+
+  13: diagram("Object event pipeline", [
+    dNode("object", "ObjectCreated", "새 객체", 110, 260, "#22a77a"),
+    dNode("queue", "Queue / Topic", "buffer + retry", 320, 260, "#7458f4"),
+    dNode("worker", "Worker", "scan / transform", 530, 260, "#d39125"),
+    dNode("db", "DB", "상태 업데이트", 740, 170, "#2f6df6"),
+    dNode("dlq", "DLQ", "실패 격리", 740, 350, "#e65f4d")
+  ], [
+    dLink("object", "queue", "event"),
+    dLink("queue", "worker", "consume"),
+    dLink("worker", "db", "success"),
+    dLink("worker", "dlq", "fail", "dashed")
+  ], "객체 이벤트는 후처리의 시작점이며 중복과 재시도를 전제로 설계합니다."),
+
+  14: diagram("CDN and immutable asset delivery", [
+    dNode("deploy", "Build output", "app.a1b2.js", 110, 260),
+    dNode("origin", "Object Storage", "origin", 330, 260, "#22a77a"),
+    dNode("edge1", "Edge cache", "Seoul", 570, 160, "#7458f4"),
+    dNode("edge2", "Edge cache", "Tokyo", 570, 360, "#7458f4"),
+    dNode("browser", "Browser", "Cache-Control", 820, 260, "#2f6df6")
+  ], [
+    dLink("deploy", "origin", "upload"),
+    dLink("origin", "edge1", "cache"),
+    dLink("origin", "edge2", "cache"),
+    dLink("edge1", "browser", "fast read"),
+    dLink("edge2", "browser", "fallback")
+  ], "스토리지는 원본, CDN은 가까운 복사본, 해시 파일명은 안전한 장기 캐시를 담당합니다."),
+
+  15: diagram("Deletion lifecycle", [
+    dNode("request", "Delete request", "사용자/관리자", 110, 260, "#e65f4d"),
+    dNode("soft", "Soft delete", "복구 기간", 310, 260, "#d39125"),
+    dNode("version", "Versions", "delete marker", 510, 160, "#7458f4"),
+    dNode("retention", "Retention", "보존 의무", 510, 360, "#2f6df6"),
+    dNode("expire", "Expiration", "실제 정리", 760, 260, "#22a77a")
+  ], [
+    dLink("request", "soft"),
+    dLink("soft", "version"),
+    dLink("soft", "retention"),
+    dLink("version", "expire"),
+    dLink("retention", "expire", "허용 후")
+  ], "삭제는 버튼 하나가 아니라 복구 가능성, 보존 의무, 실제 만료가 이어지는 정책입니다."),
+
+  17: diagram("Object storage surface", [
+    dNode("data", "Data plane", "PUT / GET / LIST", 150, 160, "#2f6df6"),
+    dNode("control", "Control plane", "bucket, policy, lifecycle", 150, 360, "#7458f4"),
+    dNode("object", "Object", "bytes + key", 480, 260, "#22a77a"),
+    dNode("meta", "Metadata", "type, tag, checksum", 780, 160, "#d39125"),
+    dNode("event", "Integration", "event, CDN, analytics", 780, 360, "#e65f4d")
+  ], [
+    dLink("data", "object"),
+    dLink("control", "object"),
+    dLink("object", "meta"),
+    dLink("object", "event")
+  ], "객체 저장소는 바이트 저장 API와 제어 정책, 메타데이터, 통합 기능이 합쳐진 표면입니다."),
+
+  23: diagram("Multipart upload mechanics", [
+    dNode("client", "Client", "large file", 100, 260),
+    dNode("part1", "Part 1", "retry 가능", 330, 130, "#2f6df6"),
+    dNode("part2", "Part 2", "parallel", 330, 260, "#7458f4"),
+    dNode("part3", "Part 3", "checksum", 330, 390, "#d39125"),
+    dNode("complete", "Complete", "객체 조립", 610, 260, "#22a77a"),
+    dNode("abort", "Abort", "미완료 정리", 830, 380, "#e65f4d")
+  ], [
+    dLink("client", "part1"),
+    dLink("client", "part2"),
+    dLink("client", "part3"),
+    dLink("part1", "complete"),
+    dLink("part2", "complete"),
+    dLink("part3", "complete"),
+    dLink("part2", "abort", "fail", "dashed")
+  ], "큰 파일은 단일 전송보다 청크, 재시도, checksum, abort 정책으로 설계합니다."),
+
+  25: diagram("AWS S3 baseline", [
+    dNode("account", "AWS Account", "guardrail", 110, 260, "#111b26"),
+    dNode("bucket", "S3 Bucket", "global name", 340, 260, "#f59e0b"),
+    dNode("policy", "Bucket policy", "resource rules", 570, 150, "#7458f4"),
+    dNode("iam", "IAM Role", "identity rules", 570, 370, "#2f6df6"),
+    dNode("object", "Objects", "key + version", 810, 260, "#22a77a")
+  ], [
+    dLink("account", "bucket"),
+    dLink("bucket", "policy"),
+    dLink("bucket", "iam"),
+    dLink("policy", "object"),
+    dLink("iam", "object")
+  ], "S3는 bucket을 중심으로 계정 guardrail, IAM, bucket policy, object ownership이 합성됩니다."),
+
+  28: diagram("Lifecycle transition chain", [
+    dNode("standard", "Standard", "자주 읽음", 120, 260, "#2f6df6"),
+    dNode("ia", "IA / Cool", "가끔 읽음", 330, 260, "#22a77a"),
+    dNode("archive", "Archive", "복구 지연", 540, 260, "#d39125"),
+    dNode("noncurrent", "Noncurrent", "이전 버전", 750, 160, "#7458f4"),
+    dNode("expire", "Expire", "삭제", 750, 360, "#e65f4d")
+  ], [
+    dLink("standard", "ia", "age/tag"),
+    dLink("ia", "archive", "transition"),
+    dLink("archive", "expire", "retention"),
+    dLink("standard", "noncurrent", "new version"),
+    dLink("noncurrent", "expire", "cleanup")
+  ], "Lifecycle은 객체 상태와 버전을 조건으로 저장 계층과 삭제 시점을 자동화합니다."),
+
+  35: diagram("Azure storage account hierarchy", [
+    dNode("sub", "Subscription", "billing/RBAC", 110, 260, "#111b26"),
+    dNode("account", "Storage Account", "region + redundancy", 340, 260, "#2563eb"),
+    dNode("container", "Container", "namespace", 570, 160, "#7458f4"),
+    dNode("queue", "Queue/Table/File", "다른 서비스", 570, 360, "#d39125"),
+    dNode("blob", "Blob", "block/append/page", 800, 160, "#22a77a")
+  ], [
+    dLink("sub", "account"),
+    dLink("account", "container"),
+    dLink("account", "queue"),
+    dLink("container", "blob")
+  ], "Azure Blob은 storage account라는 큰 경계 안에서 container와 blob으로 내려갑니다."),
+
+  45: diagram("GCS project and bucket model", [
+    dNode("project", "GCP Project", "IAM / billing", 120, 260, "#111b26"),
+    dNode("bucket", "GCS Bucket", "location + class", 350, 260, "#22a77a"),
+    dNode("iam", "IAM / UBLA", "uniform access", 580, 160, "#7458f4"),
+    dNode("object", "Objects", "generation + metadata", 580, 360, "#2f6df6"),
+    dNode("data", "BigQuery/Dataflow", "data platform", 810, 260, "#d39125")
+  ], [
+    dLink("project", "bucket"),
+    dLink("bucket", "iam"),
+    dLink("bucket", "object"),
+    dLink("object", "data")
+  ], "GCS는 project와 bucket 경계를 기준으로 IAM, object generation, 데이터 플랫폼 통합을 봅니다."),
+
+  62: diagram("Recovery drill map", [
+    dNode("detect", "Detect", "범위 파악", 110, 260, "#e65f4d"),
+    dNode("isolate", "Isolate", "권한 차단", 310, 260, "#d39125"),
+    dNode("restore", "Restore", "객체 + 메타데이터", 530, 260, "#22a77a"),
+    dNode("kms", "KMS", "복호화 권한", 720, 150, "#7458f4"),
+    dNode("verify", "Verify", "앱에서 읽기", 720, 370, "#2f6df6")
+  ], [
+    dLink("detect", "isolate"),
+    dLink("isolate", "restore"),
+    dLink("restore", "kms"),
+    dLink("restore", "verify"),
+    dLink("kms", "verify")
+  ], "DR은 복제 스위치가 아니라 격리, 복원, 키 권한, 앱 검증까지 포함한 절차입니다."),
+
+  63: diagram("Provider integration differences", [
+    dNode("s3", "AWS S3", "IAM, EventBridge, Athena", 190, 150, "#f59e0b"),
+    dNode("az", "Azure Blob", "Entra, Event Grid, ADLS", 190, 370, "#2563eb"),
+    dNode("gcs", "GCS", "IAM, Pub/Sub, BigQuery", 510, 150, "#22a77a"),
+    dNode("common", "Common API", "PUT / GET / LIST", 510, 370, "#7458f4"),
+    dNode("risk", "멀티클라우드 난점", "권한, 이벤트, 비용 의미 차이", 800, 260, "#e65f4d")
+  ], [
+    dLink("s3", "common"),
+    dLink("az", "common"),
+    dLink("gcs", "common"),
+    dLink("common", "risk"),
+    dLink("s3", "risk", "운영 차이", "dashed"),
+    dLink("az", "risk", "운영 차이", "dashed"),
+    dLink("gcs", "risk", "운영 차이", "dashed")
+  ], "멀티클라우드는 저장 API보다 IAM, 이벤트, 분석, 비용 의미 차이를 맞추는 일이 더 어렵습니다."),
+
+  64: diagram("Data product lifecycle", [
+    dNode("ingest", "Ingest", "업로드/수집", 100, 260, "#2f6df6"),
+    dNode("validate", "Validate", "검증/정제", 290, 160, "#d39125"),
+    dNode("publish", "Publish", "CDN/API/Query", 500, 160, "#22a77a"),
+    dNode("govern", "Govern", "권한/감사", 500, 360, "#7458f4"),
+    dNode("retain", "Retain/Delete", "보관/삭제/복구", 760, 260, "#e65f4d")
+  ], [
+    dLink("ingest", "validate"),
+    dLink("validate", "publish"),
+    dLink("publish", "govern"),
+    dLink("govern", "retain"),
+    dLink("retain", "ingest", "새 주기", "dashed")
+  ], "최종 설계는 객체 하나가 아니라 데이터 제품의 전체 생애주기를 관리합니다.")
+};
+
+const slides = slidesWithoutDiagrams.map((item) => ({
+  ...item,
+  visual: diagramOverrides[item.no] ?? item.visual
+}));
 
 const totalMinutes = slides.reduce((sum, item) => sum + item.minutes, 0);
 
