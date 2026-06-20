@@ -29,6 +29,17 @@ npm run fix
 - `npm run fix`: 포맷과 가능한 lint 자동 수정을 함께 실행합니다.
 - `npm run check`: 포맷 체크와 전체 lint를 함께 실행합니다.
 
+<!-- rag-deep-dive-entry:start -->
+
+## RAG Deep Dive
+
+`materials/rag-deep-dive/`에 다음 자료를 넣었습니다.
+
+- `interactive-tabs.html` (65개 RAG 학습 탭)
+- `speaker-notes.html` (RAG deep dive 학습 노트)
+- `rag-deep-dive-speaker-notes.md`
+<!-- rag-deep-dive-entry:end -->
+
 ## Cloud Storage Study
 
 `materials/cloud-storage/`에 다음 자료를 넣었습니다.
