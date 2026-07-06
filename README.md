@@ -50,5 +50,7 @@ npm run fix
 
 ## 2026 Notes
 
+- `notes/2026/tty-pty-conpty-terminal-boundary.html`: TTY, PTY, ConPTY와 shell wrapper의 터미널 경계 관측 모델 정리
+- `notes/2026/tty-pty-conpty-terminal-boundary.md`: 같은 글의 Markdown 원문
 - `notes/2026/llm-subagents-codex-claude-gemini.html`: Codex, Claude Code, Gemini CLI의 subagent 관리 방식과 충돌 처리 관점 비교
 - `notes/2026/llm-subagents-codex-claude-gemini.md`: 같은 글의 Markdown 원문
